@@ -5,6 +5,7 @@ using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Entities.Inventory;
 using BlinkBlink.Domain.Entities.Orders;
 using BlinkBlink.Domain.Entities.Cart;
+using BlinkBlink.Domain.Entities.Warranty;
 
 namespace BlinkBlink.Infrastructure.Data;
 
@@ -43,6 +44,11 @@ public class AppDbContext : DbContext
     public DbSet<ChiTietHoaDon> ChiTietHoaDons => Set<ChiTietHoaDon>();
     public DbSet<GioHang> GioHangs => Set<GioHang>();
     public DbSet<ChiTietGioHang> ChiTietGioHangs => Set<ChiTietGioHang>();
+
+    // =========================================================================
+    // PHÂN HỆ QUẢN LÝ DỊCH VỤ & BẢO HÀNH
+    // =========================================================================
+    public DbSet<PhieuBaoHanh> PhieuBaoHanhs => Set<PhieuBaoHanh>();
 
     // =========================================================================
     // HƯỚNG DẪN CHO CÁC PHÂN HỆ KHÁC (Bán hàng, Dịch vụ & Bảo hành):
