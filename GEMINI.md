@@ -1,5 +1,5 @@
 ### Đây là nơi lưu lại những điều tối quan trọng để làm dự án không sai sót
-## Hệ thống bao gồm kiến trúc clean architecture được viết bằng .Net, đối với trang dành cho admin sẽ được thiết kế bằng winform, còn trang dành cho người dùng mua sắm sẽ thiết kế bằng web. Web khách hàng sẽ giao tiếp với phần nghiệp vụ của clean architecture thông qua Restful API.
+## Hệ thống bao gồm kiến trúc clean architecture được viết bằng .Net, đối với trang dành cho admin sẽ được thiết kế bằng winform, còn trang dành cho người dùng mua sắm sẽ thiết kế bằng web (html, javascript, css, php nếu có). Web khách hàng sẽ giao tiếp với phần nghiệp vụ của clean architecture thông qua Restful API.
 chương trình không cần quan tâm đến giá vàng hay loại vàng dùng cho sản phẩm này là gì, thông tin về cái đó chỉ cần lưu trong chuỗi string chất liệu là được, không cần ghi nhận lại lịch sử giá của sản phẩm đó.
 
 ### Quy trình làm việc
@@ -68,7 +68,7 @@ CẤM các dòng chữ trang trí vô nghĩa (như BRAND. MOTION. SPATIAL., 00 /
 
 CẤM dùng icon giả, placeholder méo mó, div giả product UI. Nếu cần hình ảnh trang sức minh họa, hãy dùng hình ảnh tư liệu thật (open-license) hoặc tài nguyên sẵn có của project.
 
-Đối với WPF POS/Admin: Giữ panel tinh tế, số liệu căn gióng chính xác (tabular figures), màu sắc chỉ tập trung hiển thị trạng thái dữ liệu (badge, status, tồn kho).
+Đối với WinForms POS/Admin: Giữ panel tinh tế, số liệu căn gióng chính xác (tabular figures), màu sắc chỉ tập trung hiển thị trạng thái dữ liệu (badge, status, tồn kho).
 ## 3. Quy Chuẩn Comment Code (Code Commenting Rules)
 
 ### Khi nào BẮT BUỘC comment:
