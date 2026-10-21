@@ -10,10 +10,11 @@
   - `CapNhatKhachHangDTO.cs`, `QuanLyKhachHangUseCase.cs`, `ResetMatKhau` trong `QuanLyNhanVienUseCase.cs`.
   - `CapNhatSanPhamDTO.cs`, `CapNhatThongTin` trong `QuanLySanPhamUseCase.cs` & `SanPhamController.cs`.
   - Viết 3 bộ Unit Tests mới, toàn bộ 9/9 tests pass 100%. Đã merge vào `main`.
-- **Chuyển đổi hoàn tất Presentation Layer:**
+- **Chuyển đổi hoàn tất Presentation Layer & Đẩy toàn bộ lên GitHub (`origin/main`):**
   - Project `BlinkBlink.Admin` chuyển từ WPF sang **Windows Forms (WinForms)** trên nền .NET 8 LTS (`net8.0-windows`).
   - Dọn dẹp toàn bộ file XAML; tạo điểm khởi chạy `Program.cs` và `MainForm.cs` theo phong cách luxury kim hoàn.
   - Project `BlinkBlink.Web` được chuẩn hóa thành **RESTful API Server** (Swagger OpenAPI, CORS, dependency injection cho tất cả Repositories và Use Cases).
+  - Đã đẩy toàn bộ commit (`origin/main` up to date): bao gồm `GEMINI.md`, XMLs, mã nguồn và cấu hình mới nhất.
 
 ## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
 - Quyết định kiến trúc chuẩn:
@@ -22,5 +23,5 @@
 - Bước tiếp theo: Tiến hành triển khai trọn vẹn **Phân hệ Quản lý Bán hàng (Sales Module)**.
 
 ## 3. Hành động cụ thể tiếp theo
-1. Merge nhánh `refactor/convert-admin-to-winforms` vào `main`.
-2. Tạo nhánh mới `feature/sales-module` và triển khai mã nguồn Phân hệ Bán hàng theo quy trình 2 bước đã duyệt.
+1. Tạo nhánh mới `feature/sales-module`.
+2. Triển khai mã nguồn Phân hệ Bán hàng (`HoaDon`, `ChiTietHoaDon`, `GioHang`, `ChiTietGioHang`, Use Cases, Repositories).
