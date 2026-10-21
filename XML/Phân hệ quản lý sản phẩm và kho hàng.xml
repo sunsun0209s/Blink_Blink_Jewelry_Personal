@@ -1,5 +1,7 @@
-<diagram id="QrmRzgO9kMot_BwBv-hs" name="Phân hệ quản lý sản phẩm &amp; kho">
-    <mxGraphModel dx="3591" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="QrmRzgO9kMot_BwBv-hs" name="Phân hệ quản lý sản phẩm &amp; kho">
+    <mxGraphModel dx="8619" dy="3823" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -187,7 +189,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-230" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=676;height=67;" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt;Application&lt;/b&gt;&lt;/font&gt;&lt;font style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt; &lt;/b&gt;&lt;/font&gt;&lt;span style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt;(Use Cases &amp;amp; Interfaces)&lt;/b&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="887" width="1690" x="-200" y="2173" as="geometry" />
+          <mxGeometry height="887" width="2040" x="-200" y="2173" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-240" edge="1" parent="1" source="J6PPJE1-1b1ZUSAGWI9q-231" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="J6PPJE1-1b1ZUSAGWI9q-186">
           <mxGeometry relative="1" as="geometry" />
@@ -217,7 +219,7 @@
           <mxGeometry height="26" width="260" y="34" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-241" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=560;height=117;" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt; Interface Adapters (Presentation)&lt;/b&gt;&lt;/font&gt;" vertex="1">
-          <mxGeometry height="767" width="1160" x="1670" y="2173" as="geometry" />
+          <mxGeometry height="767" width="1300" x="1670" y="2173" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-254" edge="1" parent="1" source="J6PPJE1-1b1ZUSAGWI9q-242" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="J6PPJE1-1b1ZUSAGWI9q-250">
           <mxGeometry relative="1" as="geometry" />
@@ -252,7 +254,7 @@
           <mxGeometry height="26" width="300" y="60" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-256" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=700;height=80;" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt;Frameworks &amp;amp; Drivers (Infrastructure)&lt;/b&gt;&lt;/font&gt;" vertex="1">
-          <mxGeometry height="400" width="1160" x="580" y="1330" as="geometry" />
+          <mxGeometry height="400" width="1480" x="580" y="1330" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-261" edge="1" parent="1" source="J6PPJE1-1b1ZUSAGWI9q-257" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=block;endFill=0;" target="J6PPJE1-1b1ZUSAGWI9q-235">
           <mxGeometry relative="1" as="geometry" />
@@ -443,6 +445,67 @@
             <mxPoint x="1340" y="2640" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="ext-DoiGiaDTO" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="DoiGiaDTO" vertex="1">
+          <mxGeometry height="60" width="180" x="2720" y="2700" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-DoiGiaDTO-line" parent="ext-DoiGiaDTO" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-DoiGiaDTO-attr1" parent="ext-DoiGiaDTO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ GiaMoi: decimal" vertex="1">
+          <mxGeometry height="26" width="180" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-conn-SanPhamController-DoiGiaDTO" edge="1" parent="1" source="e925lyF6L0-hw0onFAC7-33" target="ext-DoiGiaDTO" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="ChiTietNhapKhoDTO" vertex="1">
+          <mxGeometry height="138" width="220" x="2520" y="2490" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO-attr1" parent="ext-ChiTietNhapKhoDTO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ MaSanPham: string" vertex="1">
+          <mxGeometry height="26" width="220" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO-attr2" parent="ext-ChiTietNhapKhoDTO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ SoLuong: int" vertex="1">
+          <mxGeometry height="26" width="220" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO-attr3" parent="ext-ChiTietNhapKhoDTO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ GiaVonNhap: decimal" vertex="1">
+          <mxGeometry height="26" width="220" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO-attr4" parent="ext-ChiTietNhapKhoDTO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ SoChungTu: string" vertex="1">
+          <mxGeometry height="26" width="220" y="104" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-ChiTietNhapKhoDTO-line" parent="ext-ChiTietNhapKhoDTO" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="220" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-conn-NhapKhoDTO-ChiTietNhapKhoDTO" edge="1" parent="1" source="J6PPJE1-1b1ZUSAGWI9q-250" target="ext-ChiTietNhapKhoDTO" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1..*">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-IPhieuKiemKeRepository" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="IPhieuKiemKeRepository" vertex="1">
+          <mxGeometry height="86" width="280" x="1500" y="2320" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-IPhieuKiemKeRepository-line" parent="ext-IPhieuKiemKeRepository" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="280" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-IPhieuKiemKeRepository-m1" parent="ext-IPhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ LuuPhieuKiemKe(phieu: PhieuKiemKe): void" vertex="1">
+          <mxGeometry height="26" width="280" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-IPhieuKiemKeRepository-m2" parent="ext-IPhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ TimTheoId(maPhieu: string): PhieuKiemKe" vertex="1">
+          <mxGeometry height="26" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-PhieuKiemKeRepository" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PhieuKiemKeRepository" vertex="1">
+          <mxGeometry height="86" width="280" x="1720" y="1460" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-PhieuKiemKeRepository-f1" parent="ext-PhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: AppDbContext" vertex="1">
+          <mxGeometry height="26" width="280" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-PhieuKiemKeRepository-line" parent="ext-PhieuKiemKeRepository" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="280" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-PhieuKiemKeRepository-m1" parent="ext-PhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ LuuPhieuKiemKe(phieu: PhieuKiemKe): void" vertex="1">
+          <mxGeometry height="26" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-conn-PhieuKiemKeRepo-Impl" edge="1" parent="1" source="ext-PhieuKiemKeRepository" target="ext-IPhieuKiemKeRepository" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
+</mxfile>
