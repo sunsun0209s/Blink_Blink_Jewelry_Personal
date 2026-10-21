@@ -8,6 +8,7 @@ using BlinkBlink.Application.Services.Identity;
 using BlinkBlink.Application.Services.Inventory;
 using BlinkBlink.Application.Services.Orders;
 using BlinkBlink.Application.Services.Warranty;
+using BlinkBlink.Application.Services.Reporting;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
 using BlinkBlink.Infrastructure.Repositories;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IPhieuKiemKeRepository, PhieuKiemKeRepository>();
 builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
 builder.Services.AddScoped<IGioHangRepository, GioHangRepository>();
 builder.Services.AddScoped<IBaoHanhRepository, BaoHanhRepository>();
+builder.Services.AddScoped<IThongKeRepository, ThongKeRepository>();
 
 // Đăng ký các Trường hợp sử dụng (Use Cases)
 builder.Services.AddScoped<QuanLySanPhamUseCase>();
@@ -46,6 +48,8 @@ builder.Services.AddScoped<DatHangUseCase>();
 builder.Services.AddScoped<XuLyDonHangUseCase>();
 builder.Services.AddScoped<TiepNhanBaoHanhUseCase>();
 builder.Services.AddScoped<XuLyBaoHanhUseCase>();
+builder.Services.AddScoped<ThongKeDoanhThuUseCase>();
+builder.Services.AddScoped<ThongKeKhoHangUseCase>();
 
 // Cấu hình MVC và RESTful API Controllers
 builder.Services.AddControllersWithViews();
