@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using BlinkBlink.Domain.Entities.Identity;
 using BlinkBlink.Domain.Entities.Customers;
+using BlinkBlink.Domain.Entities.Catalog;
+using BlinkBlink.Domain.Entities.Inventory;
 
 namespace BlinkBlink.Infrastructure.Data;
 
@@ -23,7 +25,17 @@ public class AppDbContext : DbContext
     public DbSet<KhachHang> KhachHangs => Set<KhachHang>();
 
     // =========================================================================
-    // HƯỚNG DẪN CHO CÁC PHÂN HỆ KHÁC (Sản phẩm & Kho, Bán hàng, Dịch vụ & Bảo hành):
+    // PHÂN HỆ QUẢN LÝ SẢN PHẨM & KHO HÀNG
+    // =========================================================================
+    public DbSet<SanPhamTrangSuc> SanPhamTrangSucs => Set<SanPhamTrangSuc>();
+    public DbSet<DanhMuc> DanhMucs => Set<DanhMuc>();
+    public DbSet<PhieuNhapKho> PhieuNhapKhos => Set<PhieuNhapKho>();
+    public DbSet<ChiTietNhapKho> ChiTietNhapKhos => Set<ChiTietNhapKho>();
+    public DbSet<PhieuKiemKe> PhieuKiemKes => Set<PhieuKiemKe>();
+    public DbSet<ChiTietKiemKe> ChiTietKiemKes => Set<ChiTietKiemKe>();
+
+    // =========================================================================
+    // HƯỚNG DẪN CHO CÁC PHÂN HỆ KHÁC (Bán hàng, Dịch vụ & Bảo hành):
     // 1. Khai báo thêm DbSet<TEntity> của phân hệ bạn tại đây.
     // 2. Tạo file cấu hình Fluent API riêng trong thư mục Data/Configurations/ kế thừa IEntityTypeConfiguration<TEntity>.
     // 3. Hàm ApplyConfigurationsFromAssembly bên dưới sẽ TỰ ĐỘNG nạp cấu hình của bạn mà KHÔNG cần chỉnh sửa OnModelCreating.
