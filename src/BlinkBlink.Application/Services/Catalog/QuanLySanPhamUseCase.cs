@@ -9,8 +9,8 @@ namespace BlinkBlink.Application.Services.Catalog;
 
 /// <summary>
 /// Use Case Quản lý sản phẩm trang sức (QuanLySanPhamUseCase).
-/// Đảm nhận nghiệp vụ thêm mới sản phẩm và điều chỉnh giá bán theo biến động thị trường.
-/// Khớp 100% với Class Diagram.
+/// Đảm nhận nghiệp vụ thêm mới sản phẩm, điều chỉnh thông tin và cập nhật giá bán.
+/// Bản vẽ kỹ thuật: Phân hệ quản lý sản phẩm & kho.xml - QuanLySanPhamUseCase
 /// </summary>
 public class QuanLySanPhamUseCase
 {
@@ -88,6 +88,34 @@ public class QuanLySanPhamUseCase
         return true;
     }
 
+    /// <summary>
+    /// Cập nhật thông tin chi tiết sản phẩm trang sức (tên, danh mục, chất liệu, kích cỡ).
+    /// Khớp hàm: + CapNhatThongTin(request: CapNhatSanPhamDTO): bool trong Diagram.
+    /// </summary>
+    /// <param name="request">Thông tin sản phẩm cần cập nhật</param>
+    /// <returns>True nếu cập nhật thành công, False nếu thông tin không hợp lệ</returns>
+    public bool CapNhatThongTin(CapNhatSanPhamDTO request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.MaSanPham) || string.IsNullOrWhiteSpace(request.TenSanPham))
+        {
+            return false;
+        }
+
+        var sanPham = _sanPhamRepo.TimTheoId(request.MaSanPham.Trim());
+        if (sanPham == null)
+        {
+            return false;
+        }
+
+        sanPham.TenSanPham = request.TenSanPham.Trim();
+        sanPham.MaDanhMuc = request.MaDanhMuc?.Trim() ?? string.Empty;
+        sanPham.ChatLieu = request.ChatLieu?.Trim() ?? string.Empty;
+        sanPham.Size = request.Size?.Trim() ?? string.Empty;
+
+        _sanPhamRepo.LuuSanPham(sanPham);
+        return true;
+    }
+
     // =========================================================================
     // MỞ RỘNG BẤT ĐỒNG BỘ CHUẨN CLEAN ARCHITECTURE .NET 8 LTS
     // =========================================================================
@@ -138,6 +166,28 @@ public class QuanLySanPhamUseCase
         }
 
         sanPham.GiaBan = giaMoi;
+        await _sanPhamRepo.LuuSanPhamAsync(sanPham, cancellationToken);
+        return true;
+    }
+
+    public async Task<bool> CapNhatThongTinAsync(CapNhatSanPhamDTO request, CancellationToken cancellationToken = default)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.MaSanPham) || string.IsNullOrWhiteSpace(request.TenSanPham))
+        {
+            return false;
+        }
+
+        var sanPham = await _sanPhamRepo.TimTheoIdAsync(request.MaSanPham.Trim(), cancellationToken);
+        if (sanPham == null)
+        {
+            return false;
+        }
+
+        sanPham.TenSanPham = request.TenSanPham.Trim();
+        sanPham.MaDanhMuc = request.MaDanhMuc?.Trim() ?? string.Empty;
+        sanPham.ChatLieu = request.ChatLieu?.Trim() ?? string.Empty;
+        sanPham.Size = request.Size?.Trim() ?? string.Empty;
+
         await _sanPhamRepo.LuuSanPhamAsync(sanPham, cancellationToken);
         return true;
     }
