@@ -1,5 +1,7 @@
 ### Đây là nơi lưu lại những điều tối quan trọng để làm dự án không sai sót
-## Đề tài Quản lý Bán Trang sức (Blink Blink Jewelry) - .NET 8 LTS (WPF Desktop Admin/POS + Web ASP.NET Core MVC) theo Clean Architecture
+## Hệ thống bao gồm kiến trúc clean architecture được viết bằng .Net, đối với trang dành cho admin sẽ được thiết kế bằng winform, còn trang dành cho người dùng mua sắm sẽ thiết kế bằng web. Web khách hàng sẽ giao tiếp với phần nghiệp vụ của clean architecture thông qua Restful API.
+chương trình không cần quan tâm đến giá vàng hay loại vàng dùng cho sản phẩm này là gì, thông tin về cái đó chỉ cần lưu trong chuỗi string chất liệu là được, không cần ghi nhận lại lịch sử giá của sản phẩm đó.
+
 ### Quy trình làm việc
 1. Kéo code mới nhất từ main
 Thành viên vào nhánh main, kéo nhánh mới nhất của nhóm về máy:
@@ -43,7 +45,7 @@ Trình bày tóm tắt:
 - CHỈ tiến hành viết mã nguồn sau khi người dùng đã duyệt và đồng ý với phương án ở Bước 1.
 
 ### 3. Quy Chuẩn Thiết Kế Giao Diện (Frontend & UI Taste Guidelines)
-Khi nhận yêu cầu thiết kế, chỉnh sửa layout, giao diện (Views/CSS/JS trong ASP.NET Core MVC hoặc XAML/Styles trong WPF Desktop Admin/POS):
+Khi nhận yêu cầu thiết kế, chỉnh sửa layout, giao diện
 
 3.1. Bắt buộc tham chiếu Taste Skill
 BẮT BUỘC đọc và tuân thủ các quy tắc trong .agent/skills/design-taste-frontend/SKILL.md (hoặc SKILL.md).
@@ -107,3 +109,4 @@ Sau khi code đã được kiểm tra, review và người dùng xác nhận ho�
 - Những code bị comment KHÔNG được tự tiện xoá vì nó dùng để test.
 - Ngôn ngữ comment: Thống nhất dùng tiếng Việt chỉ dùng tiếng anh khi từ đó quá chuyên ngành.
 - Tuyệt đối KHÔNG nâng Target Framework lên .NET 9 hay .NET 10 (thống nhất duy nhất .NET 8 LTS cho toàn solution).
+-CẤM chú giải song ngữ thừa thãi: Không tự ý mở ngoặc chèn cụm từ tiếng Anh sau từ tiếng Việt (ví dụ: cấm viết "phân quyền (Role-based Access Control)" hay "tồn kho (Inventory)") trừ khi đó là những thuật ngữ dễ bị sai lệch nghĩa.
