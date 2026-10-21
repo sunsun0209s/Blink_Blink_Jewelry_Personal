@@ -1,22 +1,21 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Hoàn thiện phân hệ WinForms Admin (`BlinkBlink.Admin`) trên nhánh `feature/admin-winforms` và đã push lên remote:**
-  - `UITheme.cs`: Bảng màu kim hoàn cao cấp (Champagne Gold `#D4AF37`, Dark Slate `#181C24` / `#202630`, Light Neutral canvas `#F5F7FA`), font chữ chuẩn tabular figures, thiết kế phẳng chống AI-slop.
-  - `AdminServiceScope.cs` & `InMemoryDataContext.cs`: Quản lý phạm vi dịch vụ, tự động kết nối SQL Server và có cơ chế dữ liệu giả lập chất lượng cao tự kích hoạt khi máy chủ CSDL chưa bật.
-  - `OrdersView.cs`: Quản lý đơn hàng, duyệt đơn, chuyển trạng thái giao vận, hủy đơn và hoàn kho kèm bảng chi tiết sản phẩm.
-  - `ProductsView.cs`: Danh mục sản phẩm trang sức, điều chỉnh giá bán niêm yết, hộp thoại tạo mới sản phẩm kim hoàn.
-  - `WarrantyView.cs`: Quản lý phiếu bảo hành, tiếp nhận bảo hành mới, cập nhật tiến độ xử lý và hoàn tất quyết toán chi phí.
-  - `UsersView.cs`: Quản lý nhân viên, phân quyền chức vụ, danh sách khách hàng và quản lý khóa tài khoản.
-  - `ReportingView.cs`: Khớp 100% bản vẽ `FormBaoCaoThongKe` trong `XML/3 Layers.xml` (bộ lọc ngày, xem doanh thu, xem tồn kho, xem top bán chạy và xuất file CSV mở bằng Excel có UTF-8 BOM).
-  - `MainForm.cs`: Điều hướng mượt mà giữa 5 phân hệ với hiệu ứng đổi màu nút sidebar và cập nhật thanh trạng thái kết nối.
-- **Trạng thái kiểm thử:** 27/27 tests passed (26 Unit Tests + 1 Integration Test), biên dịch 0 lỗi, 0 cảnh báo trên toàn solution .NET 8 LTS.
+- **Đã gộp hoàn tất toàn bộ phân hệ WinForms Admin (`BlinkBlink.Admin`) vào nhánh `main` và đẩy lên GitHub remote (`origin/main` - commit `ce13154`):**
+  - [`UITheme.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/Helpers/UITheme.cs): Bảng màu kim hoàn sang trọng theo Taste Skill (Champagne Gold `#D4AF37`, Dark Slate `#181C24` / `#202630`, Light Neutral canvas `#F5F7FA`), định dạng số liệu tabular figures căn lề phải.
+  - [`AdminServiceScope.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/AdminServiceScope.cs) & [`InMemoryDataContext.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/InMemoryDataContext.cs): Cơ chế cơ sở dữ liệu kép (Dual-Mode Database), tự động kết nối SQL Server và có fallback In-Memory Studio Mode nạp sẵn dữ liệu trang sức cao cấp.
+  - 5 UserControls phân hệ: [`OrdersView.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs), [`ProductsView.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs), [`WarrantyView.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Warranty/WarrantyView.cs), [`UsersView.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Identity/UsersView.cs), [`ReportingView.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs) (khớp 100% `FormBaoCaoThongKe` trong `XML/3 Layers.xml`).
+  - [`MainForm.cs`](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/MainForm.cs): Vỏ điều hướng mượt mà, chuyển đổi các phân hệ trên `panelContent`.
+- **Trạng thái kiểm thử & Git:** 27/27 tests passed (26 Unit Tests + 1 Integration Test), Solution biên dịch 0 lỗi, 0 cảnh báo. Nhánh `main` sạch sẽ và đồng bộ mới nhất với GitHub remote.
 
 ## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- Đã hoàn tất và đẩy nhánh `feature/admin-winforms` lên GitHub. Sẵn sàng tạo Pull Request để gộp vào nhánh `main` khi có yêu cầu.
-- Toàn bộ backend Clean Architecture và giao diện WinForms Admin đã hoàn tất 100%.
-- Quyết định kế tiếp: Chuyển sang xây dựng **Giao diện Web Khách hàng (`BlinkBlink.Web`)** theo chuẩn Taste Skill (HTML5, CSS3 hiện đại, JavaScript fetch API kết nối các RESTful Controller đã dựng sẵn).
+- Toàn bộ 5 phân hệ Backend và ứng dụng Desktop WinForms Admin đã hoàn tất 100%.
+- Đã chốt kiến trúc cho phân hệ tiếp theo: **Giao diện Web Khách hàng (`BlinkBlink.Web`)** giao tiếp với backend thông qua RESTful Web API Controller đã dựng sẵn (CORS, Swagger đã cấu hình).
 
-## 3. Hành động cụ thể tiếp theo
-1. Hỗ trợ người dùng gộp nhánh `feature/admin-winforms` vào `main` nếu người dùng yêu cầu.
-2. Lên ý tưởng và giải pháp cho **Giao diện Web Storefront Khách hàng** (Trang chủ trưng bày trang sức, danh mục sản phẩm, giỏ hàng, đặt hàng online, tra cứu trạng thái đơn và bảo hành).
+## 3. Hành động cụ thể tiếp theo cho phiên làm việc sau
+1. Tạo nhánh mới `feature/customer-web-ui` từ `main`.
+2. Trình bày **Bước 1 (Idea & Proposal)** thiết kế giao diện Web Storefront Khách hàng theo Taste Skill (HTML5, Modern CSS, Vanilla JS Fetch API):
+   - Trang chủ giới thiệu thương hiệu và showcase bộ sưu tập trang sức (Hero banner, New Arrivals, Featured Collections).
+   - Danh mục sản phẩm trang sức có bộ lọc theo danh mục, chất liệu, size, giá tiền (`/api/SanPham`).
+   - Giỏ hàng & Trang thanh toán / Đặt hàng online (`/api/BanHang/dat-hang`).
+   - Trang tra cứu tiến độ bảo hành trang sức trực tuyến (`/api/BaoHanh/tra-cuu/{soPhieu}`).
