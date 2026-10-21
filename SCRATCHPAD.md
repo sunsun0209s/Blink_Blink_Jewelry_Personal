@@ -1,35 +1,21 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Đã hoàn tất trọn vẹn 100% toàn bộ 5 Phân hệ nghiệp vụ Backend theo Clean Architecture:**
-  1. **Phân hệ 1: Quản lý Người dùng & Phân quyền (Identity & Access Control)**
-  2. **Phân hệ 2: Quản lý Sản phẩm & Kho hàng (Catalog & Inventory)**
-  3. **Phân hệ 3: Quản lý Bán hàng & Đơn hàng (Sales Management)**
-  4. **Phân hệ 4: Quản lý Dịch vụ & Bảo hành (Warranty Management)**
-  5. **Phân hệ 5: Báo cáo & Thống kê (Reporting & Analytics)** (Vừa hoàn thành trên nhánh `feature/reporting-module`):
-     - Domain Interface: `src/BlinkBlink.Domain/Interfaces/IThongKeRepository.cs` (Truy vấn doanh thu, tồn kho, kiểm kê, sản phẩm doanh thu thấp).
-     - Application Layer:
-       - `DoanhThuThongKeDTO.cs`, `BaoCaoTonKhoDTO.cs`, `TopSanPhamBanChayDTO.cs`.
-       - `ThongKeDoanhThuUseCase.cs`: Tổng hợp doanh thu, số đơn, lợi nhuận ước tính theo ngày.
-       - `ThongKeKhoHangUseCase.cs`: Tính toán báo cáo tồn kho kèm chênh lệch kiểm kê, xếp hạng Top sản phẩm bán chạy và Top sản phẩm doanh thu thấp.
-     - Infrastructure Layer:
-       - `ThongKeRepository.cs`: Triển khai truy vấn tối ưu dạng chỉ đọc `AsNoTracking` trên `AppDbContext`.
-     - Web RESTful API:
-       - `ThongKeController.cs`: 4 endpoints chuẩn REST (`doanh-thu`, `ton-kho`, `top-ban-chay`, `doanh-thu-thap`).
-       - `Program.cs`: Đăng ký DI cho `IThongKeRepository`, `ThongKeDoanhThuUseCase`, `ThongKeKhoHangUseCase`.
-     - Unit Tests:
-       - `ThongKeDoanhThuUseCaseTests.cs` (2 tests).
-       - `ThongKeKhoHangUseCaseTests.cs` (3 tests).
-       - Toàn bộ **27/27 tests pass 100%**, Solution biên dịch 0 lỗi 0 cảnh báo.
+- **Đã gộp toàn bộ 5 Phân hệ nghiệp vụ Backend vào nhánh `main` và đẩy lên GitHub (`origin/main`):**
+  1. **Phân hệ 1: Quản lý Người dùng & Phân quyền (Identity & Access Control)**: Đăng nhập, đăng ký khách hàng, quản lý nhân viên, đổi mật khẩu, phân quyền vai trò.
+  2. **Phân hệ 2: Quản lý Sản phẩm & Kho hàng (Catalog & Inventory)**: Danh mục, sản phẩm trang sức, phiếu nhập kho, phiếu kiểm kê, cập nhật giá và tồn kho.
+  3. **Phân hệ 3: Quản lý Bán hàng & Đơn hàng (Sales Management)**: Giỏ hàng, tạo đơn hàng online, phê duyệt đơn, cập nhật tiến độ giao hàng, hủy đơn và hoàn kho.
+  4. **Phân hệ 4: Quản lý Dịch vụ & Bảo hành (Warranty Management)**: Tiếp nhận bảo hành, quản lý tiến độ xử lý trang sức, hoàn tất quyết toán chi phí.
+  5. **Phân hệ 5: Báo cáo & Thống kê (Reporting & Analytics)**: Thống kê doanh thu, lợi nhuận ước tính theo mốc thời gian, báo cáo tồn kho & chênh lệch kiểm kê, Top bán chạy và sản phẩm doanh thu thấp.
+- **Trạng thái kiểm thử:** 27/27 tests passed 100%, Solution biên dịch 0 lỗi, 0 cảnh báo trên .NET 8 LTS.
+- **Trạng thái Git:** Nhánh `main` sạch sẽ, đồng bộ mới nhất với GitHub remote.
 
 ## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- Quyết định kiến trúc chuẩn:
-  1. Toàn bộ nền tảng backend của 5 phân hệ đã hoàn chỉnh 100% theo Diagram và Đặc tả hệ thống trên .NET 8 LTS.
-  2. Giao diện (Presentation Layer) là bước tiếp theo:
-     - WinForms Admin Desktop: Thiết kế form trang nhã, số liệu căn gióng (tabular figures), sang trọng theo Taste Skill.
-     - Web Khách hàng (HTML/CSS/JS): Kết nối gọi toàn bộ nghiệp vụ backend qua RESTful Web API.
+- Nền tảng Backend Clean Architecture của 5 phân hệ đã hoàn chỉnh 100% theo Diagram và Đặc tả hệ thống.
+- Chuyển sang giai đoạn **Presentation Layer (Giao diện người dùng)**:
+  1. **WinForms Admin (`BlinkBlink.Admin`):** Thiết kế giao diện WinForms quản trị POS/Desktop cho Nhân viên và Quản trị viên (form trang nhã, căn gióng số liệu tabular figures, màu sắc sang trọng theo quy chuẩn Taste Skill của Blink Blink Jewelry).
+  2. **Web Khách hàng (`BlinkBlink.Web`):** Giao diện Web storefront mua sắm trực tuyến (HTML5, Modern CSS, JavaScript Vanilla/Fetch) gọi các RESTful Web API Controller đã dựng sẵn.
 
 ## 3. Hành động cụ thể tiếp theo
-1. Cam kết mã nguồn và đẩy nhánh `feature/reporting-module` lên GitHub repository.
-2. Gộp nhánh `feature/reporting-module` vào `main`.
-3. Bắt tay vào giai đoạn thiết kế giao diện (Presentation Layer) theo yêu cầu người dùng: WinForms Admin và Web Khách hàng.
+1. Thống nhất với người dùng triển khai giao diện nào trước: **WinForms Admin** hay **Web Storefront Khách hàng**.
+2. Tạo nhánh tính năng tương ứng (`feature/admin-ui` hoặc `feature/customer-web-ui`) và triển khai.
