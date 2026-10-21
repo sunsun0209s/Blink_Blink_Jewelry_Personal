@@ -1,0 +1,457 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
+using BlinkBlink.Admin.Services;
+using BlinkBlink.Admin.Views.Helpers;
+using BlinkBlink.Application.DTOs.Warranty;
+using BlinkBlink.Domain.Entities.Warranty;
+
+namespace BlinkBlink.Admin.Views.UserControls.Warranty;
+
+/// <summary>
+/// Màn hình Quản lý Dịch vụ & Bảo hành trang sức Blink Blink Jewelry.
+/// Thực hiện tiếp nhận bảo dưỡng, xi mạ, gắn đá rơi, theo dõi tiến độ sửa chữa và quyết toán chi phí kim hoàn.
+/// Khớp 100% bản vẽ kỹ thuật PhieuBaoHanh.
+/// </summary>
+public class WarrantyView : UserControl
+{
+    private readonly AdminServiceScope _services;
+    private List<PhieuBaoHanh> _allTickets = new();
+
+    private TextBox _txtSearch = null!;
+    private ComboBox _cboStatus = null!;
+    private Button _btnNew = null!;
+    private Button _btnProcessing = null!;
+    private Button _btnComplete = null!;
+    private Button _btnCancelTicket = null!;
+    private Button _btnRefresh = null!;
+
+    private Label _lblKpiTotal = null!;
+    private Label _lblKpiProcessing = null!;
+    private Label _lblKpiCompleted = null!;
+
+    private DataGridView _dgvWarranty = null!;
+
+    public WarrantyView()
+    {
+        _services = AdminServiceScope.Instance;
+        InitializeComponents();
+        LoadWarrantyData();
+    }
+
+    private void InitializeComponents()
+    {
+        this.Dock = DockStyle.Fill;
+        this.BackColor = UITheme.CanvasBackground;
+        this.Font = UITheme.RegularFont;
+
+        // Top Header
+        var topHeaderPanel = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 110,
+            Padding = new Padding(20, 15, 20, 10),
+            BackColor = UITheme.CanvasBackground
+        };
+
+        var lblTitle = new Label
+        {
+            Text = "DỊCH VỤ & TIẾP NHẬN BẢO HÀNH KIM HOÀN",
+            Font = UITheme.HeaderFont,
+            ForeColor = UITheme.TextPrimary,
+            Location = new Point(20, 12),
+            AutoSize = true
+        };
+
+        var lblSubTitle = new Label
+        {
+            Text = "Quản lý bảo dưỡng trang sức, xi mạ, gắn đá quý, thu/nới ni nhẫn và quyết toán chi phí dịch vụ hậu mãi",
+            Font = UITheme.RegularFont,
+            ForeColor = UITheme.TextSecondary,
+            Location = new Point(20, 38),
+            AutoSize = true
+        };
+
+        var pnlKpis = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 520,
+            Height = 90,
+            FlowDirection = FlowDirection.LeftToRight
+        };
+
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Phiếu", out _lblKpiTotal, UITheme.TextPrimary));
+        pnlKpis.Controls.Add(CreateKpiCard("Đang Xử Lý", out _lblKpiProcessing, UITheme.WarningColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Đã Hoàn Tất", out _lblKpiCompleted, UITheme.SuccessColor));
+
+        topHeaderPanel.Controls.Add(lblTitle);
+        topHeaderPanel.Controls.Add(lblSubTitle);
+        topHeaderPanel.Controls.Add(pnlKpis);
+
+        // Toolbar
+        var toolbarPanel = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 54,
+            Padding = new Padding(20, 8, 20, 8),
+            BackColor = Color.White
+        };
+
+        var lblSearch = new Label
+        {
+            Text = "Tìm kiếm:",
+            Location = new Point(20, 17),
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary
+        };
+
+        _txtSearch = new TextBox
+        {
+            Location = new Point(88, 14),
+            Width = 160,
+            Height = 26,
+            PlaceholderText = "Số phiếu, mã SP, khách..."
+        };
+        _txtSearch.TextChanged += (s, e) => FilterWarranty();
+
+        var lblStatus = new Label
+        {
+            Text = "Trạng thái:",
+            Location = new Point(260, 17),
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary
+        };
+
+        _cboStatus = new ComboBox
+        {
+            Location = new Point(335, 14),
+            Width = 145,
+            DropDownStyle = ComboBoxStyle.DropDownList
+        };
+        _cboStatus.Items.AddRange(new object[] { "Tất Cả", "DangBaoHanh", "DaHoanTat", "DaHuy" });
+        _cboStatus.SelectedIndex = 0;
+        _cboStatus.SelectedIndexChanged += (s, e) => FilterWarranty();
+
+        _btnNew = UITheme.CreateFlatButton("+ Tiếp Nhận Mới", UITheme.PrimaryGold, Color.Black);
+        _btnNew.Location = new Point(495, 10);
+        _btnNew.Click += BtnNew_Click;
+
+        _btnProcessing = UITheme.CreateFlatButton("🔧 Đang Xử Lý", UITheme.DarkHeader, Color.White);
+        _btnProcessing.Location = new Point(635, 10);
+        _btnProcessing.Click += (s, e) => UpdateTicketStatus("DangBaoHanh");
+
+        _btnComplete = UITheme.CreateFlatButton("✓ Quyết Toán", UITheme.SuccessColor, Color.White);
+        _btnComplete.Location = new Point(755, 10);
+        _btnComplete.Click += BtnComplete_Click;
+
+        _btnCancelTicket = UITheme.CreateFlatButton("✕ Hủy Phiếu", UITheme.DangerColor, Color.White);
+        _btnCancelTicket.Location = new Point(865, 10);
+        _btnCancelTicket.Click += (s, e) => UpdateTicketStatus("DaHuy");
+
+        _btnRefresh = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
+        _btnRefresh.Location = new Point(965, 10);
+        _btnRefresh.Click += (s, e) => LoadWarrantyData();
+
+        toolbarPanel.Controls.Add(lblSearch);
+        toolbarPanel.Controls.Add(_txtSearch);
+        toolbarPanel.Controls.Add(lblStatus);
+        toolbarPanel.Controls.Add(_cboStatus);
+        toolbarPanel.Controls.Add(_btnNew);
+        toolbarPanel.Controls.Add(_btnProcessing);
+        toolbarPanel.Controls.Add(_btnComplete);
+        toolbarPanel.Controls.Add(_btnCancelTicket);
+        toolbarPanel.Controls.Add(_btnRefresh);
+
+        // Data Grid Container
+        var pnlGridContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(20, 10, 20, 20),
+            BackColor = UITheme.CanvasBackground
+        };
+
+        var pnlWhiteCard = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.White,
+            Padding = new Padding(1)
+        };
+
+        _dgvWarranty = new DataGridView();
+        UITheme.ApplyGridViewStyle(_dgvWarranty);
+        ConfigureGridColumns();
+
+        pnlWhiteCard.Controls.Add(_dgvWarranty);
+        pnlGridContainer.Controls.Add(pnlWhiteCard);
+
+        this.Controls.Add(pnlGridContainer);
+        this.Controls.Add(toolbarPanel);
+        this.Controls.Add(topHeaderPanel);
+    }
+
+    private Panel CreateKpiCard(string title, out Label lblValue, Color valueColor)
+    {
+        var card = new Panel
+        {
+            Width = 160,
+            Height = 75,
+            BackColor = Color.White,
+            Margin = new Padding(5, 5, 5, 5),
+            Padding = new Padding(10, 8, 10, 8)
+        };
+
+        var lblT = new Label
+        {
+            Text = title,
+            ForeColor = UITheme.TextSecondary,
+            Font = new Font(FontFamily.GenericSansSerif, 8.5F, FontStyle.Regular),
+            Dock = DockStyle.Top,
+            Height = 20
+        };
+
+        lblValue = new Label
+        {
+            Text = "0",
+            ForeColor = valueColor,
+            Font = UITheme.KpiNumberFont,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleLeft
+        };
+
+        card.Controls.Add(lblValue);
+        card.Controls.Add(lblT);
+        return card;
+    }
+
+    private void ConfigureGridColumns()
+    {
+        _dgvWarranty.Columns.Clear();
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoPhieuBH", HeaderText = "SỐ PHIẾU BH", FillWeight = 85 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 80 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", HeaderText = "KHÁCH HÀNG", FillWeight = 80 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayTiepNhan", HeaderText = "TIẾP NHẬN", FillWeight = 85 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayHenTra", HeaderText = "HẸN TRẢ", FillWeight = 85 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "LyDoBaoHanh", HeaderText = "LÝ DO TIẾP NHẬN", FillWeight = 190 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiBaoHanh", HeaderText = "CHI PHÍ (VND)", FillWeight = 100, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThaiXuLy", HeaderText = "TRẠNG THÁI", FillWeight = 90 });
+    }
+
+    private void LoadWarrantyData()
+    {
+        _allTickets = _services.BaoHanhRepo.LayDanhSachPhieu();
+        UpdateKpis();
+        FilterWarranty();
+    }
+
+    private void UpdateKpis()
+    {
+        var viVn = new CultureInfo("vi-VN");
+        _lblKpiTotal.Text = _allTickets.Count.ToString("N0", viVn);
+        _lblKpiProcessing.Text = _allTickets.Count(t => string.Equals(t.TrangThaiXuLy, "DangBaoHanh", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
+        _lblKpiCompleted.Text = _allTickets.Count(t => string.Equals(t.TrangThaiXuLy, "DaHoanTat", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
+    }
+
+    private void FilterWarranty()
+    {
+        var query = _txtSearch.Text.Trim().ToLowerInvariant();
+        var selectedStatus = _cboStatus.SelectedItem?.ToString() ?? "Tất Cả";
+
+        var filtered = _allTickets.Where(t =>
+        {
+            var matchSearch = string.IsNullOrEmpty(query) ||
+                              t.SoPhieuBH.ToLowerInvariant().Contains(query) ||
+                              t.MaSanPham.ToLowerInvariant().Contains(query) ||
+                              t.MaKhachHang.ToLowerInvariant().Contains(query) ||
+                              t.LyDoBaoHanh.ToLowerInvariant().Contains(query);
+
+            var matchStatus = selectedStatus == "Tất Cả" ||
+                              string.Equals(t.TrangThaiXuLy, selectedStatus, StringComparison.OrdinalIgnoreCase);
+
+            return matchSearch && matchStatus;
+        }).ToList();
+
+        _dgvWarranty.Rows.Clear();
+        var viVn = new CultureInfo("vi-VN");
+
+        foreach (var t in filtered)
+        {
+            var rowIdx = _dgvWarranty.Rows.Add(
+                t.SoPhieuBH,
+                t.MaSanPham,
+                t.MaKhachHang,
+                t.NgayTiepNhan.ToString("dd/MM/yyyy"),
+                t.NgayHenTra?.ToString("dd/MM/yyyy") ?? "-",
+                t.LyDoBaoHanh,
+                t.ChiPhiBaoHanh.ToString("N0", viVn),
+                t.TrangThaiXuLy
+            );
+
+            var cellStatus = _dgvWarranty.Rows[rowIdx].Cells["TrangThaiXuLy"];
+            if (string.Equals(t.TrangThaiXuLy, "DangBaoHanh", StringComparison.OrdinalIgnoreCase))
+                cellStatus.Style.ForeColor = UITheme.WarningColor;
+            else if (string.Equals(t.TrangThaiXuLy, "DaHoanTat", StringComparison.OrdinalIgnoreCase))
+                cellStatus.Style.ForeColor = UITheme.SuccessColor;
+            else if (string.Equals(t.TrangThaiXuLy, "DaHuy", StringComparison.OrdinalIgnoreCase))
+                cellStatus.Style.ForeColor = UITheme.DangerColor;
+        }
+    }
+
+    private void UpdateTicketStatus(string newStatus)
+    {
+        if (_dgvWarranty.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn phiếu bảo hành cần thao tác.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var soPhieu = _dgvWarranty.SelectedRows[0].Cells["SoPhieuBH"].Value?.ToString();
+        if (string.IsNullOrEmpty(soPhieu)) return;
+
+        var success = _services.XuLyBaoHanh.CapNhatTienDo(soPhieu, newStatus);
+        if (success)
+        {
+            MessageBox.Show($"Đã cập nhật trạng thái phiếu [{soPhieu}] sang: {newStatus}.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadWarrantyData();
+        }
+        else
+        {
+            MessageBox.Show("Không thể cập nhật trạng thái phiếu bảo hành.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void BtnComplete_Click(object? sender, EventArgs e)
+    {
+        if (_dgvWarranty.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn phiếu bảo hành muốn quyết toán.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var soPhieu = _dgvWarranty.SelectedRows[0].Cells["SoPhieuBH"].Value?.ToString();
+        if (string.IsNullOrEmpty(soPhieu)) return;
+
+        using var prompt = new Form
+        {
+            Text = $"Quyết Toán Phiếu Bảo Hành #{soPhieu}",
+            Width = 400,
+            Height = 220,
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            BackColor = Color.White
+        };
+
+        var lbl = new Label { Text = "Chi phí sửa chữa/xi mạ phát sinh (VND):", Location = new Point(25, 25), AutoSize = true, ForeColor = UITheme.TextPrimary };
+        var txtCost = new TextBox { Text = "0", Location = new Point(25, 55), Width = 330, Font = UITheme.TabularNumericFont };
+        var btnOk = UITheme.CreateFlatButton("Xác Nhận Quyết Toán", UITheme.SuccessColor, Color.White);
+        btnOk.Location = new Point(100, 105);
+        btnOk.Click += (s, ev) =>
+        {
+            if (!decimal.TryParse(txtCost.Text.Trim(), out var cost) || cost < 0)
+            {
+                MessageBox.Show("Vui lòng nhập chi phí hợp lệ (lớn hơn hoặc bằng 0).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var ok = _services.XuLyBaoHanh.HoanTatBaoHanh(soPhieu, cost);
+            if (ok)
+            {
+                MessageBox.Show($"Phiếu bảo hành #{soPhieu} đã hoàn tất và quyết toán {cost:N0} VND.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                prompt.DialogResult = DialogResult.OK;
+                prompt.Close();
+            }
+            else
+            {
+                MessageBox.Show("Không thể quyết toán phiếu bảo hành này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        };
+
+        prompt.Controls.Add(lbl);
+        prompt.Controls.Add(txtCost);
+        prompt.Controls.Add(btnOk);
+
+        if (prompt.ShowDialog() == DialogResult.OK)
+        {
+            LoadWarrantyData();
+        }
+    }
+
+    private void BtnNew_Click(object? sender, EventArgs e)
+    {
+        using var dialog = new Form
+        {
+            Text = "Tiếp Nhận Bảo Hành Trang Sức Mới - Blink Blink Jewelry",
+            Width = 460,
+            Height = 380,
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            BackColor = Color.White
+        };
+
+        var lblHead = new Label { Text = "PHIẾU TIẾP NHẬN DỊCH VỤ & BẢO HÀNH", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, Location = new Point(25, 18), AutoSize = true };
+        dialog.Controls.Add(lblHead);
+
+        int top = 55;
+        TextBox AddField(string labelText, string defaultVal)
+        {
+            var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 250 };
+            dialog.Controls.Add(l);
+            dialog.Controls.Add(t);
+            top += 40;
+            return t;
+        }
+
+        var txtMaKH = AddField("Mã Khách Hàng:", "KH001");
+        var txtMaSP = AddField("Mã Sản Phẩm:", "SP001");
+        var txtLyDo = AddField("Lỗi Tiếp Nhận:", "Đánh bóng, xi mạ làm mới");
+        var txtHenTra = AddField("Ngày Hẹn Trả:", DateTime.Now.AddDays(3).ToString("dd/MM/yyyy"));
+
+        var btnSave = UITheme.CreateFlatButton("Tạo Phiếu Tiếp Nhận", UITheme.PrimaryGold, Color.Black);
+        btnSave.Location = new Point(180, top + 15);
+        btnSave.Click += (s, ev) =>
+        {
+            if (string.IsNullOrWhiteSpace(txtMaKH.Text) || string.IsNullOrWhiteSpace(txtMaSP.Text) || string.IsNullOrWhiteSpace(txtLyDo.Text))
+            {
+                MessageBox.Show("Vui lòng điền đầy đủ mã khách hàng, mã sản phẩm và lý do tiếp nhận.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DateTime.TryParseExact(txtHenTra.Text.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var henTraDate);
+
+            var req = new TaoBaoHanhDTO
+            {
+                MaKhachHang = txtMaKH.Text.Trim(),
+                MaSanPham = txtMaSP.Text.Trim(),
+                LyDoBaoHanh = txtLyDo.Text.Trim(),
+                ChiPhiBaoHanh = 0m,
+                NgayHenTra = henTraDate != default ? henTraDate : DateTime.Now.AddDays(3)
+            };
+
+            var ok = _services.TiepNhanBaoHanh.Execute(req);
+            if (ok)
+            {
+                MessageBox.Show("Đã tiếp nhận sản phẩm và tạo phiếu bảo hành mới thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dialog.DialogResult = DialogResult.OK;
+                dialog.Close();
+            }
+            else
+            {
+                MessageBox.Show("Không thể tạo phiếu bảo hành. Vui lòng kiểm tra sự tồn tại của sản phẩm.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        };
+
+        dialog.Controls.Add(btnSave);
+
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+            LoadWarrantyData();
+        }
+    }
+}
