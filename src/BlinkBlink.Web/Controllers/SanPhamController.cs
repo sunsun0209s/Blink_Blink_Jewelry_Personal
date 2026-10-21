@@ -70,4 +70,28 @@ public class SanPhamController : ControllerBase
 
         return Ok(new { Success = true, Message = $"Đã cập nhật giá bán mới thành {request.GiaMoi:N0} VNĐ cho sản phẩm '{maSanPham}'." });
     }
+
+    /// <summary>
+    /// Cập nhật thông tin chi tiết sản phẩm trang sức (tên, danh mục, chất liệu, kích cỡ).
+    /// Khớp hàm: + HttpPut CapNhatThongTin(request: CapNhatSanPhamDTO): HttpResponse trong Diagram.
+    /// </summary>
+    /// <param name="request">DTO chứa thông tin sản phẩm cập nhật</param>
+    /// <param name="cancellationToken">Token hủy tác vụ</param>
+    /// <returns>HTTP Status 200 nếu thành công, 400 hoặc 404 nếu lỗi</returns>
+    [HttpPut("cap-nhat-thong-tin")]
+    public async Task<IActionResult> CapNhatThongTin([FromBody] CapNhatSanPhamDTO request, CancellationToken cancellationToken)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.MaSanPham))
+        {
+            return BadRequest(new { Message = "Thông tin cập nhật sản phẩm không hợp lệ." });
+        }
+
+        var result = await _quanLySanPhamUseCase.CapNhatThongTinAsync(request, cancellationToken);
+        if (!result)
+        {
+            return NotFound(new { Message = $"Không tìm thấy sản phẩm mã '{request.MaSanPham}' để cập nhật thông tin." });
+        }
+
+        return Ok(new { Success = true, Message = $"Cập nhật thông tin sản phẩm '{request.MaSanPham}' thành công." });
+    }
 }

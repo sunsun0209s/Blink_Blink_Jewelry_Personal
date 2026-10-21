@@ -97,4 +97,30 @@ public class QuanLyNhanVienUseCase
         _nhanVienRepo.LuuNhanVien(nhanVien);
         return true;
     }
+
+    /// <summary>
+    /// Đặt lại mật khẩu mặc định cho nhân viên khi có sự cố quên mật khẩu hoặc yêu cầu cấp lại
+    /// </summary>
+    /// <param name="maNv">Mã định danh nhân viên cần đặt lại mật khẩu</param>
+    /// <returns>True nếu đặt lại mật khẩu thành công; ngược lại False</returns>
+    public bool ResetMatKhau(string maNv)
+    {
+        if (string.IsNullOrWhiteSpace(maNv))
+        {
+            return false;
+        }
+
+        var nhanVien = _nhanVienRepo.TimTheoMa(maNv.Trim());
+        if (nhanVien == null)
+        {
+            return false;
+        }
+
+        // Mật khẩu mặc định khởi tạo ban đầu theo quy định hệ thống nội bộ
+        const string matKhauMacDinh = "123456";
+        nhanVien.DoiMatKhau(matKhauMacDinh);
+
+        _nhanVienRepo.LuuNhanVien(nhanVien);
+        return true;
+    }
 }
