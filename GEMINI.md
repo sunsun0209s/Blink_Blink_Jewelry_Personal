@@ -42,7 +42,31 @@ Trình bày tóm tắt:
 ### Bước 2: Thực thi (Implementation)
 - CHỈ tiến hành viết mã nguồn sau khi người dùng đã duyệt và đồng ý với phương án ở Bước 1.
 
+### 3. Quy Chuẩn Thiết Kế Giao Diện (Frontend & UI Taste Guidelines)
+Khi nhận yêu cầu thiết kế, chỉnh sửa layout, giao diện (Views/CSS/JS trong ASP.NET Core MVC hoặc XAML/Styles trong WPF Desktop Admin/POS):
 
+3.1. Bắt buộc tham chiếu Taste Skill
+BẮT BUỘC đọc và tuân thủ các quy tắc trong .agent/skills/design-taste-frontend/SKILL.md (hoặc SKILL.md).
+
+Gu thẩm mỹ ngành trang sức (Blink Blink Jewelry): Hướng đến phong cách sang trọng, tinh tế (luxury, editorial, high-end minimalism). Sử dụng không gian thở (whitespace), typography thanh lịch, tương phản rõ ràng; tuyệt đối không tạo giao diện rẻ tiền, rực rỡ màu sắc sai mục đích.
+
+3.2. Ba khoá bất biến (The 3 Locks)
+Color Consistency Lock: Giữ bảng màu đồng nhất trên toàn bộ view/màn hình. Một màu nhấn chính (accent color) sang trọng, không tự ý đổi tone màu giữa các section.
+
+Shape Consistency Lock: Thống nhất hệ thống bo góc (radius) cho thẻ, nút, modal, input (hoặc toàn bộ góc vuông sắc nét rounded-none, hoặc bo nhẹ sang trọng rounded-sm / rounded-md). Không phối hợp lộn xộn các kiểu bo góc.
+
+Theme Lock: Giữ đồng bộ light/dark mode xuyên suốt một ngữ cảnh hiển thị.
+
+3.3. Các lệnh cấm tuyệt đối (Anti-Slop Bans)
+CẤM dùng gradient tím/hồng kiểu AI mặc định (AI-purple blob/mesh gradients).
+
+CẤM bố cục 3 card bằng nhau nằm cạnh nhau một cách rập khuôn (3 equal-card row) trên các landing/showcase page. Hãy dùng layout bất đối xứng, lưới tạp chí (editorial grid) hoặc danh sách so le (zig-zag).
+
+CẤM các dòng chữ trang trí vô nghĩa (như BRAND. MOTION. SPATIAL., 00 / INDEX, version badge giả lập trên web thương mại).
+
+CẤM dùng icon giả, placeholder méo mó, div giả product UI. Nếu cần hình ảnh trang sức minh họa, hãy dùng hình ảnh tư liệu thật (open-license) hoặc tài nguyên sẵn có của project.
+
+Đối với WPF POS/Admin: Giữ panel tinh tế, số liệu căn gióng chính xác (tabular figures), màu sắc chỉ tập trung hiển thị trạng thái dữ liệu (badge, status, tồn kho).
 ## 3. Quy Chuẩn Comment Code (Code Commenting Rules)
 
 ### Khi nào BẮT BUỘC comment:
