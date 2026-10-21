@@ -1,0 +1,181 @@
+C:.
+|   .gitignore
+|   BlinkBlinkJewelry.sln
+|   BlinkBlinkJewelry.slnx
+|   CONG_NGHE_VA_QUY_TRINH.md
+|   GIAI_THICH_THU_MUC.md
+|   README.md
+|   WORKFLOW.md
+|
++---.github
+|       CODEOWNERS
+|
++---src
+|   +---BlinkBlink.Admin
+|   |   |   App.xaml
+|   |   |   App.xaml.cs
+|   |   |   AssemblyInfo.cs
+|   |   |   BlinkBlink.Admin.csproj
+|   |   |   MainWindow.xaml
+|   |   |   MainWindow.xaml.cs
+|   |   |
+|   |   +---Services
+|   |   |       .gitkeep
+|   |   |
+|   |   +---ViewModels
+|   |   |   |   .gitkeep
+|   |   |   |
+|   |   |   +---Catalog
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Customers
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Identity
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Inventory
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Orders
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Reporting
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   \---Warranty
+|   |   |           .gitkeep
+|   |   |
+|   |   \---Views
+|   |       |   .gitkeep
+|   |       |
+|   |       +---UserControls
+|   |       |   +---Catalog
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   +---Customers
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   +---Identity
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   +---Inventory
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   +---Orders
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   +---Reporting
+|   |       |   |       .gitkeep
+|   |       |   |
+|   |       |   \---Warranty
+|   |       |           .gitkeep
+|   |       |
+|   |       \---Windows
+|   |               .gitkeep
+|   |
+|   +---BlinkBlink.Application
+|   |   |   BlinkBlink.Application.csproj
+|   |   |
+|   |   +---Common
+|   |   |       .gitkeep
+|   |   |
+|   |   +---Interfaces
+|   |   |       .gitkeep
+|   |   |
+|   |   +---Services
+|   |   |   |   .gitkeep
+|   |   |   |
+|   |   |   +---Cart
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Catalog
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Customers
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Identity
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Inventory
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Orders
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   \---Warranty
+|   |   |           .gitkeep
+|   |   |
+|   |   +---Strategies
+|   |   |       .gitkeep
+|   |   |
+|   |   \---Validators
+|   |           .gitkeep
+|   |
+|   +---BlinkBlink.Domain
+|   |   |   BlinkBlink.Domain.csproj
+|   |   |
+|   |   +---Common
+|   |   |       .gitkeep
+|   |   |
+|   |   +---Entities
+|   |   |   |   .gitkeep
+|   |   |   |
+|   |   |   +---Cart
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Catalog
+|   |   |   |       .gitkeep
+|   |   |   |       DanhMuc.cs
+|   |   |   |       SanPhamTrangSuc.cs
+|   |   |   |
+|   |   |   +---Customers
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Identity
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Inventory
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   +---Orders
+|   |   |   |       .gitkeep
+|   |   |   |
+|   |   |   \---Warranty
+|   |   |           .gitkeep
+|   |   |
+|   |   +---Enums
+|   |   |       .gitkeep
+|   |   |
+|   |   +---Exceptions
+|   |   |       .gitkeep
+|   |   |
+|   |   +---Interfaces
+|   |   |       .gitkeep
+|   |   |
+|   +---BlinkBlink.Infrastructure
+|   |   |   BlinkBlink.Infrastructure.csproj
+|   |   |
+|   |   +---Data
+|   |   |       .gitkeep
+|   |   |
+
+|   |
+|   \---BlinkBlink.Web
+|       |   appsettings.Development.json
+|       |   appsettings.json
+|       |   BlinkBlink.Web.csproj
+|       |   Program.cs
+|       |
+|       +---bin
+|       |   +---Debug
+|       |   |   \---net10.0
+|       |   \---Release
+|       |       \---net10.0
+|       +---Controllers
+|       |       HomeController.cs
+|       |
+|       +---Models
+|       |       ErrorViewModel.cs
+|       |

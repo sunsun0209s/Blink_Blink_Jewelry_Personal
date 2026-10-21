@@ -12,7 +12,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+*.pdf
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -482,13 +482,3 @@ $RECYCLE.BIN/
 *.swp
 
 # AI Assistant Context / Local Instruction Files
-GEMINI.md
-gemini.md
-.gemini/
-TODO.md
-COMPLETED.md
-SCRATCHPAD.md
-XML/
-xml/
-*.pdf
-*.xml
