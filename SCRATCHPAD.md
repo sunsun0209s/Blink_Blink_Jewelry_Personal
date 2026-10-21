@@ -1,21 +1,22 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Đã gộp toàn bộ 5 Phân hệ nghiệp vụ Backend vào nhánh `main` và đẩy lên GitHub (`origin/main`):**
-  1. **Phân hệ 1: Quản lý Người dùng & Phân quyền (Identity & Access Control)**: Đăng nhập, đăng ký khách hàng, quản lý nhân viên, đổi mật khẩu, phân quyền vai trò.
-  2. **Phân hệ 2: Quản lý Sản phẩm & Kho hàng (Catalog & Inventory)**: Danh mục, sản phẩm trang sức, phiếu nhập kho, phiếu kiểm kê, cập nhật giá và tồn kho.
-  3. **Phân hệ 3: Quản lý Bán hàng & Đơn hàng (Sales Management)**: Giỏ hàng, tạo đơn hàng online, phê duyệt đơn, cập nhật tiến độ giao hàng, hủy đơn và hoàn kho.
-  4. **Phân hệ 4: Quản lý Dịch vụ & Bảo hành (Warranty Management)**: Tiếp nhận bảo hành, quản lý tiến độ xử lý trang sức, hoàn tất quyết toán chi phí.
-  5. **Phân hệ 5: Báo cáo & Thống kê (Reporting & Analytics)**: Thống kê doanh thu, lợi nhuận ước tính theo mốc thời gian, báo cáo tồn kho & chênh lệch kiểm kê, Top bán chạy và sản phẩm doanh thu thấp.
-- **Trạng thái kiểm thử:** 27/27 tests passed 100%, Solution biên dịch 0 lỗi, 0 cảnh báo trên .NET 8 LTS.
-- **Trạng thái Git:** Nhánh `main` sạch sẽ, đồng bộ mới nhất với GitHub remote.
+- **Hoàn thiện phân hệ WinForms Admin (`BlinkBlink.Admin`) trên nhánh `feature/admin-winforms` và đã push lên remote:**
+  - `UITheme.cs`: Bảng màu kim hoàn cao cấp (Champagne Gold `#D4AF37`, Dark Slate `#181C24` / `#202630`, Light Neutral canvas `#F5F7FA`), font chữ chuẩn tabular figures, thiết kế phẳng chống AI-slop.
+  - `AdminServiceScope.cs` & `InMemoryDataContext.cs`: Quản lý phạm vi dịch vụ, tự động kết nối SQL Server và có cơ chế dữ liệu giả lập chất lượng cao tự kích hoạt khi máy chủ CSDL chưa bật.
+  - `OrdersView.cs`: Quản lý đơn hàng, duyệt đơn, chuyển trạng thái giao vận, hủy đơn và hoàn kho kèm bảng chi tiết sản phẩm.
+  - `ProductsView.cs`: Danh mục sản phẩm trang sức, điều chỉnh giá bán niêm yết, hộp thoại tạo mới sản phẩm kim hoàn.
+  - `WarrantyView.cs`: Quản lý phiếu bảo hành, tiếp nhận bảo hành mới, cập nhật tiến độ xử lý và hoàn tất quyết toán chi phí.
+  - `UsersView.cs`: Quản lý nhân viên, phân quyền chức vụ, danh sách khách hàng và quản lý khóa tài khoản.
+  - `ReportingView.cs`: Khớp 100% bản vẽ `FormBaoCaoThongKe` trong `XML/3 Layers.xml` (bộ lọc ngày, xem doanh thu, xem tồn kho, xem top bán chạy và xuất file CSV mở bằng Excel có UTF-8 BOM).
+  - `MainForm.cs`: Điều hướng mượt mà giữa 5 phân hệ với hiệu ứng đổi màu nút sidebar và cập nhật thanh trạng thái kết nối.
+- **Trạng thái kiểm thử:** 27/27 tests passed (26 Unit Tests + 1 Integration Test), biên dịch 0 lỗi, 0 cảnh báo trên toàn solution .NET 8 LTS.
 
 ## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- Nền tảng Backend Clean Architecture của 5 phân hệ đã hoàn chỉnh 100% theo Diagram và Đặc tả hệ thống.
-- Chuyển sang giai đoạn **Presentation Layer (Giao diện người dùng)**:
-  1. **WinForms Admin (`BlinkBlink.Admin`):** Thiết kế giao diện WinForms quản trị POS/Desktop cho Nhân viên và Quản trị viên (form trang nhã, căn gióng số liệu tabular figures, màu sắc sang trọng theo quy chuẩn Taste Skill của Blink Blink Jewelry).
-  2. **Web Khách hàng (`BlinkBlink.Web`):** Giao diện Web storefront mua sắm trực tuyến (HTML5, Modern CSS, JavaScript Vanilla/Fetch) gọi các RESTful Web API Controller đã dựng sẵn.
+- Đã hoàn tất và đẩy nhánh `feature/admin-winforms` lên GitHub. Sẵn sàng tạo Pull Request để gộp vào nhánh `main` khi có yêu cầu.
+- Toàn bộ backend Clean Architecture và giao diện WinForms Admin đã hoàn tất 100%.
+- Quyết định kế tiếp: Chuyển sang xây dựng **Giao diện Web Khách hàng (`BlinkBlink.Web`)** theo chuẩn Taste Skill (HTML5, CSS3 hiện đại, JavaScript fetch API kết nối các RESTful Controller đã dựng sẵn).
 
 ## 3. Hành động cụ thể tiếp theo
-1. Thống nhất với người dùng triển khai giao diện nào trước: **WinForms Admin** hay **Web Storefront Khách hàng**.
-2. Tạo nhánh tính năng tương ứng (`feature/admin-ui` hoặc `feature/customer-web-ui`) và triển khai.
+1. Hỗ trợ người dùng gộp nhánh `feature/admin-winforms` vào `main` nếu người dùng yêu cầu.
+2. Lên ý tưởng và giải pháp cho **Giao diện Web Storefront Khách hàng** (Trang chủ trưng bày trang sức, danh mục sản phẩm, giỏ hàng, đặt hàng online, tra cứu trạng thái đơn và bảo hành).
