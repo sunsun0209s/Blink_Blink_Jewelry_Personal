@@ -1,5 +1,7 @@
-<diagram id="HItDgTngJ7WEE3pHFqCN" name="Phân hệ báo cáo &amp; thống kê">
-    <mxGraphModel dx="3103" dy="1462" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="HItDgTngJ7WEE3pHFqCN" name="Phân hệ báo cáo &amp; thống kê">
+    <mxGraphModel dx="9927" dy="3606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -345,3 +347,4 @@
       </root>
     </mxGraphModel>
   </diagram>
+</mxfile>
