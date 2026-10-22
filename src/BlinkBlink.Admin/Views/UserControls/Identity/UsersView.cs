@@ -65,7 +65,8 @@ public class UsersView : UserControl
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
             Location = new Point(20, 12),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         var lblSubTitle = new Label
@@ -74,7 +75,8 @@ public class UsersView : UserControl
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
             Location = new Point(20, 38),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         topHeaderPanel.Controls.Add(lblTitle);
@@ -84,7 +86,7 @@ public class UsersView : UserControl
         _tabControl = new TabControl
         {
             Dock = DockStyle.Fill,
-            Font = new Font(FontFamily.GenericSansSerif, 10F, FontStyle.Regular),
+            Font = new Font("Segoe UI", 10F, FontStyle.Regular),
             Padding = new Point(16, 8)
         };
 

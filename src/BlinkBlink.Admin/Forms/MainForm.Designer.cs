@@ -52,8 +52,9 @@ partial class MainForm
         this.lblBrand.Height = 80;
         this.lblBrand.Text = "BLINK BLINK\nJEWELRY";
         this.lblBrand.ForeColor = Color.FromArgb(212, 175, 55); // Luxury Champagne Gold
-        this.lblBrand.Font = new Font(FontFamily.GenericSansSerif, 13F, FontStyle.Bold);
+        this.lblBrand.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
         this.lblBrand.TextAlign = ContentAlignment.MiddleCenter;
+        this.lblBrand.UseMnemonic = false;
 
         // 
         // Sidebar Buttons Helper Styling
@@ -77,20 +78,24 @@ partial class MainForm
         // lblHeaderTitle
         // 
         this.lblHeaderTitle.Dock = DockStyle.Left;
+        this.lblHeaderTitle.AutoSize = true;
+        this.lblHeaderTitle.UseMnemonic = false;
         this.lblHeaderTitle.Padding = new Padding(20, 0, 0, 0);
         this.lblHeaderTitle.Text = "Bảng Điều Khiển Hệ Thống Quản Trị";
         this.lblHeaderTitle.ForeColor = Color.White;
-        this.lblHeaderTitle.Font = new Font(FontFamily.GenericSansSerif, 12F, FontStyle.Bold);
+        this.lblHeaderTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         this.lblHeaderTitle.TextAlign = ContentAlignment.MiddleLeft;
 
         // 
         // lblUserRole
         // 
         this.lblUserRole.Dock = DockStyle.Right;
+        this.lblUserRole.AutoSize = true;
+        this.lblUserRole.UseMnemonic = false;
         this.lblUserRole.Padding = new Padding(0, 0, 20, 0);
         this.lblUserRole.Text = "Tài khoản: Quản Trị Viên (Admin) | .NET 8 WinForms";
         this.lblUserRole.ForeColor = Color.FromArgb(170, 180, 195);
-        this.lblUserRole.Font = new Font(FontFamily.GenericSansSerif, 9.5F, FontStyle.Regular);
+        this.lblUserRole.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
         this.lblUserRole.TextAlign = ContentAlignment.MiddleRight;
 
         // 
@@ -132,10 +137,11 @@ partial class MainForm
         btn.FlatAppearance.BorderSize = 0;
         btn.ForeColor = Color.FromArgb(220, 225, 235);
         btn.BackColor = Color.FromArgb(24, 28, 36);
-        btn.Font = new Font(FontFamily.GenericSansSerif, 10F, FontStyle.Regular);
+        btn.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
         btn.TextAlign = ContentAlignment.MiddleLeft;
         btn.Padding = new Padding(20, 0, 0, 0);
         btn.Cursor = Cursors.Hand;
+        btn.UseMnemonic = false;
     }
 
     private Panel panelSidebar;

@@ -24,9 +24,9 @@ public static class UITheme
     public static readonly Color DangerColor = Color.FromArgb(211, 47, 47);         // Đỏ gạch biểu thị hủy đơn/lỗi
 
     // Font chữ quy chuẩn
-    public static readonly Font HeaderFont = new(FontFamily.GenericSansSerif, 12F, FontStyle.Bold);
-    public static readonly Font SubHeaderFont = new(FontFamily.GenericSansSerif, 10.5F, FontStyle.Bold);
-    public static readonly Font RegularFont = new(FontFamily.GenericSansSerif, 9.5F, FontStyle.Regular);
+    public static readonly Font HeaderFont = new("Segoe UI", 12F, FontStyle.Bold);
+    public static readonly Font SubHeaderFont = new("Segoe UI", 10.5F, FontStyle.Bold);
+    public static readonly Font RegularFont = new("Segoe UI", 9.5F, FontStyle.Regular);
     public static readonly Font TabularNumericFont = new("Consolas", 9.5F, FontStyle.Regular);
     public static readonly Font KpiNumberFont = new("Consolas", 18F, FontStyle.Bold);
 
@@ -57,7 +57,7 @@ public static class UITheme
         dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
         dgv.ColumnHeadersDefaultCellStyle.BackColor = DarkHeader;
         dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-        dgv.ColumnHeadersDefaultCellStyle.Font = new Font(FontFamily.GenericSansSerif, 9.5F, FontStyle.Bold);
+        dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
         dgv.ColumnHeadersHeight = 44;
 
@@ -90,10 +90,11 @@ public static class UITheme
             BackColor = backColor,
             ForeColor = foreColor,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font(FontFamily.GenericSansSerif, 9.5F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             Height = 36,
             Cursor = Cursors.Hand,
             AutoSize = true,
+            UseMnemonic = false,
             Padding = new Padding(12, 4, 12, 4)
         };
         btn.FlatAppearance.BorderSize = 0;

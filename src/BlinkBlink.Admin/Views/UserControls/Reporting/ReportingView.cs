@@ -69,7 +69,8 @@ public class ReportingView : UserControl
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
             Location = new Point(20, 12),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         var lblSubTitle = new Label
@@ -78,7 +79,8 @@ public class ReportingView : UserControl
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
             Location = new Point(20, 38),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         var pnlKpis = new FlowLayoutPanel
@@ -180,7 +182,8 @@ public class ReportingView : UserControl
             Font = UITheme.SubHeaderFont,
             ForeColor = UITheme.TextPrimary,
             Dock = DockStyle.Top,
-            Height = 32
+            Height = 32,
+            UseMnemonic = false
         };
 
         _dgvKetQua = new DataGridView();

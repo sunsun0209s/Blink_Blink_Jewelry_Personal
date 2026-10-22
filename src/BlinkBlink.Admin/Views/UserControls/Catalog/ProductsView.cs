@@ -61,7 +61,8 @@ public class ProductsView : UserControl
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
             Location = new Point(20, 12),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         var lblSubTitle = new Label
@@ -70,7 +71,8 @@ public class ProductsView : UserControl
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
             Location = new Point(20, 38),
-            AutoSize = true
+            AutoSize = true,
+            UseMnemonic = false
         };
 
         var pnlKpis = new FlowLayoutPanel

@@ -1,5 +1,7 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-22] [Khắc phục hiển thị Font chữ tiếng Việt & Nạp lại CSDL chuẩn UTF-8]: Nạp lại toàn bộ CSDL BlinkBlinkJewelryDb bằng luồng UTF-8 trực tiếp qua ADO.NET, khắc phục triệt để lỗi mã hóa địa chỉ tiếng Việt (Lê Lợi, Hai Bà Trưng, Bến Nghé); nâng cấp toàn bộ hệ thống phông chữ sang Segoe UI thanh lịch, chuẩn xác dấu thanh; bổ sung AutoSize và tắt UseMnemonic cho thanh Header, Sidebar và các UserControls giúp hiển thị trọn vẹn ký tự '&' và dòng thông tin không bị gãy rớt; 27/27 tests pass 100%.
+
 - [x] [2026-10-22] [Khắc phục hiển thị DataGridView và Kích hoạt nạp CSDL SQL Server cho WinForms Admin]: Bổ sung DockStyle.Fill cho DataGridView trong UITheme.ApplyGridViewStyle giúp toàn bộ bảng dữ liệu tự động lấp đầy 100% không gian panel; thực thi database/BlinkBlinkJewelry.sql trên SQL Server cục bộ tạo CSDL BlinkBlinkJewelryDb với đầy đủ 15 bảng và dữ liệu mẫu kim hoàn cao cấp; cập nhật AdminServiceScope với cơ chế tự động dò tìm máy chủ SQL Server cục bộ (., localhost, .\MSSQL, (localdb)\mssqllocaldb); 27/27 tests pass 100%.
 
 - [x] [2026-10-22] [Sửa lỗi ngoại lệ SplitContainer trong OrdersView WinForms Admin]: Loại bỏ việc gán cứng SplitterDistance và PanelMinSize trong khối khởi tạo SplitContainer; chuyển logic căn chỉnh tỷ lệ chia 55%/45% sang sự kiện Load và Resize có kiểm tra điều kiện an toàn kích thước thực tế kèm khối try-catch bảo vệ; loại bỏ hoàn toàn lỗi InvalidOperationException khi khởi chạy ứng dụng; 27/27 tests pass 100%.
