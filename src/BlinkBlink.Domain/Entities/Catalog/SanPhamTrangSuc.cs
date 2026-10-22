@@ -20,6 +20,7 @@ public class SanPhamTrangSuc
     public decimal GiaNhap { get; set; }
     public decimal GiaBan { get; set; }
     public string HinhAnh { get; set; } = string.Empty; // Đường dẫn tệp ảnh hoặc URL ảnh
+    public int PhanTramGiamGia { get; set; } = 0; // Tỉ lệ phần trăm giảm giá (0 - 100%)
 
     public SanPhamTrangSuc() { }
 
@@ -32,7 +33,8 @@ public class SanPhamTrangSuc
         decimal giaNhap,
         decimal giaBan,
         string trangThai = "HetHang",
-        string hinhAnh = "")
+        string hinhAnh = "",
+        int phanTramGiamGia = 0)
     {
         MaSanPham = maSanPham;
         TenSanPham = tenSanPham;
@@ -43,6 +45,7 @@ public class SanPhamTrangSuc
         GiaBan = giaBan;
         TrangThai = trangThai;
         HinhAnh = hinhAnh;
+        PhanTramGiamGia = phanTramGiamGia;
     }
 
     /// <summary>

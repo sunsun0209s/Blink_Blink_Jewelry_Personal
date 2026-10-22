@@ -50,29 +50,38 @@ public static class UITheme
         dgv.AllowUserToAddRows = false;
         dgv.AllowUserToDeleteRows = false;
         dgv.ReadOnly = true;
-        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        dgv.RowTemplate.Height = 38;
+        dgv.ScrollBars = ScrollBars.Both;
+        dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+        dgv.RowTemplate.Height = 42;
 
-        // Tiêu đề cột
+        // Tiêu đề cột: Chiều cao tối ưu 52px, WrapMode tự ngắt dòng khi tiêu đề dài
         dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+        dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+        dgv.ColumnHeadersHeight = 52;
         dgv.ColumnHeadersDefaultCellStyle.BackColor = DarkHeader;
         dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
         dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-        dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
-        dgv.ColumnHeadersHeight = 44;
+        dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 4, 8, 4);
+        dgv.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
-        // Nội dung hàng xen kẽ
+        // Nội dung hàng xen kẽ: Tự động xuống dòng theo nội dung và giãn chiều cao theo độ dài văn bản
         dgv.DefaultCellStyle.BackColor = Color.White;
         dgv.DefaultCellStyle.ForeColor = TextPrimary;
         dgv.DefaultCellStyle.Font = RegularFont;
         dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(40, 48, 62);
         dgv.DefaultCellStyle.SelectionForeColor = PrimaryGold;
-        dgv.DefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
+        dgv.DefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
+        dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
         dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
         dgv.AlternatingRowsDefaultCellStyle.ForeColor = TextPrimary;
         dgv.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(40, 48, 62);
         dgv.AlternatingRowsDefaultCellStyle.SelectionForeColor = PrimaryGold;
+        dgv.AlternatingRowsDefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
+        dgv.AlternatingRowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        dgv.AlternatingRowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
     }
 
     /// <summary>

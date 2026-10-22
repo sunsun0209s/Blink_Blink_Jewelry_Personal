@@ -100,6 +100,7 @@ CREATE TABLE dbo.SanPhamTrangSuc (
     GiaBan DECIMAL(18, 2) NOT NULL,
     TrangThai NVARCHAR(50) NOT NULL DEFAULT 'HetHang', -- SanSang, HetHang, NgungKinhDoanh
     HinhAnh NVARCHAR(500) NULL,
+    PhanTramGiamGia INT NOT NULL DEFAULT 0,
     CONSTRAINT FK_SanPham_DanhMuc FOREIGN KEY (MaDanhMuc) REFERENCES dbo.DanhMuc(MaDanhMuc)
 );
 GO

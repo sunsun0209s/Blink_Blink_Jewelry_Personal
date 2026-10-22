@@ -45,4 +45,9 @@ public class CapNhatSanPhamDTO
     /// Đường dẫn hoặc URL hình ảnh sản phẩm
     /// </summary>
     public string HinhAnh { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Tỉ lệ phần trăm giảm giá ưu đãi (0 - 100%)
+    /// </summary>
+    public int PhanTramGiamGia { get; set; } = 0;
 }

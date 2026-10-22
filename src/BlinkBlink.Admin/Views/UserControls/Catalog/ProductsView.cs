@@ -216,15 +216,74 @@ public class ProductsView : UserControl
     private void ConfigureGridColumns()
     {
         _dgvProducts.Columns.Clear();
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SP", FillWeight = 75, MinimumWidth = 90 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 190, MinimumWidth = 200 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaDanhMuc", HeaderText = "DANH MỤC", FillWeight = 85, MinimumWidth = 95 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChatLieu", HeaderText = "CHẤT LIỆU", FillWeight = 135, MinimumWidth = 140 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "Size", HeaderText = "KÍCH CỠ", FillWeight = 75, MinimumWidth = 85 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaNhap", HeaderText = "GIÁ NHẬP (VND)", FillWeight = 105, MinimumWidth = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaBan", HeaderText = "ĐƠN GIÁ BÁN (VND)", FillWeight = 115, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI KHO", FillWeight = 95, MinimumWidth = 120 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "HinhAnh", HeaderText = "ẢNH", FillWeight = 60, MinimumWidth = 65, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter } });
+        // Cấu hình không tự động co ép cột (None) để khi nội dung dài hoặc màn hình hẹp sẽ tự kích hoạt thanh cuộn ngang mượt mà
+        _dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+        _dgvProducts.ScrollBars = ScrollBars.Both;
+
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "MaSanPham", 
+            HeaderText = "MÃ SP", 
+            Width = 95 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "TenSanPham", 
+            HeaderText = "TÊN TRANG SỨC", 
+            Width = 240 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "MaDanhMuc", 
+            HeaderText = "DANH MỤC", 
+            Width = 110 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "ChatLieu", 
+            HeaderText = "CHẤT LIỆU", 
+            Width = 160 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "Size", 
+            HeaderText = "KÍCH CỠ", 
+            Width = 90 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "GiaNhap", 
+            HeaderText = "GIÁ NHẬP BÌNH QUÂN\n(VND)", 
+            Width = 165, 
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "GiaBan", 
+            HeaderText = "ĐƠN GIÁ BÁN\n(VND)", 
+            Width = 150, 
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "PhanTramGiamGia", 
+            HeaderText = "% GIẢM GIÁ", 
+            Width = 110, 
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "TrangThai", 
+            HeaderText = "TRẠNG THÁI KHO", 
+            Width = 140 
+        });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        { 
+            Name = "HinhAnh", 
+            HeaderText = "HÌNH ẢNH", 
+            Width = 85, 
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter } 
+        });
     }
 
     public void LoadProductsData()
@@ -294,6 +353,7 @@ public class ProductsView : UserControl
         foreach (var p in filtered)
         {
             var hasImage = !string.IsNullOrWhiteSpace(p.HinhAnh) ? "🖼 Có ảnh" : "-";
+            var discountText = p.PhanTramGiamGia > 0 ? $"{p.PhanTramGiamGia}%" : "0%";
             var rowIdx = _dgvProducts.Rows.Add(
                 p.MaSanPham,
                 p.TenSanPham,
@@ -302,9 +362,17 @@ public class ProductsView : UserControl
                 p.Size,
                 p.GiaNhap.ToString("N0", viVn),
                 p.GiaBan.ToString("N0", viVn),
+                discountText,
                 FormatStatusText(p.TrangThai),
                 hasImage
             );
+
+            var cellDiscount = _dgvProducts.Rows[rowIdx].Cells["PhanTramGiamGia"];
+            if (p.PhanTramGiamGia > 0)
+            {
+                cellDiscount.Style.ForeColor = UITheme.DangerColor;
+                cellDiscount.Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            }
 
             var cellStatus = _dgvProducts.Rows[rowIdx].Cells["TrangThai"];
             if (string.Equals(p.TrangThai, "SanSang", StringComparison.OrdinalIgnoreCase))

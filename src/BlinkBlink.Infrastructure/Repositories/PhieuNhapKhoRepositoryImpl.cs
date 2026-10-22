@@ -81,8 +81,52 @@ public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
                     INSERT INTO dbo.ChiTietNhapKho (MaPhieuNhap, MaSanPham, SoLuong, GiaVonNhap, SoChungTu)
                     VALUES (@MaPhieuNhap, @MaSanPham, @SoLuong, @GiaVonNhap, @SoChungTu);";
 
+                const string sqlUpdateGiaBinhQuan = @"
+                    -- Tính số lượng tồn kho thực tế trước đợt nhập này
+                    DECLARE @TonKho INT = ISNULL((
+                        SELECT ISNULL(SUM(ct.SoLuong), 0)
+                        FROM dbo.ChiTietNhapKho ct
+                        WHERE ct.MaSanPham = @MaSanPham
+                    ), 0) - ISNULL((
+                        SELECT ISNULL(SUM(chd.SoLuong), 0)
+                        FROM dbo.ChiTietHoaDon chd
+                        INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon
+                        WHERE chd.MaSanPham = @MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'
+                    ), 0);
+
+                    IF (@TonKho < 0) SET @TonKho = 0;
+
+                    DECLARE @GiaHienTai DECIMAL(18,2) = ISNULL((SELECT GiaNhap FROM dbo.SanPhamTrangSuc WHERE MaSanPham = @MaSanPham), 0);
+                    DECLARE @GiaMoi DECIMAL(18,2);
+
+                    -- Công thức bình quân: (Số lượng tồn * Giá nhập hiện tại + Số lượng nhập mới * Giá nhập mới) / (Số lượng tồn + Số lượng nhập mới)
+                    IF (@TonKho > 0 AND (@TonKho + @SoLuong) > 0)
+                    BEGIN
+                        SET @GiaMoi = ((CAST(@TonKho AS DECIMAL(18,2)) * @GiaHienTai) + (CAST(@SoLuong AS DECIMAL(18,2)) * @GiaVonNhap)) / CAST((@TonKho + @SoLuong) AS DECIMAL(18,2));
+                    END
+                    ELSE
+                    BEGIN
+                        SET @GiaMoi = @GiaVonNhap;
+                    END
+
+                    UPDATE dbo.SanPhamTrangSuc
+                    SET TrangThai = 'SanSang',
+                        GiaNhap = @GiaMoi
+                    WHERE MaSanPham = @MaSanPham;";
+
                 foreach (var ct in phieu.ChiTietNhapKhos)
                 {
+                    // 1. Cập nhật trạng thái và giá nhập bình quân gia quyền vào sản phẩm trước khi thêm dòng chi tiết
+                    if (ct.SoLuong > 0)
+                    {
+                        using var cmdSp = new SqlCommand(sqlUpdateGiaBinhQuan, conn, tx);
+                        cmdSp.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
+                        cmdSp.Parameters.Add(new SqlParameter("@SoLuong", SqlDbType.Int) { Value = ct.SoLuong });
+                        cmdSp.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
+                        cmdSp.ExecuteNonQuery();
+                    }
+
+                    // 2. Lưu dòng chi tiết phiếu nhập kho
                     using var cmdCt = new SqlCommand(sqlInsertCt, conn, tx);
                     cmdCt.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = phieu.MaPhieuNhap });
                     cmdCt.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
@@ -90,20 +134,6 @@ public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
                     cmdCt.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
                     cmdCt.Parameters.Add(new SqlParameter("@SoChungTu", SqlDbType.NVarChar, 100) { Value = (object?)ct.SoChungTu ?? DBNull.Value });
                     cmdCt.ExecuteNonQuery();
-
-                    // Cập nhật trạng thái sản phẩm sang 'SanSang' và ghi nhận giá vốn nhập mới nhất
-                    if (ct.SoLuong > 0)
-                    {
-                        const string sqlUpdateSp = @"
-                            UPDATE dbo.SanPhamTrangSuc
-                            SET TrangThai = 'SanSang',
-                                GiaNhap = CASE WHEN @GiaVonNhap > 0 THEN @GiaVonNhap ELSE GiaNhap END
-                            WHERE MaSanPham = @MaSanPham;";
-                        using var cmdSp = new SqlCommand(sqlUpdateSp, conn, tx);
-                        cmdSp.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
-                        cmdSp.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
-                        cmdSp.ExecuteNonQuery();
-                    }
                 }
             }
 

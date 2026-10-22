@@ -200,4 +200,68 @@ public class QuanLySanPhamUseCaseTests
         Assert.Equal(9500000, updated.GiaBan);
         Assert.Equal("C:\\images\\nhan_moi.jpg", updated.HinhAnh);
     }
+
+    [Fact]
+    public void ThemSanPhamMoi_KhoiTaoMacDinhPhanTramGiamGiaVaHetHang()
+    {
+        // Arrange
+        var fakeSpRepo = new FakeSanPhamRepository();
+        var fakeDmRepo = new FakeDanhMucRepository();
+        var useCase = new QuanLySanPhamUseCase(fakeSpRepo, fakeDmRepo);
+        var dto = new SanPhamDTO
+        {
+            MaSanPham = "SP_TEST_DISCOUNT",
+            TenSanPham = "Lắc Tay Bạc Ý Cao Cấp",
+            MaDanhMuc = "DM_LACTAY",
+            ChatLieu = "Bạc Ý 925",
+            Size = "17cm",
+            GiaNhap = 0,
+            GiaBan = 0,
+            PhanTramGiamGia = 0
+        };
+
+        // Act
+        var result = useCase.ThemSanPhamMoi(dto);
+
+        // Assert
+        Assert.True(result);
+        var created = fakeSpRepo.TimTheoId("SP_TEST_DISCOUNT");
+        Assert.NotNull(created);
+        Assert.Equal(0, created.PhanTramGiamGia);
+        Assert.Equal("HetHang", created.TrangThai);
+        Assert.Equal(0, created.GiaNhap);
+        Assert.Equal(0, created.GiaBan);
+    }
+
+    [Fact]
+    public void CapNhatThongTin_CapNhatPhanTramGiamGiaHopLe()
+    {
+        // Arrange
+        var fakeSpRepo = new FakeSanPhamRepository();
+        var fakeDmRepo = new FakeDanhMucRepository();
+        var sp = new SanPhamTrangSuc("SP_03", "Dây Chuyền Vàng", "DM_DAYCHUYEN", "Vàng 18K", "45cm", 10000000, 15000000, "SanSang", "", 0);
+        fakeSpRepo.LuuSanPham(sp);
+
+        var useCase = new QuanLySanPhamUseCase(fakeSpRepo, fakeDmRepo);
+        var dto = new CapNhatSanPhamDTO
+        {
+            MaSanPham = "SP_03",
+            TenSanPham = "Dây Chuyền Vàng Ý",
+            MaDanhMuc = "DM_DAYCHUYEN",
+            ChatLieu = "Vàng 18K",
+            Size = "45cm",
+            GiaBan = 14000000,
+            PhanTramGiamGia = 15 // Giảm giá 15%
+        };
+
+        // Act
+        var result = useCase.CapNhatThongTin(dto);
+
+        // Assert
+        Assert.True(result);
+        var updated = fakeSpRepo.TimTheoId("SP_03");
+        Assert.NotNull(updated);
+        Assert.Equal(15, updated.PhanTramGiamGia);
+        Assert.Equal(14000000, updated.GiaBan);
+    }
 }

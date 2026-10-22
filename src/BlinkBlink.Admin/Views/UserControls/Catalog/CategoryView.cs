@@ -262,8 +262,8 @@ public class CategoryView : UserControl
         using var dialog = new Form
         {
             Text = isEdit ? "Chỉnh Sửa Danh Mục - Blink Blink Jewelry" : "Thêm Danh Mục Trang Sức - Blink Blink Jewelry",
-            Width = 540,
-            Height = 400,
+            Width = 680,
+            Height = 520,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
@@ -272,7 +272,7 @@ public class CategoryView : UserControl
             Font = UITheme.RegularFont
         };
 
-        var pnlHead = new Panel { Dock = DockStyle.Top, Height = 65, BackColor = UITheme.DarkHeader, Padding = new Padding(20, 12, 20, 10) };
+        var pnlHead = new Panel { Dock = DockStyle.Top, Height = 75, BackColor = UITheme.DarkHeader, Padding = new Padding(24, 14, 24, 10) };
         var lblTitle = new Label
         {
             Text = isEdit ? "CHỈNH SỬA THÔNG TIN DANH MỤC" : "THÊM MỚI DANH MỤC TRANG SỨC",
@@ -291,52 +291,54 @@ public class CategoryView : UserControl
         pnlHead.Controls.Add(lblSub);
         pnlHead.Controls.Add(lblTitle);
 
-        var pnlFoot = new Panel { Dock = DockStyle.Bottom, Height = 65, BackColor = UITheme.CanvasBackground, Padding = new Padding(20, 12, 20, 12) };
+        var pnlFoot = new Panel { Dock = DockStyle.Bottom, Height = 72, BackColor = UITheme.CanvasBackground, Padding = new Padding(24, 16, 24, 16) };
         var flpBtns = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft };
 
         var btnCancel = UITheme.CreateFlatButton("Hủy Bỏ", Color.FromArgb(226, 232, 240), UITheme.TextPrimary);
-        btnCancel.Width = 100;
-        btnCancel.Height = 36;
-        btnCancel.Margin = new Padding(10, 0, 0, 0);
+        btnCancel.Width = 115;
+        btnCancel.Height = 38;
+        btnCancel.Margin = new Padding(12, 0, 0, 0);
         btnCancel.Click += (s, e) => dialog.Close();
 
         var btnSave = UITheme.CreateFlatButton("Lưu Danh Mục", UITheme.PrimaryGold, Color.Black);
-        btnSave.Width = 135;
-        btnSave.Height = 36;
+        btnSave.Width = 150;
+        btnSave.Height = 38;
         btnSave.Margin = new Padding(0);
 
         flpBtns.Controls.Add(btnCancel);
         flpBtns.Controls.Add(btnSave);
         pnlFoot.Controls.Add(flpBtns);
 
-        var pnlContent = new Panel { Dock = DockStyle.Fill, Padding = new Padding(24, 20, 24, 10) };
+        var pnlContent = new Panel { Dock = DockStyle.Fill, Padding = new Padding(30, 24, 30, 16) };
 
-        var lblMa = new Label { Text = "Mã Danh Mục (*):", Location = new Point(20, 22), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var lblMa = new Label { Text = "Mã Danh Mục (*):", Location = new Point(24, 24), Width = 150, ForeColor = UITheme.TextSecondary };
         var txtMa = new TextBox
         {
             Text = isEdit ? target!.MaDanhMuc : $"DM{_allCategories.Count + 1:D2}",
-            Location = new Point(160, 18),
-            Width = 320,
+            Location = new Point(180, 20),
+            Width = 430,
+            Height = 30,
             ReadOnly = isEdit,
             BackColor = isEdit ? Color.FromArgb(241, 245, 249) : Color.White
         };
 
-        var lblTen = new Label { Text = "Tên Danh Mục (*):", Location = new Point(20, 68), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var lblTen = new Label { Text = "Tên Danh Mục (*):", Location = new Point(24, 76), Width = 150, ForeColor = UITheme.TextSecondary };
         var txtTen = new TextBox
         {
             Text = isEdit ? target!.TenDanhMuc : "",
-            Location = new Point(160, 64),
-            Width = 320,
+            Location = new Point(180, 72),
+            Width = 430,
+            Height = 30,
             PlaceholderText = "Ví dụ: Nhẫn Cưới & Đính Hôn"
         };
 
-        var lblMoTa = new Label { Text = "Mô Tả Danh Mục:", Location = new Point(20, 114), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var lblMoTa = new Label { Text = "Mô Tả Danh Mục:", Location = new Point(24, 128), Width = 150, ForeColor = UITheme.TextSecondary };
         var txtMoTa = new TextBox
         {
             Text = isEdit ? target!.MoTa : "",
-            Location = new Point(160, 110),
-            Width = 320,
-            Height = 90,
+            Location = new Point(180, 124),
+            Width = 430,
+            Height = 140,
             Multiline = true,
             PlaceholderText = "Mô tả phân loại đặc thù của dòng trang sức này..."
         };

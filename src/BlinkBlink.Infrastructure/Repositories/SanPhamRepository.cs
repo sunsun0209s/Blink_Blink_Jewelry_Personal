@@ -44,13 +44,14 @@ public class SanPhamRepository : ISanPhamRepository
                     GiaNhap = @GiaNhap,
                     GiaBan = @GiaBan,
                     TrangThai = @TrangThai,
-                    HinhAnh = @HinhAnh
+                    HinhAnh = @HinhAnh,
+                    PhanTramGiamGia = @PhanTramGiamGia
                 WHERE MaSanPham = @MaSanPham;
             END
             ELSE
             BEGIN
-                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh)
-                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai, @HinhAnh);
+                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia)
+                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai, @HinhAnh, @PhanTramGiamGia);
             END";
 
         var parameters = new[]
@@ -63,7 +64,8 @@ public class SanPhamRepository : ISanPhamRepository
             new SqlParameter("@GiaNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaNhap },
             new SqlParameter("@GiaBan", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaBan },
             new SqlParameter("@TrangThai", SqlDbType.NVarChar, 50) { Value = sp.TrangThai },
-            new SqlParameter("@HinhAnh", SqlDbType.NVarChar, 500) { Value = (object?)sp.HinhAnh ?? DBNull.Value }
+            new SqlParameter("@HinhAnh", SqlDbType.NVarChar, 500) { Value = (object?)sp.HinhAnh ?? DBNull.Value },
+            new SqlParameter("@PhanTramGiamGia", SqlDbType.Int) { Value = sp.PhanTramGiamGia }
         };
 
         _dbHelper.ExecuteNonQuery(sql, parameters);
@@ -77,7 +79,7 @@ public class SanPhamRepository : ISanPhamRepository
         }
 
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -100,7 +102,7 @@ public class SanPhamRepository : ISanPhamRepository
     {
         var list = new List<SanPhamTrangSuc>();
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -150,6 +152,20 @@ public class SanPhamRepository : ISanPhamRepository
             // Tránh lỗi nếu truy vấn không select cột HinhAnh
         }
 
+        var phanTramGiamGia = 0;
+        try
+        {
+            var ordDiscount = reader.GetOrdinal("PhanTramGiamGia");
+            if (!reader.IsDBNull(ordDiscount))
+            {
+                phanTramGiamGia = reader.GetInt32(ordDiscount);
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // Tránh lỗi nếu truy vấn không select cột PhanTramGiamGia
+        }
+
         var sp = new SanPhamTrangSuc(
             maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
             tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
@@ -159,7 +175,8 @@ public class SanPhamRepository : ISanPhamRepository
             giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
             giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
             trangThai: reader.GetString(reader.GetOrdinal("TrangThai")),
-            hinhAnh: hinhAnh
+            hinhAnh: hinhAnh,
+            phanTramGiamGia: phanTramGiamGia
         );
 
         if (!reader.IsDBNull(reader.GetOrdinal("TenDanhMuc")))

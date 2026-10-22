@@ -322,8 +322,8 @@ public class InventoryInwardView : UserControl
         using var dialog = new Form
         {
             Text = "Lập Phiếu Nhập Kho Trang Sức Mới - Blink Blink Jewelry",
-            Width = 840,
-            Height = 620,
+            Width = 1000,
+            Height = 740,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
@@ -332,24 +332,24 @@ public class InventoryInwardView : UserControl
             Font = UITheme.RegularFont
         };
 
-        var pnlHead = new Panel { Dock = DockStyle.Top, Height = 70, BackColor = UITheme.DarkHeader, Padding = new Padding(24, 12, 24, 10) };
+        var pnlHead = new Panel { Dock = DockStyle.Top, Height = 75, BackColor = UITheme.DarkHeader, Padding = new Padding(24, 14, 24, 10) };
         var lblTitle = new Label { Text = "LẬP PHIẾU NHẬP KHO KIM HOÀN", Font = UITheme.HeaderFont, ForeColor = UITheme.PrimaryGold, Dock = DockStyle.Top, Height = 24 };
         var lblSub = new Label { Text = "Xác nhận nhập số lượng trang sức vào kho hàng và tự động cập nhật trạng thái 'Sẵn sàng giao dịch'", Font = new Font("Segoe UI", 9F), ForeColor = Color.FromArgb(203, 213, 225), Dock = DockStyle.Fill };
         pnlHead.Controls.Add(lblSub);
         pnlHead.Controls.Add(lblTitle);
 
-        var pnlFoot = new Panel { Dock = DockStyle.Bottom, Height = 65, BackColor = UITheme.CanvasBackground, Padding = new Padding(24, 12, 24, 12) };
+        var pnlFoot = new Panel { Dock = DockStyle.Bottom, Height = 72, BackColor = UITheme.CanvasBackground, Padding = new Padding(24, 16, 24, 16) };
         var flpFoot = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft };
 
         var btnCancel = UITheme.CreateFlatButton("Hủy Bỏ", Color.FromArgb(226, 232, 240), UITheme.TextPrimary);
-        btnCancel.Width = 110;
-        btnCancel.Height = 36;
+        btnCancel.Width = 115;
+        btnCancel.Height = 38;
         btnCancel.Margin = new Padding(12, 0, 0, 0);
         btnCancel.Click += (s, e) => dialog.Close();
 
         var btnConfirm = UITheme.CreateFlatButton("Xác Nhận Nhập Kho", UITheme.PrimaryGold, Color.Black);
-        btnConfirm.Width = 170;
-        btnConfirm.Height = 36;
+        btnConfirm.Width = 180;
+        btnConfirm.Height = 38;
         btnConfirm.Margin = new Padding(0);
 
         flpFoot.Controls.Add(btnCancel);
@@ -359,36 +359,36 @@ public class InventoryInwardView : UserControl
         var pnlBody = new Panel { Dock = DockStyle.Fill, Padding = new Padding(24, 15, 24, 10) };
 
         // Thông tin phiếu
-        var pnlInfo = new Panel { Dock = DockStyle.Top, Height = 100 };
-        var lblMaP = new Label { Text = "Mã Phiếu Nhập:", Location = new Point(0, 8), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var txtMaP = new TextBox { Text = $"PNK{DateTime.Now:yyyyMMdd}_{_allReceipts.Count + 1:D2}", Location = new Point(130, 4), Width = 190, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+        var pnlInfo = new Panel { Dock = DockStyle.Top, Height = 115 };
+        var lblMaP = new Label { Text = "Mã Phiếu Nhập:", Location = new Point(0, 10), Width = 130, ForeColor = UITheme.TextSecondary };
+        var txtMaP = new TextBox { Text = $"PNK{DateTime.Now:yyyyMMdd}_{_allReceipts.Count + 1:D2}", Location = new Point(135, 6), Width = 220, Height = 30, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
 
-        var lblNcc = new Label { Text = "Nhà Cung Cấp (*):", Location = new Point(350, 8), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var txtNcc = new TextBox { Text = "Tập đoàn Kim Hoàn Doji Atelier", Location = new Point(480, 4), Width = 310 };
+        var lblNcc = new Label { Text = "Nhà Cung Cấp (*):", Location = new Point(395, 10), Width = 150, ForeColor = UITheme.TextSecondary };
+        var txtNcc = new TextBox { Text = "Tập đoàn Kim Hoàn Doji Atelier", Location = new Point(550, 6), Width = 380, Height = 30 };
 
-        var lblNv = new Label { Text = "Mã Nhân Viên:", Location = new Point(0, 50), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var txtNv = new TextBox { Text = "USER_NV002", Location = new Point(130, 46), Width = 190 };
+        var lblNv = new Label { Text = "Mã Nhân Viên:", Location = new Point(0, 58), Width = 130, ForeColor = UITheme.TextSecondary };
+        var txtNv = new TextBox { Text = "USER_NV002", Location = new Point(135, 54), Width = 220, Height = 30 };
 
-        var lblChungTu = new Label { Text = "Số Chứng Từ / HĐ:", Location = new Point(350, 50), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var txtChungTu = new TextBox { Text = $"CT_{DateTime.Now:yyMMdd}_IN", Location = new Point(480, 46), Width = 310 };
+        var lblChungTu = new Label { Text = "Số Chứng Từ / HĐ:", Location = new Point(395, 58), Width = 150, ForeColor = UITheme.TextSecondary };
+        var txtChungTu = new TextBox { Text = $"CT_{DateTime.Now:yyMMdd}_IN", Location = new Point(550, 54), Width = 380, Height = 30 };
 
         pnlInfo.Controls.AddRange(new Control[] { lblMaP, txtMaP, lblNcc, txtNcc, lblNv, txtNv, lblChungTu, txtChungTu });
 
         // Thêm mặt hàng nhập
-        var pnlAddItem = new Panel { Dock = DockStyle.Top, Height = 75, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(12, 10, 12, 10) };
-        var lblSp = new Label { Text = "Sản Phẩm Nhập:", Location = new Point(12, 12), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var cboSp = new ComboBox { Location = new Point(120, 8), Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+        var pnlAddItem = new Panel { Dock = DockStyle.Top, Height = 88, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(12, 10, 12, 10) };
+        var lblSp = new Label { Text = "Sản Phẩm Nhập:", Location = new Point(12, 14), Width = 120, ForeColor = UITheme.TextSecondary };
+        var cboSp = new ComboBox { Location = new Point(135, 10), Width = 320, Height = 30, DropDownStyle = ComboBoxStyle.DropDownList };
         foreach (var sp in allProducts)
         {
             cboSp.Items.Add(new ProductComboItem(sp.MaSanPham, sp.TenSanPham, sp.GiaNhap));
         }
         if (cboSp.Items.Count > 0) cboSp.SelectedIndex = 0;
 
-        var lblSl = new Label { Text = "Số Lượng:", Location = new Point(390, 12), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var nudSl = new NumericUpDown { Location = new Point(460, 8), Width = 70, Minimum = 1, Maximum = 1000, Value = 5 };
+        var lblSl = new Label { Text = "Số Lượng:", Location = new Point(475, 14), Width = 70, ForeColor = UITheme.TextSecondary };
+        var nudSl = new NumericUpDown { Location = new Point(550, 10), Width = 85, Height = 30, Minimum = 1, Maximum = 1000, Value = 5 };
 
-        var lblGiaVon = new Label { Text = "Đơn Giá Vốn:", Location = new Point(545, 12), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        var txtGiaVon = new TextBox { Location = new Point(635, 8), Width = 150, Font = UITheme.TabularNumericFont, Text = "12000000" };
+        var lblGiaVon = new Label { Text = "Đơn Giá Vốn:", Location = new Point(655, 14), Width = 95, ForeColor = UITheme.TextSecondary };
+        var txtGiaVon = new TextBox { Location = new Point(755, 10), Width = 175, Height = 30, Font = UITheme.TabularNumericFont, Text = "12000000" };
 
         cboSp.SelectedIndexChanged += (s, e) =>
         {
@@ -399,9 +399,9 @@ public class InventoryInwardView : UserControl
         };
 
         var btnAddRow = UITheme.CreateFlatButton("+ Thêm Vào Phiếu", UITheme.DarkHeader, Color.White);
-        btnAddRow.Location = new Point(635, 38);
-        btnAddRow.Width = 150;
-        btnAddRow.Height = 30;
+        btnAddRow.Location = new Point(755, 46);
+        btnAddRow.Width = 175;
+        btnAddRow.Height = 32;
 
         pnlAddItem.Controls.AddRange(new Control[] { lblSp, cboSp, lblSl, nudSl, lblGiaVon, txtGiaVon, btnAddRow });
 
