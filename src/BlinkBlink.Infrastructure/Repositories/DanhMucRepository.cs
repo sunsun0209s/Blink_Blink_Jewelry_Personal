@@ -83,6 +83,27 @@ public class DanhMucRepository : IDanhMucRepository
         return null;
     }
 
+    public List<DanhMuc> LayTatCa()
+    {
+        var list = new List<DanhMuc>();
+        const string sql = "SELECT MaDanhMuc, TenDanhMuc, MoTa FROM dbo.DanhMuc ORDER BY MaDanhMuc ASC;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            list.Add(new DanhMuc(
+                maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+                tenDanhMuc: reader.GetString(reader.GetOrdinal("TenDanhMuc")),
+                moTa: reader.IsDBNull(reader.GetOrdinal("MoTa")) ? string.Empty : reader.GetString(reader.GetOrdinal("MoTa"))
+            ));
+        }
+
+        return list;
+    }
+
     public Task LuuDanhMucAsync(DanhMuc dm, CancellationToken cancellationToken = default)
     {
         LuuDanhMuc(dm);
@@ -92,5 +113,10 @@ public class DanhMucRepository : IDanhMucRepository
     public Task<DanhMuc?> TimTheoIdAsync(string maDanhMuc, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(TimTheoId(maDanhMuc));
+    }
+
+    public Task<List<DanhMuc>> LayTatCaAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LayTatCa());
     }
 }

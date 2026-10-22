@@ -22,7 +22,7 @@ public partial class MainForm : Form
 
     // Cache các UserControl phân hệ để tối ưu hiệu năng
     private OrdersView? _ordersView;
-    private ProductsView? _productsView;
+    private ProductsAndInventoryContainerView? _productsContainerView;
     private WarrantyView? _warrantyView;
     private UsersView? _usersView;
     private ReportingView? _reportingView;
@@ -52,14 +52,14 @@ public partial class MainForm : Form
     private void RegisterEventHandlers()
     {
         btnSales.Click += (s, e) => ShowView(GetOrdersView(), "Quản Lý Bán Hàng & Phê Duyệt Đơn", btnSales);
-        btnProducts.Click += (s, e) => ShowView(GetProductsView(), "Quản Lý Sản Phẩm & Tồn Kho Kim Hoàn", btnProducts);
+        btnProducts.Click += (s, e) => ShowView(GetProductsContainerView(), "Quản Lý Sản Phẩm, Danh Mục & Kho Hàng", btnProducts);
         btnWarranty.Click += (s, e) => ShowView(GetWarrantyView(), "Dịch Vụ & Tiếp Nhận Bảo Hành", btnWarranty);
         btnUsers.Click += (s, e) => ShowView(GetUsersView(), "Quản Lý Khách Hàng & Phân Quyền Nhân Sự", btnUsers);
         btnReports.Click += (s, e) => ShowView(GetReportingView(), "Báo Cáo Doanh Thu & Thống Kê Kho Hàng", btnReports);
     }
 
     private OrdersView GetOrdersView() => _ordersView ??= new OrdersView();
-    private ProductsView GetProductsView() => _productsView ??= new ProductsView();
+    private ProductsAndInventoryContainerView GetProductsContainerView() => _productsContainerView ??= new ProductsAndInventoryContainerView();
     private WarrantyView GetWarrantyView() => _warrantyView ??= new WarrantyView();
     private UsersView GetUsersView() => _usersView ??= new UsersView();
     private ReportingView GetReportingView() => _reportingView ??= new ReportingView();

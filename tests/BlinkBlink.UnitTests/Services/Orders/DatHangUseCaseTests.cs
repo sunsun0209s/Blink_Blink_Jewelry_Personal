@@ -131,6 +131,9 @@ public class DatHangUseCaseTests
             Data.TryGetValue(maSanPham, out var sp);
             return Task.FromResult(sp);
         }
+
+        public List<SanPhamTrangSuc> LayTatCa() => new List<SanPhamTrangSuc>(Data.Values);
+        public Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken cancellationToken = default) => Task.FromResult(LayTatCa());
     }
 
     [Fact]

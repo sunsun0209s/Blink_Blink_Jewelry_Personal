@@ -56,7 +56,8 @@ public class QuanLySanPhamUseCase
             size: request.Size?.Trim() ?? string.Empty,
             giaNhap: request.GiaNhap,
             giaBan: request.GiaBan,
-            trangThai: "SanSang"
+            trangThai: "HetHang",
+            hinhAnh: request.HinhAnh?.Trim() ?? string.Empty
         );
 
         _sanPhamRepo.LuuSanPham(entity);
@@ -111,6 +112,9 @@ public class QuanLySanPhamUseCase
         sanPham.MaDanhMuc = request.MaDanhMuc?.Trim() ?? string.Empty;
         sanPham.ChatLieu = request.ChatLieu?.Trim() ?? string.Empty;
         sanPham.Size = request.Size?.Trim() ?? string.Empty;
+        if (request.GiaNhap > 0) sanPham.GiaNhap = request.GiaNhap;
+        if (request.GiaBan > 0) sanPham.GiaBan = request.GiaBan;
+        if (!string.IsNullOrWhiteSpace(request.HinhAnh)) sanPham.HinhAnh = request.HinhAnh.Trim();
 
         _sanPhamRepo.LuuSanPham(sanPham);
         return true;
@@ -145,7 +149,8 @@ public class QuanLySanPhamUseCase
             size: request.Size?.Trim() ?? string.Empty,
             giaNhap: request.GiaNhap,
             giaBan: request.GiaBan,
-            trangThai: "SanSang"
+            trangThai: "HetHang",
+            hinhAnh: request.HinhAnh?.Trim() ?? string.Empty
         );
 
         await _sanPhamRepo.LuuSanPhamAsync(entity, cancellationToken);
@@ -187,6 +192,9 @@ public class QuanLySanPhamUseCase
         sanPham.MaDanhMuc = request.MaDanhMuc?.Trim() ?? string.Empty;
         sanPham.ChatLieu = request.ChatLieu?.Trim() ?? string.Empty;
         sanPham.Size = request.Size?.Trim() ?? string.Empty;
+        if (request.GiaNhap > 0) sanPham.GiaNhap = request.GiaNhap;
+        if (request.GiaBan > 0) sanPham.GiaBan = request.GiaBan;
+        if (!string.IsNullOrWhiteSpace(request.HinhAnh)) sanPham.HinhAnh = request.HinhAnh.Trim();
 
         await _sanPhamRepo.LuuSanPhamAsync(sanPham, cancellationToken);
         return true;

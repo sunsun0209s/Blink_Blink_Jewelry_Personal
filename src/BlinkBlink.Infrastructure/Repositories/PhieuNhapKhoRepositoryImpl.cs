@@ -90,6 +90,20 @@ public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
                     cmdCt.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
                     cmdCt.Parameters.Add(new SqlParameter("@SoChungTu", SqlDbType.NVarChar, 100) { Value = (object?)ct.SoChungTu ?? DBNull.Value });
                     cmdCt.ExecuteNonQuery();
+
+                    // Cập nhật trạng thái sản phẩm sang 'SanSang' và ghi nhận giá vốn nhập mới nhất
+                    if (ct.SoLuong > 0)
+                    {
+                        const string sqlUpdateSp = @"
+                            UPDATE dbo.SanPhamTrangSuc
+                            SET TrangThai = 'SanSang',
+                                GiaNhap = CASE WHEN @GiaVonNhap > 0 THEN @GiaVonNhap ELSE GiaNhap END
+                            WHERE MaSanPham = @MaSanPham;";
+                        using var cmdSp = new SqlCommand(sqlUpdateSp, conn, tx);
+                        cmdSp.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
+                        cmdSp.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
+                        cmdSp.ExecuteNonQuery();
+                    }
                 }
             }
 
@@ -102,10 +116,50 @@ public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
         }
     }
 
+    public List<PhieuNhapKho> LayTatCa()
+    {
+        var list = new List<PhieuNhapKho>();
+        const string sql = @"
+            SELECT MaPhieuNhap, NgayNhap, NhaCungCap, MaNhanVien, TongSoSanPham, TongGiaTri
+            FROM dbo.PhieuNhapKho
+            ORDER BY NgayNhap DESC;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            var p = new PhieuNhapKho(
+                maPhieuNhap: reader.GetString(reader.GetOrdinal("MaPhieuNhap")),
+                nhaCungCap: reader.GetString(reader.GetOrdinal("NhaCungCap")),
+                maNhanVien: reader.GetString(reader.GetOrdinal("MaNhanVien")),
+                ngayNhap: reader.GetDateTime(reader.GetOrdinal("NgayNhap"))
+            )
+            {
+                TongSoSanPham = reader.GetInt32(reader.GetOrdinal("TongSoSanPham")),
+                TongGiaTri = reader.GetDecimal(reader.GetOrdinal("TongGiaTri"))
+            };
+            list.Add(p);
+        }
+
+        foreach (var p in list)
+        {
+            p.ChiTietNhapKhos = LayChiTietNhapKho(p.MaPhieuNhap);
+        }
+
+        return list;
+    }
+
     public Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken cancellationToken = default)
     {
         LuuPhieuNhap(phieu);
         return Task.CompletedTask;
+    }
+
+    public Task<List<PhieuNhapKho>> LayTatCaAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LayTatCa());
     }
 
     public Task<PhieuNhapKho?> TimTheoIdAsync(string maPhieu, CancellationToken cancellationToken = default)

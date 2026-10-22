@@ -30,4 +30,19 @@ public class CapNhatSanPhamDTO
     /// Kích cỡ của sản phẩm (ví dụ: Size nhẫn 14, Chiều dài dây 45cm)
     /// </summary>
     public string Size { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Đơn giá vốn nhập (VND)
+    /// </summary>
+    public decimal GiaNhap { get; set; }
+
+    /// <summary>
+    /// Đơn giá niêm yết bán (VND)
+    /// </summary>
+    public decimal GiaBan { get; set; }
+
+    /// <summary>
+    /// Đường dẫn hoặc URL hình ảnh sản phẩm
+    /// </summary>
+    public string HinhAnh { get; set; } = string.Empty;
 }

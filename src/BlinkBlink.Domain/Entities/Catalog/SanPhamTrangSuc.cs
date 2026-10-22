@@ -16,9 +16,10 @@ public class SanPhamTrangSuc
     public virtual DanhMuc? DanhMuc { get; set; }
     public string ChatLieu { get; set; } = string.Empty;
     public string Size { get; set; } = string.Empty; // Chuẩn hóa string theo Diagram
-    public string TrangThai { get; set; } = "SanSang"; // Ví dụ: SanSang, DaBan, DangBaoHanh, HetHang
+    public string TrangThai { get; set; } = "HetHang"; // SanSang, DaBan, DangBaoHanh, HetHang
     public decimal GiaNhap { get; set; }
     public decimal GiaBan { get; set; }
+    public string HinhAnh { get; set; } = string.Empty; // Đường dẫn tệp ảnh hoặc URL ảnh
 
     public SanPhamTrangSuc() { }
 
@@ -30,7 +31,8 @@ public class SanPhamTrangSuc
         string size,
         decimal giaNhap,
         decimal giaBan,
-        string trangThai = "SanSang")
+        string trangThai = "HetHang",
+        string hinhAnh = "")
     {
         MaSanPham = maSanPham;
         TenSanPham = tenSanPham;
@@ -40,6 +42,7 @@ public class SanPhamTrangSuc
         GiaNhap = giaNhap;
         GiaBan = giaBan;
         TrangThai = trangThai;
+        HinhAnh = hinhAnh;
     }
 
     /// <summary>
