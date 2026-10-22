@@ -1,7 +1,8 @@
 using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
@@ -9,23 +10,22 @@ using BlinkBlink.Infrastructure.Data;
 namespace BlinkBlink.Infrastructure.Repositories;
 
 /// <summary>
-/// Triển khai Repository cho thực thể DanhMuc sử dụng Entity Framework Core.
-/// Khớp 100% với Class Diagram.
+/// Triển khai Repository cho thực thể DanhMuc bằng ADO.NET thuần.
+/// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ sản phẩm.
 /// </summary>
 public class DanhMucRepository : IDanhMucRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly DatabaseHelper _dbHelper;
 
-    public DanhMucRepository(AppDbContext dbContext)
+    public DanhMucRepository(DatabaseHelper dbHelper)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
     }
 
-    /// <summary>
-    /// Lưu danh mục xuống CSDL.
-    /// Khớp hàm: + LuuDanhMuc(dm: DanhMuc): void trong Diagram.
-    /// </summary>
-    /// <param name="dm">Thực thể danh mục</param>
+    public DanhMucRepository(string connectionString) : this(new DatabaseHelper(connectionString))
+    {
+    }
+
     public void LuuDanhMuc(DanhMuc dm)
     {
         if (dm == null)
@@ -33,24 +33,30 @@ public class DanhMucRepository : IDanhMucRepository
             throw new ArgumentNullException(nameof(dm), "Danh mục không được để trống.");
         }
 
-        var entry = _dbContext.DanhMucs.Find(dm.MaDanhMuc);
-        if (entry == null)
-        {
-            _dbContext.DanhMucs.Add(dm);
-        }
-        else
-        {
-            _dbContext.Entry(entry).CurrentValues.SetValues(dm);
-        }
+        const string sql = @"
+            IF EXISTS (SELECT 1 FROM dbo.DanhMuc WHERE MaDanhMuc = @MaDanhMuc)
+            BEGIN
+                UPDATE dbo.DanhMuc
+                SET TenDanhMuc = @TenDanhMuc,
+                    MoTa = @MoTa
+                WHERE MaDanhMuc = @MaDanhMuc;
+            END
+            ELSE
+            BEGIN
+                INSERT INTO dbo.DanhMuc (MaDanhMuc, TenDanhMuc, MoTa)
+                VALUES (@MaDanhMuc, @TenDanhMuc, @MoTa);
+            END";
 
-        _dbContext.SaveChanges();
+        var parameters = new[]
+        {
+            new SqlParameter("@MaDanhMuc", SqlDbType.VarChar, 50) { Value = dm.MaDanhMuc },
+            new SqlParameter("@TenDanhMuc", SqlDbType.NVarChar, 150) { Value = dm.TenDanhMuc },
+            new SqlParameter("@MoTa", SqlDbType.NVarChar, 500) { Value = (object?)dm.MoTa ?? DBNull.Value }
+        };
+
+        _dbHelper.ExecuteNonQuery(sql, parameters);
     }
 
-    /// <summary>
-    /// Tìm danh mục theo mã định danh.
-    /// </summary>
-    /// <param name="maDanhMuc">Mã danh mục</param>
-    /// <returns>Thực thể danh mục hoặc null</returns>
     public DanhMuc? TimTheoId(string maDanhMuc)
     {
         if (string.IsNullOrWhiteSpace(maDanhMuc))
@@ -58,44 +64,33 @@ public class DanhMucRepository : IDanhMucRepository
             return null;
         }
 
-        return _dbContext.DanhMucs
-            .Include(d => d.SanPhamTrangSucs)
-            .FirstOrDefault(d => d.MaDanhMuc == maDanhMuc.Trim());
+        const string sql = "SELECT MaDanhMuc, TenDanhMuc, MoTa FROM dbo.DanhMuc WHERE MaDanhMuc = @MaDanhMuc;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaDanhMuc", SqlDbType.VarChar, 50) { Value = maDanhMuc.Trim() });
+
+        using var reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            return new DanhMuc(
+                maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+                tenDanhMuc: reader.GetString(reader.GetOrdinal("TenDanhMuc")),
+                moTa: reader.IsDBNull(reader.GetOrdinal("MoTa")) ? string.Empty : reader.GetString(reader.GetOrdinal("MoTa"))
+            );
+        }
+
+        return null;
     }
 
-    // =========================================================================
-    // MỞ RỘNG BẤT ĐỒNG BỘ CHUẨN CLEAN ARCHITECTURE .NET 8 LTS
-    // =========================================================================
-
-    public async Task LuuDanhMucAsync(DanhMuc dm, CancellationToken cancellationToken = default)
+    public Task LuuDanhMucAsync(DanhMuc dm, CancellationToken cancellationToken = default)
     {
-        if (dm == null)
-        {
-            throw new ArgumentNullException(nameof(dm), "Danh mục không được để trống.");
-        }
-
-        var entry = await _dbContext.DanhMucs.FindAsync(new object?[] { dm.MaDanhMuc }, cancellationToken);
-        if (entry == null)
-        {
-            await _dbContext.DanhMucs.AddAsync(dm, cancellationToken);
-        }
-        else
-        {
-            _dbContext.Entry(entry).CurrentValues.SetValues(dm);
-        }
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        LuuDanhMuc(dm);
+        return Task.CompletedTask;
     }
 
-    public async Task<DanhMuc?> TimTheoIdAsync(string maDanhMuc, CancellationToken cancellationToken = default)
+    public Task<DanhMuc?> TimTheoIdAsync(string maDanhMuc, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(maDanhMuc))
-        {
-            return null;
-        }
-
-        return await _dbContext.DanhMucs
-            .Include(d => d.SanPhamTrangSucs)
-            .FirstOrDefaultAsync(d => d.MaDanhMuc == maDanhMuc.Trim(), cancellationToken);
+        return Task.FromResult(TimTheoId(maDanhMuc));
     }
 }

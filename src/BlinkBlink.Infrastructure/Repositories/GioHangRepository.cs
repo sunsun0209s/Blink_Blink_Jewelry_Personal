@@ -1,33 +1,33 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using BlinkBlink.Domain.Entities.Cart;
+using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
 
 namespace BlinkBlink.Infrastructure.Repositories;
 
 /// <summary>
-/// Triển khai Kho lưu trữ giỏ hàng (GioHangRepository) sử dụng Entity Framework Core.
+/// Triển khai Repository cho thực thể GioHang bằng ADO.NET thuần.
 /// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ bán hàng.
 /// </summary>
 public class GioHangRepository : IGioHangRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly DatabaseHelper _dbHelper;
 
-    public GioHangRepository(AppDbContext dbContext)
+    public GioHangRepository(DatabaseHelper dbHelper)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
     }
 
-    /// <summary>
-    /// Lấy giỏ hàng của khách hàng theo mã định danh khách hàng (đồng bộ).
-    /// Khớp phương thức: + LayGioHang(maKH: string): GioHang trong Diagram.
-    /// </summary>
-    /// <param name="maKH">Mã khách hàng</param>
-    /// <returns>Giỏ hàng cùng danh sách sản phẩm hoặc null</returns>
+    public GioHangRepository(string connectionString) : this(new DatabaseHelper(connectionString))
+    {
+    }
+
     public GioHang? LayGioHang(string maKH)
     {
         if (string.IsNullOrWhiteSpace(maKH))
@@ -35,47 +35,39 @@ public class GioHangRepository : IGioHangRepository
             return null;
         }
 
-        return _dbContext.GioHangs
-            .Include(g => g.DanhSachSanPham)
-                .ThenInclude(c => c.SanPham)
-            .FirstOrDefault(g => g.MaKhachHang == maKH);
-    }
+        const string sql = @"
+            SELECT g.MaGioHang, g.MaKhachHang, g.SoLuong
+            FROM dbo.GioHang g
+            LEFT JOIN dbo.KhachHang kh ON g.MaKhachHang = kh.MaNguoiDung
+            WHERE g.MaKhachHang = @MaKhachHang OR kh.MaKhachHang = @MaKhachHang;";
 
-    /// <summary>
-    /// Lấy giỏ hàng của khách hàng theo mã định danh khách hàng (bất đồng bộ).
-    /// </summary>
-    public async Task<GioHang?> LayGioHangAsync(string maKH, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(maKH))
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = maKH.Trim() });
+
+        GioHang? gh = null;
+        using (var reader = cmd.ExecuteReader())
         {
-            return null;
+            if (reader.Read())
+            {
+                gh = new GioHang(
+                    maGioHang: reader.GetString(reader.GetOrdinal("MaGioHang")),
+                    maKhachHang: reader.GetString(reader.GetOrdinal("MaKhachHang"))
+                )
+                {
+                    SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong"))
+                };
+            }
         }
 
-        return await _dbContext.GioHangs
-            .Include(g => g.DanhSachSanPham)
-                .ThenInclude(c => c.SanPham)
-            .FirstOrDefaultAsync(g => g.MaKhachHang == maKH, cancellationToken);
-    }
-
-    /// <summary>
-    /// Lưu mới giỏ hàng vào cơ sở dữ liệu (bất đồng bộ).
-    /// </summary>
-    public async Task LuuGioHangAsync(GioHang gh, CancellationToken cancellationToken = default)
-    {
-        if (gh == null)
+        if (gh != null)
         {
-            throw new ArgumentNullException(nameof(gh), "Giỏ hàng không được để trống.");
+            gh.DanhSachSanPham = LayChiTietGioHang(gh.MaGioHang);
         }
 
-        await _dbContext.GioHangs.AddAsync(gh, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return gh;
     }
 
-    /// <summary>
-    /// Cập nhật giỏ hàng và danh sách sản phẩm bên trong (đồng bộ).
-    /// Khớp phương thức: + CapNhatGioHang(gh: GioHang): void trong Diagram.
-    /// </summary>
-    /// <param name="gh">Thực thể giỏ hàng</param>
     public void CapNhatGioHang(GioHang gh)
     {
         if (gh == null)
@@ -83,31 +75,122 @@ public class GioHangRepository : IGioHangRepository
             throw new ArgumentNullException(nameof(gh), "Giỏ hàng không được để trống.");
         }
 
-        var entry = _dbContext.GioHangs.Local.FirstOrDefault(g => g.MaGioHang == gh.MaGioHang);
-        if (entry == null)
-        {
-            _dbContext.GioHangs.Update(gh);
-        }
+        using var conn = _dbHelper.GetConnection();
+        using var tx = conn.BeginTransaction();
 
-        _dbContext.SaveChanges();
+        try
+        {
+            const string sqlGioHang = @"
+                IF EXISTS (SELECT 1 FROM dbo.GioHang WHERE MaGioHang = @MaGioHang)
+                BEGIN
+                    UPDATE dbo.GioHang
+                    SET MaKhachHang = @MaKhachHang,
+                        SoLuong = @SoLuong
+                    WHERE MaGioHang = @MaGioHang;
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO dbo.GioHang (MaGioHang, MaKhachHang, SoLuong)
+                    VALUES (@MaGioHang, @MaKhachHang, @SoLuong);
+                END";
+
+            using (var cmdGh = new SqlCommand(sqlGioHang, conn, tx))
+            {
+                cmdGh.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
+                cmdGh.Parameters.Add(new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = gh.MaKhachHang });
+                cmdGh.Parameters.Add(new SqlParameter("@SoLuong", SqlDbType.Int) { Value = gh.SoLuong });
+                cmdGh.ExecuteNonQuery();
+            }
+
+            const string sqlDeleteCt = "DELETE FROM dbo.ChiTietGioHang WHERE MaGioHang = @MaGioHang;";
+            using (var cmdDel = new SqlCommand(sqlDeleteCt, conn, tx))
+            {
+                cmdDel.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
+                cmdDel.ExecuteNonQuery();
+            }
+
+            if (gh.DanhSachSanPham != null && gh.DanhSachSanPham.Count > 0)
+            {
+                const string sqlInsertCt = @"
+                    INSERT INTO dbo.ChiTietGioHang (MaGioHang, MaSanPham, SoLuongSanPham)
+                    VALUES (@MaGioHang, @MaSanPham, @SoLuongSanPham);";
+
+                foreach (var ct in gh.DanhSachSanPham)
+                {
+                    using var cmdCt = new SqlCommand(sqlInsertCt, conn, tx);
+                    cmdCt.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
+                    cmdCt.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
+                    cmdCt.Parameters.Add(new SqlParameter("@SoLuongSanPham", SqlDbType.Int) { Value = ct.SoLuongSanPham });
+                    cmdCt.ExecuteNonQuery();
+                }
+            }
+
+            tx.Commit();
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
     }
 
-    /// <summary>
-    /// Cập nhật giỏ hàng và danh sách sản phẩm bên trong (bất đồng bộ).
-    /// </summary>
-    public async Task CapNhatGioHangAsync(GioHang gh, CancellationToken cancellationToken = default)
+    public Task<GioHang?> LayGioHangAsync(string maKH, CancellationToken cancellationToken = default)
     {
-        if (gh == null)
+        return Task.FromResult(LayGioHang(maKH));
+    }
+
+    public Task CapNhatGioHangAsync(GioHang gh, CancellationToken cancellationToken = default)
+    {
+        CapNhatGioHang(gh);
+        return Task.CompletedTask;
+    }
+
+    public Task LuuGioHangAsync(GioHang gh, CancellationToken cancellationToken = default)
+    {
+        CapNhatGioHang(gh);
+        return Task.CompletedTask;
+    }
+
+    private List<ChiTietGioHang> LayChiTietGioHang(string maGioHang)
+    {
+        var list = new List<ChiTietGioHang>();
+        const string sql = @"
+            SELECT c.MaGioHang, c.MaSanPham, c.SoLuongSanPham,
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai
+            FROM dbo.ChiTietGioHang c
+            LEFT JOIN dbo.SanPhamTrangSuc s ON c.MaSanPham = s.MaSanPham
+            WHERE c.MaGioHang = @MaGioHang;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = maGioHang });
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
         {
-            throw new ArgumentNullException(nameof(gh), "Giỏ hàng không được để trống.");
+            var ct = new ChiTietGioHang(
+                maGioHang: reader.GetString(reader.GetOrdinal("MaGioHang")),
+                maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
+                soLuongSanPham: reader.GetInt32(reader.GetOrdinal("SoLuongSanPham"))
+            );
+
+            if (!reader.IsDBNull(reader.GetOrdinal("TenSanPham")))
+            {
+                ct.SanPham = new SanPhamTrangSuc(
+                    maSanPham: ct.MaSanPham,
+                    tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
+                    maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+                    chatLieu: reader.GetString(reader.GetOrdinal("ChatLieu")),
+                    size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
+                    giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
+                    giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
+                    trangThai: reader.GetString(reader.GetOrdinal("TrangThai"))
+                );
+            }
+
+            list.Add(ct);
         }
 
-        var entry = _dbContext.GioHangs.Local.FirstOrDefault(g => g.MaGioHang == gh.MaGioHang);
-        if (entry == null)
-        {
-            _dbContext.GioHangs.Update(gh);
-        }
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return list;
     }
 }

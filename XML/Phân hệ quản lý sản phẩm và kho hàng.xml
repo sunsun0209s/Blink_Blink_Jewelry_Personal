@@ -262,7 +262,7 @@
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-257" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PhieuNhapKhoRepositoryImpl" vertex="1">
           <mxGeometry height="86" width="290" x="700" y="1490" as="geometry" />
         </mxCell>
-        <mxCell id="J6PPJE1-1b1ZUSAGWI9q-258" parent="J6PPJE1-1b1ZUSAGWI9q-257" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _db: DbContext" vertex="1">
+        <mxCell id="J6PPJE1-1b1ZUSAGWI9q-258" parent="J6PPJE1-1b1ZUSAGWI9q-257" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _db: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="290" y="26" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-259" parent="J6PPJE1-1b1ZUSAGWI9q-257" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -424,7 +424,7 @@
         <mxCell id="e925lyF6L0-hw0onFAC7-48" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SanPhamRepository" vertex="1">
           <mxGeometry height="86" width="270" x="1100" y="1480" as="geometry" />
         </mxCell>
-        <mxCell id="e925lyF6L0-hw0onFAC7-49" parent="e925lyF6L0-hw0onFAC7-48" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: KhoDbContext" vertex="1">
+        <mxCell id="e925lyF6L0-hw0onFAC7-49" parent="e925lyF6L0-hw0onFAC7-48" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: KhoDatabaseHelper" vertex="1">
           <mxGeometry height="26" width="270" y="26" as="geometry" />
         </mxCell>
         <mxCell id="e925lyF6L0-hw0onFAC7-50" parent="e925lyF6L0-hw0onFAC7-48" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -442,7 +442,7 @@
         <mxCell id="e925lyF6L0-hw0onFAC7-53" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="DanhMucRepository" vertex="1">
           <mxGeometry height="86" width="235" x="1440" y="1460" as="geometry" />
         </mxCell>
-        <mxCell id="e925lyF6L0-hw0onFAC7-54" parent="e925lyF6L0-hw0onFAC7-53" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: KhoDbContext" vertex="1">
+        <mxCell id="e925lyF6L0-hw0onFAC7-54" parent="e925lyF6L0-hw0onFAC7-53" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: KhoDatabaseHelper" vertex="1">
           <mxGeometry height="26" width="235" y="26" as="geometry" />
         </mxCell>
         <mxCell id="e925lyF6L0-hw0onFAC7-55" parent="e925lyF6L0-hw0onFAC7-53" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -517,7 +517,7 @@
         <mxCell id="ext-PhieuKiemKeRepository" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PhieuKiemKeRepository" vertex="1">
           <mxGeometry height="86" width="280" x="1720" y="1460" as="geometry" />
         </mxCell>
-        <mxCell id="ext-PhieuKiemKeRepository-f1" parent="ext-PhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: AppDbContext" vertex="1">
+        <mxCell id="ext-PhieuKiemKeRepository-f1" parent="ext-PhieuKiemKeRepository" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="280" y="26" as="geometry" />
         </mxCell>
         <mxCell id="ext-PhieuKiemKeRepository-line" parent="ext-PhieuKiemKeRepository" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">

@@ -1,7 +1,8 @@
 using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
@@ -9,23 +10,22 @@ using BlinkBlink.Infrastructure.Data;
 namespace BlinkBlink.Infrastructure.Repositories;
 
 /// <summary>
-/// Triển khai Repository cho thực thể SanPhamTrangSuc sử dụng Entity Framework Core.
-/// Khớp 100% với Class Diagram.
+/// Triển khai Repository cho thực thể SanPhamTrangSuc bằng ADO.NET thuần.
+/// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ sản phẩm.
 /// </summary>
 public class SanPhamRepository : ISanPhamRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly DatabaseHelper _dbHelper;
 
-    public SanPhamRepository(AppDbContext dbContext)
+    public SanPhamRepository(DatabaseHelper dbHelper)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
     }
 
-    /// <summary>
-    /// Lưu (Thêm mới hoặc Cập nhật) sản phẩm trang sức xuống cơ sở dữ liệu.
-    /// Khớp hàm: + LuuSanPham(sp: SanPhamTrangSuc): void trong Diagram.
-    /// </summary>
-    /// <param name="sp">Thực thể sản phẩm trang sức</param>
+    public SanPhamRepository(string connectionString) : this(new DatabaseHelper(connectionString))
+    {
+    }
+
     public void LuuSanPham(SanPhamTrangSuc sp)
     {
         if (sp == null)
@@ -33,25 +33,40 @@ public class SanPhamRepository : ISanPhamRepository
             throw new ArgumentNullException(nameof(sp), "Sản phẩm không được để trống.");
         }
 
-        var entry = _dbContext.SanPhamTrangSucs.Find(sp.MaSanPham);
-        if (entry == null)
-        {
-            _dbContext.SanPhamTrangSucs.Add(sp);
-        }
-        else
-        {
-            _dbContext.Entry(entry).CurrentValues.SetValues(sp);
-        }
+        const string sql = @"
+            IF EXISTS (SELECT 1 FROM dbo.SanPhamTrangSuc WHERE MaSanPham = @MaSanPham)
+            BEGIN
+                UPDATE dbo.SanPhamTrangSuc
+                SET TenSanPham = @TenSanPham,
+                    MaDanhMuc = @MaDanhMuc,
+                    ChatLieu = @ChatLieu,
+                    Size = @Size,
+                    GiaNhap = @GiaNhap,
+                    GiaBan = @GiaBan,
+                    TrangThai = @TrangThai
+                WHERE MaSanPham = @MaSanPham;
+            END
+            ELSE
+            BEGIN
+                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai)
+                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai);
+            END";
 
-        _dbContext.SaveChanges();
+        var parameters = new[]
+        {
+            new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = sp.MaSanPham },
+            new SqlParameter("@TenSanPham", SqlDbType.NVarChar, 200) { Value = sp.TenSanPham },
+            new SqlParameter("@MaDanhMuc", SqlDbType.VarChar, 50) { Value = sp.MaDanhMuc },
+            new SqlParameter("@ChatLieu", SqlDbType.NVarChar, 100) { Value = sp.ChatLieu },
+            new SqlParameter("@Size", SqlDbType.NVarChar, 20) { Value = (object?)sp.Size ?? DBNull.Value },
+            new SqlParameter("@GiaNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaNhap },
+            new SqlParameter("@GiaBan", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaBan },
+            new SqlParameter("@TrangThai", SqlDbType.NVarChar, 50) { Value = sp.TrangThai }
+        };
+
+        _dbHelper.ExecuteNonQuery(sql, parameters);
     }
 
-    /// <summary>
-    /// Tìm kiếm thông tin sản phẩm trang sức theo khóa chính mã sản phẩm.
-    /// Khớp hàm: + TimTheoId(maSanPham: string): SanPhamTrangSuc trong Diagram.
-    /// </summary>
-    /// <param name="maSanPham">Mã sản phẩm</param>
-    /// <returns>Thực thể sản phẩm trang sức hoặc null nếu không tìm thấy</returns>
     public SanPhamTrangSuc? TimTheoId(string maSanPham)
     {
         if (string.IsNullOrWhiteSpace(maSanPham))
@@ -59,44 +74,59 @@ public class SanPhamRepository : ISanPhamRepository
             return null;
         }
 
-        return _dbContext.SanPhamTrangSucs
-            .Include(s => s.DanhMuc)
-            .FirstOrDefault(s => s.MaSanPham == maSanPham.Trim());
+        const string sql = @"
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai,
+                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
+            FROM dbo.SanPhamTrangSuc s
+            LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
+            WHERE s.MaSanPham = @MaSanPham;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = maSanPham.Trim() });
+
+        using var reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            return MapReaderToSanPham(reader);
+        }
+
+        return null;
     }
 
-    // =========================================================================
-    // MỞ RỘNG BẤT ĐỒNG BỘ CHUẨN CLEAN ARCHITECTURE .NET 8 LTS
-    // =========================================================================
-
-    public async Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken cancellationToken = default)
+    public Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken cancellationToken = default)
     {
-        if (sp == null)
-        {
-            throw new ArgumentNullException(nameof(sp), "Sản phẩm không được để trống.");
-        }
-
-        var entry = await _dbContext.SanPhamTrangSucs.FindAsync(new object?[] { sp.MaSanPham }, cancellationToken);
-        if (entry == null)
-        {
-            await _dbContext.SanPhamTrangSucs.AddAsync(sp, cancellationToken);
-        }
-        else
-        {
-            _dbContext.Entry(entry).CurrentValues.SetValues(sp);
-        }
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        LuuSanPham(sp);
+        return Task.CompletedTask;
     }
 
-    public async Task<SanPhamTrangSuc?> TimTheoIdAsync(string maSanPham, CancellationToken cancellationToken = default)
+    public Task<SanPhamTrangSuc?> TimTheoIdAsync(string maSanPham, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(maSanPham))
+        return Task.FromResult(TimTheoId(maSanPham));
+    }
+
+    private static SanPhamTrangSuc MapReaderToSanPham(SqlDataReader reader)
+    {
+        var sp = new SanPhamTrangSuc(
+            maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
+            tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
+            maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+            chatLieu: reader.GetString(reader.GetOrdinal("ChatLieu")),
+            size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
+            giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
+            giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
+            trangThai: reader.GetString(reader.GetOrdinal("TrangThai"))
+        );
+
+        if (!reader.IsDBNull(reader.GetOrdinal("TenDanhMuc")))
         {
-            return null;
+            sp.DanhMuc = new DanhMuc(
+                maDanhMuc: sp.MaDanhMuc,
+                tenDanhMuc: reader.GetString(reader.GetOrdinal("TenDanhMuc")),
+                moTa: reader.IsDBNull(reader.GetOrdinal("MoTaDanhMuc")) ? string.Empty : reader.GetString(reader.GetOrdinal("MoTaDanhMuc"))
+            );
         }
 
-        return await _dbContext.SanPhamTrangSucs
-            .Include(s => s.DanhMuc)
-            .FirstOrDefaultAsync(s => s.MaSanPham == maSanPham.Trim(), cancellationToken);
+        return sp;
     }
 }

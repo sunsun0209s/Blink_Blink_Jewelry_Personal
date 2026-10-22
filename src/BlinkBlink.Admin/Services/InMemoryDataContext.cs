@@ -59,55 +59,7 @@ public class InMemoryDataContext
 
     public void SeedInitialLuxuryData()
     {
-        // 1. Danh mục trang sức cao cấp
-        var dm1 = new DanhMuc("DM01", "Nhẫn Kim Cương", "Các dòng nhẫn đính hôn, nhẫn thời trang kim cương tinh xảo");
-        var dm2 = new DanhMuc("DM02", "Dây Chuyền & Mặt Dây", "Dây chuyền vàng 18K và mặt dây gắn đá quý phong thủy");
-        var dm3 = new DanhMuc("DM03", "Bông Tai Quý Phái", "Bông tai đính đá Sapphire, Ruby và ngọc trai nước ngọt");
-        var dm4 = new DanhMuc("DM04", "Vòng Tay & Lắc Kim Cương", "Lắc tay Tennis và vòng kiềng đính đá lấp lánh");
-        DanhMucs.AddRange(new[] { dm1, dm2, dm3, dm4 });
-
-        // 2. Sản phẩm trang sức (Khớp 100% thuộc tính SanPhamTrangSuc)
-        var sp1 = new SanPhamTrangSuc("SP001", "Nhẫn Solitaire Diamond 18K", "DM01", "Vàng trắng 18K", "Size 14", 18000000m, 28500000m, "SanSang");
-        var sp2 = new SanPhamTrangSuc("SP002", "Dây Chuyền Eternal Heart Ruby", "DM02", "Vàng hồng 18K", "Size 45cm", 12000000m, 19200000m, "SanSang");
-        var sp3 = new SanPhamTrangSuc("SP003", "Bông Tai Royal Blue Sapphire", "DM03", "Bạch kim Platin 950", "Tiêu chuẩn", 22000000m, 34000000m, "SanSang");
-        var sp4 = new SanPhamTrangSuc("SP004", "Lắc Tay Tennis Diamond Bracelet", "DM04", "Vàng trắng 18K", "Size 17cm", 48000000m, 72000000m, "SanSang");
-        var sp5 = new SanPhamTrangSuc("SP005", "Nhẫn Cưới Harmony Eternity", "DM01", "Vàng Ý 750", "Size 16", 11000000m, 16800000m, "SanSang");
-        SanPhams.AddRange(new[] { sp1, sp2, sp3, sp4, sp5 });
-
-        // 3. Vai trò & Nhân sự
-        var vtAdmin = new VaiTro("VT01", "Admin");
-        var vtSales = new VaiTro("VT02", "NhanVien");
-        VaiTros.AddRange(new[] { vtAdmin, vtSales });
-
-        var nv1 = new NhanVien("USER_NV001", "Trần Minh Hoàng", "0901234567", "hoang.tran", "hash123", "VT01", "NV001", 15000000m, true);
-        var nv2 = new NhanVien("USER_NV002", "Lê Phương Thảo", "0912345678", "thao.le", "hash456", "VT02", "NV002", 12000000m, true);
-        NhanViens.AddRange(new[] { nv1, nv2 });
-
-        // 4. Khách hàng
-        var kh1 = new KhachHang("USER_KH001", "Phạm Bích Ngọc", "0988112233", "ngoc.pham", "hash789", "VT02", "KH001", new DateTime(1995, 8, 15), true);
-        var kh2 = new KhachHang("USER_KH002", "Hoàng Tuấn Anh", "0977223344", "anh.hoang", "hash101", "VT02", "KH002", new DateTime(1992, 3, 20), true);
-        KhachHangs.AddRange(new[] { kh1, kh2 });
-
-        // 5. Đơn đặt hàng mẫu
-        var hd1 = new HoaDon("HD1001", DateTime.Now.AddDays(-3), "KH001", "45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM", "0988112233", "ChuyenKhoan", "DaGiao", "Đơn quà tặng kỷ niệm", "NV001");
-        hd1.ChiTietHoaDons.Add(new ChiTietHoaDon("HD1001", "SP001", 28500000m, 1));
-        hd1.TienGiamGia = 1000000m;
-        hd1.TinhTongTien();
-
-        var hd2 = new HoaDon("HD1002", DateTime.Now.AddDays(-1), "KH002", "128 Hai Bà Trưng, Quận 3, TP.HCM", "0977223344", "COD", "DangGiao", "Giao giờ hành chính", "NV002");
-        hd2.ChiTietHoaDons.Add(new ChiTietHoaDon("HD1002", "SP002", 19200000m, 1));
-        hd2.TinhTongTien();
-
-        var hd3 = new HoaDon("HD1003", DateTime.Now, "KH001", "45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM", "0988112233", "ChuyenKhoan", "ChoDuyet", "Khách đặt trực tuyến website");
-        hd3.ChiTietHoaDons.Add(new ChiTietHoaDon("HD1003", "SP003", 34000000m, 1));
-        hd3.TinhTongTien();
-
-        HoaDons.AddRange(new[] { hd1, hd2, hd3 });
-
-        // 6. Phiếu bảo hành mẫu
-        var pbh1 = new PhieuBaoHanh("BH2001", "KH001", "SP001", "Lỏng chấu giữ viên kim cương chủ", 0m, "DaHoanTat", DateTime.Now.AddDays(-10), DateTime.Now.AddDays(-7));
-        var pbh2 = new PhieuBaoHanh("BH2002", "KH002", "SP002", "Đứt móc khoen khóa cài dây chuyền", 150000m, "DangBaoHanh", DateTime.Now.AddDays(-2), DateTime.Now.AddDays(2));
-        PhieuBaoHanhs.AddRange(new[] { pbh1, pbh2 });
+        // Da loai bo du lieu mau trong C# theo yeu cau.
     }
 
     private class MemorySanPhamRepository : ISanPhamRepository

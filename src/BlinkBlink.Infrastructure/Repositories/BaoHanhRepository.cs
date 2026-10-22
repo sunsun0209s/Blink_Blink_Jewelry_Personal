@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using BlinkBlink.Domain.Entities.Catalog;
+using BlinkBlink.Domain.Entities.Customers;
 using BlinkBlink.Domain.Entities.Warranty;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
@@ -11,23 +13,22 @@ using BlinkBlink.Infrastructure.Data;
 namespace BlinkBlink.Infrastructure.Repositories;
 
 /// <summary>
-/// Triển khai Kho lưu trữ phiếu bảo hành (BaoHanhRepository) sử dụng Entity Framework Core.
+/// Triển khai Repository cho thực thể PhieuBaoHanh bằng ADO.NET thuần.
 /// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ bảo hành.
 /// </summary>
 public class BaoHanhRepository : IBaoHanhRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly DatabaseHelper _dbHelper;
 
-    public BaoHanhRepository(AppDbContext dbContext)
+    public BaoHanhRepository(DatabaseHelper dbHelper)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
     }
 
-    /// <summary>
-    /// Lưu phiếu bảo hành mới vào cơ sở dữ liệu (đồng bộ).
-    /// Khớp phương thức: + LuuPhieu(pbh: PhieuBaoHanh): void trong Diagram.
-    /// </summary>
-    /// <param name="pbh">Thực thể phiếu bảo hành</param>
+    public BaoHanhRepository(string connectionString) : this(new DatabaseHelper(connectionString))
+    {
+    }
+
     public void LuuPhieu(PhieuBaoHanh pbh)
     {
         if (pbh == null)
@@ -35,30 +36,40 @@ public class BaoHanhRepository : IBaoHanhRepository
             throw new ArgumentNullException(nameof(pbh), "Phiếu bảo hành không được để trống.");
         }
 
-        _dbContext.PhieuBaoHanhs.Add(pbh);
-        _dbContext.SaveChanges();
-    }
+        const string sql = @"
+            IF EXISTS (SELECT 1 FROM dbo.PhieuBaoHanh WHERE SoPhieuBH = @SoPhieuBH)
+            BEGIN
+                UPDATE dbo.PhieuBaoHanh
+                SET MaKhachHang = @MaKhachHang,
+                    MaSanPham = @MaSanPham,
+                    LyDoBaoHanh = @LyDoBaoHanh,
+                    ChiPhiBaoHanh = @ChiPhiBaoHanh,
+                    TrangThaiXuLy = @TrangThaiXuLy,
+                    NgayTiepNhan = @NgayTiepNhan,
+                    NgayHenTra = @NgayHenTra
+                WHERE SoPhieuBH = @SoPhieuBH;
+            END
+            ELSE
+            BEGIN
+                INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra)
+                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra);
+            END";
 
-    /// <summary>
-    /// Lưu phiếu bảo hành mới vào cơ sở dữ liệu (bất đồng bộ).
-    /// </summary>
-    public async Task LuuPhieuAsync(PhieuBaoHanh pbh, CancellationToken cancellationToken = default)
-    {
-        if (pbh == null)
+        var parameters = new[]
         {
-            throw new ArgumentNullException(nameof(pbh), "Phiếu bảo hành không được để trống.");
-        }
+            new SqlParameter("@SoPhieuBH", SqlDbType.VarChar, 50) { Value = pbh.SoPhieuBH },
+            new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = pbh.MaKhachHang },
+            new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = pbh.MaSanPham },
+            new SqlParameter("@LyDoBaoHanh", SqlDbType.NVarChar, 500) { Value = pbh.LyDoBaoHanh },
+            new SqlParameter("@ChiPhiBaoHanh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiBaoHanh },
+            new SqlParameter("@TrangThaiXuLy", SqlDbType.NVarChar, 50) { Value = pbh.TrangThaiXuLy },
+            new SqlParameter("@NgayTiepNhan", SqlDbType.DateTime2) { Value = pbh.NgayTiepNhan },
+            new SqlParameter("@NgayHenTra", SqlDbType.DateTime2) { Value = (object?)pbh.NgayHenTra ?? DBNull.Value }
+        };
 
-        await _dbContext.PhieuBaoHanhs.AddAsync(pbh, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        _dbHelper.ExecuteNonQuery(sql, parameters);
     }
 
-    /// <summary>
-    /// Tìm phiếu bảo hành theo số phiếu định danh (đồng bộ).
-    /// Khớp phương thức: + TimTheoSoPhieu(soPhieu: string): PhieuBaoHanh trong Diagram.
-    /// </summary>
-    /// <param name="soPhieu">Số phiếu bảo hành</param>
-    /// <returns>Phiếu bảo hành kèm thông tin khách và sản phẩm hoặc null</returns>
     public PhieuBaoHanh? TimTheoSoPhieu(string soPhieu)
     {
         if (string.IsNullOrWhiteSpace(soPhieu))
@@ -66,134 +77,166 @@ public class BaoHanhRepository : IBaoHanhRepository
             return null;
         }
 
-        return _dbContext.PhieuBaoHanhs
-            .Include(p => p.KhachHang)
-            .Include(p => p.SanPham)
-            .FirstOrDefault(p => p.SoPhieuBH == soPhieu);
-    }
+        const string sql = @"
+            SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
+            FROM dbo.PhieuBaoHanh b
+            LEFT JOIN dbo.NguoiDung u ON b.MaKhachHang = u.MaNguoiDung
+            LEFT JOIN dbo.KhachHang kh ON u.MaNguoiDung = kh.MaNguoiDung
+            LEFT JOIN dbo.SanPhamTrangSuc s ON b.MaSanPham = s.MaSanPham
+            WHERE b.SoPhieuBH = @SoPhieuBH;";
 
-    /// <summary>
-    /// Tìm phiếu bảo hành theo số phiếu định danh (bất đồng bộ).
-    /// </summary>
-    public async Task<PhieuBaoHanh?> TimTheoSoPhieuAsync(string soPhieu, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(soPhieu))
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@SoPhieuBH", SqlDbType.VarChar, 50) { Value = soPhieu.Trim() });
+
+        using var reader = cmd.ExecuteReader();
+        if (reader.Read())
         {
-            return null;
+            return MapReaderToPhieuBaoHanh(reader);
         }
 
-        return await _dbContext.PhieuBaoHanhs
-            .Include(p => p.KhachHang)
-            .Include(p => p.SanPham)
-            .FirstOrDefaultAsync(p => p.SoPhieuBH == soPhieu, cancellationToken);
+        return null;
     }
 
-    /// <summary>
-    /// Lấy danh sách phiếu bảo hành của một khách hàng (đồng bộ).
-    /// Khớp phương thức: + LayTheoKhachHang(maKH: string): List&lt;PhieuBaoHanh&gt; trong Diagram.
-    /// </summary>
-    /// <param name="maKH">Mã khách hàng</param>
-    /// <returns>Danh sách phiếu bảo hành của khách</returns>
     public List<PhieuBaoHanh> LayTheoKhachHang(string maKH)
     {
+        var list = new List<PhieuBaoHanh>();
         if (string.IsNullOrWhiteSpace(maKH))
         {
-            return new List<PhieuBaoHanh>();
+            return list;
         }
 
-        return _dbContext.PhieuBaoHanhs
-            .Include(p => p.SanPham)
-            .Where(p => p.MaKhachHang == maKH)
-            .OrderByDescending(p => p.NgayTiepNhan)
-            .ToList();
-    }
+        const string sql = @"
+            SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
+            FROM dbo.PhieuBaoHanh b
+            LEFT JOIN dbo.NguoiDung u ON b.MaKhachHang = u.MaNguoiDung
+            LEFT JOIN dbo.KhachHang kh ON u.MaNguoiDung = kh.MaNguoiDung
+            LEFT JOIN dbo.SanPhamTrangSuc s ON b.MaSanPham = s.MaSanPham
+            WHERE b.MaKhachHang = @MaKhachHang OR kh.MaKhachHang = @MaKhachHang
+            ORDER BY b.NgayTiepNhan DESC;";
 
-    /// <summary>
-    /// Lấy danh sách phiếu bảo hành của một khách hàng (bất đồng bộ).
-    /// </summary>
-    public async Task<List<PhieuBaoHanh>> LayTheoKhachHangAsync(string maKH, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(maKH))
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = maKH.Trim() });
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
         {
-            return new List<PhieuBaoHanh>();
+            list.Add(MapReaderToPhieuBaoHanh(reader));
         }
 
-        return await _dbContext.PhieuBaoHanhs
-            .Include(p => p.SanPham)
-            .Where(p => p.MaKhachHang == maKH)
-            .OrderByDescending(p => p.NgayTiepNhan)
-            .ToListAsync(cancellationToken);
+        return list;
     }
 
-    /// <summary>
-    /// Lấy toàn bộ danh sách phiếu bảo hành trong hệ thống (đồng bộ).
-    /// </summary>
-    /// <returns>Danh sách tất cả phiếu bảo hành</returns>
     public List<PhieuBaoHanh> LayDanhSachPhieu()
     {
-        return _dbContext.PhieuBaoHanhs
-            .Include(p => p.KhachHang)
-            .Include(p => p.SanPham)
-            .OrderByDescending(p => p.NgayTiepNhan)
-            .ToList();
+        var list = new List<PhieuBaoHanh>();
+
+        const string sql = @"
+            SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
+            FROM dbo.PhieuBaoHanh b
+            LEFT JOIN dbo.NguoiDung u ON b.MaKhachHang = u.MaNguoiDung
+            LEFT JOIN dbo.KhachHang kh ON u.MaNguoiDung = kh.MaNguoiDung
+            LEFT JOIN dbo.SanPhamTrangSuc s ON b.MaSanPham = s.MaSanPham
+            ORDER BY b.NgayTiepNhan DESC;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            list.Add(MapReaderToPhieuBaoHanh(reader));
+        }
+
+        return list;
     }
 
-    /// <summary>
-    /// Lấy toàn bộ danh sách phiếu bảo hành trong hệ thống (bất đồng bộ).
-    /// </summary>
-    public async Task<List<PhieuBaoHanh>> LayDanhSachPhieuAsync(CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.PhieuBaoHanhs
-            .Include(p => p.KhachHang)
-            .Include(p => p.SanPham)
-            .OrderByDescending(p => p.NgayTiepNhan)
-            .ToListAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Cập nhật thông tin phiếu bảo hành (đồng bộ).
-    /// </summary>
-    /// <param name="pbh">Thực thể phiếu bảo hành</param>
     public void CapNhatPhieu(PhieuBaoHanh pbh)
     {
         if (pbh == null)
         {
-            throw new ArgumentNullException(nameof(pbh), "Phiếu bảo hành không được để trống.");
+            return;
         }
 
-        var tracked = _dbContext.PhieuBaoHanhs.Local.FirstOrDefault(e => e.SoPhieuBH == pbh.SoPhieuBH);
-        if (tracked == null)
-        {
-            _dbContext.PhieuBaoHanhs.Update(pbh);
-        }
-        else if (!ReferenceEquals(tracked, pbh))
-        {
-            _dbContext.Entry(tracked).CurrentValues.SetValues(pbh);
-        }
+        const string sql = @"
+            UPDATE dbo.PhieuBaoHanh
+            SET ChiPhiBaoHanh = @ChiPhiBaoHanh,
+                TrangThaiXuLy = @TrangThaiXuLy,
+                NgayHenTra = @NgayHenTra
+            WHERE SoPhieuBH = @SoPhieuBH;";
 
-        _dbContext.SaveChanges();
+        var parameters = new[]
+        {
+            new SqlParameter("@SoPhieuBH", SqlDbType.VarChar, 50) { Value = pbh.SoPhieuBH },
+            new SqlParameter("@ChiPhiBaoHanh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiBaoHanh },
+            new SqlParameter("@TrangThaiXuLy", SqlDbType.NVarChar, 50) { Value = pbh.TrangThaiXuLy },
+            new SqlParameter("@NgayHenTra", SqlDbType.DateTime2) { Value = (object?)pbh.NgayHenTra ?? DBNull.Value }
+        };
+
+        _dbHelper.ExecuteNonQuery(sql, parameters);
     }
 
-    /// <summary>
-    /// Cập nhật thông tin phiếu bảo hành (bất đồng bộ).
-    /// </summary>
-    public async Task CapNhatPhieuAsync(PhieuBaoHanh pbh, CancellationToken cancellationToken = default)
+    public Task LuuPhieuAsync(PhieuBaoHanh pbh, CancellationToken cancellationToken = default)
     {
-        if (pbh == null)
+        LuuPhieu(pbh);
+        return Task.CompletedTask;
+    }
+
+    public Task<PhieuBaoHanh?> TimTheoSoPhieuAsync(string soPhieu, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(TimTheoSoPhieu(soPhieu));
+    }
+
+    public Task<List<PhieuBaoHanh>> LayTheoKhachHangAsync(string maKH, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LayTheoKhachHang(maKH));
+    }
+
+    public Task<List<PhieuBaoHanh>> LayDanhSachPhieuAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LayDanhSachPhieu());
+    }
+
+    public Task CapNhatPhieuAsync(PhieuBaoHanh pbh, CancellationToken cancellationToken = default)
+    {
+        CapNhatPhieu(pbh);
+        return Task.CompletedTask;
+    }
+
+    private static PhieuBaoHanh MapReaderToPhieuBaoHanh(SqlDataReader reader)
+    {
+        var pbh = new PhieuBaoHanh(
+            soPhieuBH: reader.GetString(reader.GetOrdinal("SoPhieuBH")),
+            maKhachHang: reader.GetString(reader.GetOrdinal("MaKhachHang")),
+            maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
+            lyDoBaoHanh: reader.GetString(reader.GetOrdinal("LyDoBaoHanh")),
+            chiPhiBaoHanh: reader.GetDecimal(reader.GetOrdinal("ChiPhiBaoHanh")),
+            trangThaiXuLy: reader.GetString(reader.GetOrdinal("TrangThaiXuLy")),
+            ngayTiepNhan: reader.GetDateTime(reader.GetOrdinal("NgayTiepNhan")),
+            ngayHenTra: reader.IsDBNull(reader.GetOrdinal("NgayHenTra")) ? null : reader.GetDateTime(reader.GetOrdinal("NgayHenTra"))
+        );
+
+        if (!reader.IsDBNull(reader.GetOrdinal("TenSanPham")))
         {
-            throw new ArgumentNullException(nameof(pbh), "Phiếu bảo hành không được để trống.");
+            pbh.SanPham = new SanPhamTrangSuc(
+                maSanPham: pbh.MaSanPham,
+                tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
+                maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+                chatLieu: reader.GetString(reader.GetOrdinal("ChatLieu")),
+                size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
+                giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
+                giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
+                trangThai: reader.GetString(reader.GetOrdinal("TrangThaiSanPham"))
+            );
         }
 
-        var tracked = _dbContext.PhieuBaoHanhs.Local.FirstOrDefault(e => e.SoPhieuBH == pbh.SoPhieuBH);
-        if (tracked == null)
-        {
-            _dbContext.PhieuBaoHanhs.Update(pbh);
-        }
-        else if (!ReferenceEquals(tracked, pbh))
-        {
-            _dbContext.Entry(tracked).CurrentValues.SetValues(pbh);
-        }
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return pbh;
     }
 }

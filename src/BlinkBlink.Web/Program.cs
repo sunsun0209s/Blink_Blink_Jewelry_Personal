@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,15 +14,12 @@ using BlinkBlink.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình kết nối cơ sở dữ liệu EF Core SQL Server
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-        ?? "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true";
-    options.UseSqlServer(connectionString);
-});
+// Cấu hình chuỗi kết nối và tiện ích truy xuất CSDL ADO.NET thuần
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+builder.Services.AddSingleton(new DatabaseHelper(connectionString));
 
-// Đăng ký các Kho dữ liệu (Repositories)
+// Đăng ký các Kho dữ liệu (Repositories) sử dụng ADO.NET thuần
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
 builder.Services.AddScoped<IDanhMucRepository, DanhMucRepository>();
 builder.Services.AddScoped<IKhachHangRepository, KhachHangRepository>();

@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Entities.Inventory;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
@@ -9,23 +12,22 @@ using BlinkBlink.Infrastructure.Data;
 namespace BlinkBlink.Infrastructure.Repositories;
 
 /// <summary>
-/// Triển khai Repository cho thực thể PhieuNhapKho.
-/// Khớp 100% tên lớp PhieuNhapKhoRepositoryImpl trong Class Diagram.
+/// Triển khai Repository cho thực thể PhieuNhapKho bằng ADO.NET thuần.
+/// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ sản phẩm và kho hàng.
 /// </summary>
 public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
 {
-    private readonly AppDbContext _db;
+    private readonly DatabaseHelper _dbHelper;
 
-    public PhieuNhapKhoRepositoryImpl(AppDbContext db)
+    public PhieuNhapKhoRepositoryImpl(DatabaseHelper dbHelper)
     {
-        _db = db ?? throw new ArgumentNullException(nameof(db));
+        _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
     }
 
-    /// <summary>
-    /// Lưu phiếu nhập kho và các dòng chi tiết sản phẩm xuống cơ sở dữ liệu.
-    /// Khớp hàm: + LuuPhieuNhap(phieu: PhieuNhapKho): void trong Diagram.
-    /// </summary>
-    /// <param name="phieu">Thực thể phiếu nhập kho</param>
+    public PhieuNhapKhoRepositoryImpl(string connectionString) : this(new DatabaseHelper(connectionString))
+    {
+    }
+
     public void LuuPhieuNhap(PhieuNhapKho phieu)
     {
         if (phieu == null)
@@ -33,59 +35,163 @@ public class PhieuNhapKhoRepositoryImpl : IPhieuNhapKhoRepository
             throw new ArgumentNullException(nameof(phieu), "Phiếu nhập kho không được để trống.");
         }
 
-        var entry = _db.PhieuNhapKhos
-            .Include(p => p.ChiTietNhapKhos)
-            .FirstOrDefault(p => p.MaPhieuNhap == phieu.MaPhieuNhap);
+        using var conn = _dbHelper.GetConnection();
+        using var tx = conn.BeginTransaction();
 
-        if (entry == null)
+        try
         {
-            _db.PhieuNhapKhos.Add(phieu);
-        }
-        else
-        {
-            _db.Entry(entry).CurrentValues.SetValues(phieu);
-        }
+            const string sqlPhieu = @"
+                IF EXISTS (SELECT 1 FROM dbo.PhieuNhapKho WHERE MaPhieuNhap = @MaPhieuNhap)
+                BEGIN
+                    UPDATE dbo.PhieuNhapKho
+                    SET NgayNhap = @NgayNhap,
+                        NhaCungCap = @NhaCungCap,
+                        MaNhanVien = @MaNhanVien,
+                        TongSoSanPham = @TongSoSanPham,
+                        TongGiaTri = @TongGiaTri
+                    WHERE MaPhieuNhap = @MaPhieuNhap;
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO dbo.PhieuNhapKho (MaPhieuNhap, NgayNhap, NhaCungCap, MaNhanVien, TongSoSanPham, TongGiaTri)
+                    VALUES (@MaPhieuNhap, @NgayNhap, @NhaCungCap, @MaNhanVien, @TongSoSanPham, @TongGiaTri);
+                END";
 
-        _db.SaveChanges();
+            using (var cmdP = new SqlCommand(sqlPhieu, conn, tx))
+            {
+                cmdP.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = phieu.MaPhieuNhap });
+                cmdP.Parameters.Add(new SqlParameter("@NgayNhap", SqlDbType.DateTime2) { Value = phieu.NgayNhap });
+                cmdP.Parameters.Add(new SqlParameter("@NhaCungCap", SqlDbType.NVarChar, 200) { Value = phieu.NhaCungCap });
+                cmdP.Parameters.Add(new SqlParameter("@MaNhanVien", SqlDbType.VarChar, 50) { Value = phieu.MaNhanVien });
+                cmdP.Parameters.Add(new SqlParameter("@TongSoSanPham", SqlDbType.Int) { Value = phieu.TongSoSanPham });
+                cmdP.Parameters.Add(new SqlParameter("@TongGiaTri", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = phieu.TongGiaTri });
+                cmdP.ExecuteNonQuery();
+            }
+
+            const string sqlDeleteCt = "DELETE FROM dbo.ChiTietNhapKho WHERE MaPhieuNhap = @MaPhieuNhap;";
+            using (var cmdDel = new SqlCommand(sqlDeleteCt, conn, tx))
+            {
+                cmdDel.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = phieu.MaPhieuNhap });
+                cmdDel.ExecuteNonQuery();
+            }
+
+            if (phieu.ChiTietNhapKhos != null && phieu.ChiTietNhapKhos.Count > 0)
+            {
+                const string sqlInsertCt = @"
+                    INSERT INTO dbo.ChiTietNhapKho (MaPhieuNhap, MaSanPham, SoLuong, GiaVonNhap, SoChungTu)
+                    VALUES (@MaPhieuNhap, @MaSanPham, @SoLuong, @GiaVonNhap, @SoChungTu);";
+
+                foreach (var ct in phieu.ChiTietNhapKhos)
+                {
+                    using var cmdCt = new SqlCommand(sqlInsertCt, conn, tx);
+                    cmdCt.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = phieu.MaPhieuNhap });
+                    cmdCt.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
+                    cmdCt.Parameters.Add(new SqlParameter("@SoLuong", SqlDbType.Int) { Value = ct.SoLuong });
+                    cmdCt.Parameters.Add(new SqlParameter("@GiaVonNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = ct.GiaVonNhap });
+                    cmdCt.Parameters.Add(new SqlParameter("@SoChungTu", SqlDbType.NVarChar, 100) { Value = (object?)ct.SoChungTu ?? DBNull.Value });
+                    cmdCt.ExecuteNonQuery();
+                }
+            }
+
+            tx.Commit();
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
     }
 
-    // =========================================================================
-    // MỞ RỘNG BẤT ĐỒNG BỘ CHUẨN CLEAN ARCHITECTURE .NET 8 LTS
-    // =========================================================================
-
-    public async Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken cancellationToken = default)
+    public Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken cancellationToken = default)
     {
-        if (phieu == null)
-        {
-            throw new ArgumentNullException(nameof(phieu), "Phiếu nhập kho không được để trống.");
-        }
-
-        var entry = await _db.PhieuNhapKhos
-            .Include(p => p.ChiTietNhapKhos)
-            .FirstOrDefaultAsync(p => p.MaPhieuNhap == phieu.MaPhieuNhap, cancellationToken);
-
-        if (entry == null)
-        {
-            await _db.PhieuNhapKhos.AddAsync(phieu, cancellationToken);
-        }
-        else
-        {
-            _db.Entry(entry).CurrentValues.SetValues(phieu);
-        }
-
-        await _db.SaveChangesAsync(cancellationToken);
+        LuuPhieuNhap(phieu);
+        return Task.CompletedTask;
     }
 
-    public async Task<PhieuNhapKho?> TimTheoIdAsync(string maPhieu, CancellationToken cancellationToken = default)
+    public Task<PhieuNhapKho?> TimTheoIdAsync(string maPhieu, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(maPhieu))
         {
-            return null;
+            return Task.FromResult<PhieuNhapKho?>(null);
         }
 
-        return await _db.PhieuNhapKhos
-            .Include(p => p.ChiTietNhapKhos)
-                .ThenInclude(c => c.SanPhamTrangSuc)
-            .FirstOrDefaultAsync(p => p.MaPhieuNhap == maPhieu.Trim(), cancellationToken);
+        const string sql = @"
+            SELECT MaPhieuNhap, NgayNhap, NhaCungCap, MaNhanVien, TongSoSanPham, TongGiaTri
+            FROM dbo.PhieuNhapKho
+            WHERE MaPhieuNhap = @MaPhieuNhap;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = maPhieu.Trim() });
+
+        PhieuNhapKho? phieu = null;
+        using (var reader = cmd.ExecuteReader())
+        {
+            if (reader.Read())
+            {
+                phieu = new PhieuNhapKho(
+                    maPhieuNhap: reader.GetString(reader.GetOrdinal("MaPhieuNhap")),
+                    nhaCungCap: reader.GetString(reader.GetOrdinal("NhaCungCap")),
+                    maNhanVien: reader.GetString(reader.GetOrdinal("MaNhanVien")),
+                    ngayNhap: reader.GetDateTime(reader.GetOrdinal("NgayNhap"))
+                )
+                {
+                    TongSoSanPham = reader.GetInt32(reader.GetOrdinal("TongSoSanPham")),
+                    TongGiaTri = reader.GetDecimal(reader.GetOrdinal("TongGiaTri"))
+                };
+            }
+        }
+
+        if (phieu != null)
+        {
+            phieu.ChiTietNhapKhos = LayChiTietNhapKho(phieu.MaPhieuNhap);
+        }
+
+        return Task.FromResult(phieu);
+    }
+
+    private List<ChiTietNhapKho> LayChiTietNhapKho(string maPhieuNhap)
+    {
+        var list = new List<ChiTietNhapKho>();
+        const string sql = @"
+            SELECT c.MaPhieuNhap, c.MaSanPham, c.SoLuong, c.GiaVonNhap, c.SoChungTu,
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai
+            FROM dbo.ChiTietNhapKho c
+            LEFT JOIN dbo.SanPhamTrangSuc s ON c.MaSanPham = s.MaSanPham
+            WHERE c.MaPhieuNhap = @MaPhieuNhap;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaPhieuNhap", SqlDbType.VarChar, 50) { Value = maPhieuNhap });
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var ct = new ChiTietNhapKho(
+                maPhieuNhap: reader.GetString(reader.GetOrdinal("MaPhieuNhap")),
+                maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
+                soLuong: reader.GetInt32(reader.GetOrdinal("SoLuong")),
+                giaVonNhap: reader.GetDecimal(reader.GetOrdinal("GiaVonNhap")),
+                soChungTu: reader.IsDBNull(reader.GetOrdinal("SoChungTu")) ? string.Empty : reader.GetString(reader.GetOrdinal("SoChungTu"))
+            );
+
+            if (!reader.IsDBNull(reader.GetOrdinal("TenSanPham")))
+            {
+                ct.SanPhamTrangSuc = new SanPhamTrangSuc(
+                    maSanPham: ct.MaSanPham,
+                    tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
+                    maDanhMuc: reader.GetString(reader.GetOrdinal("MaDanhMuc")),
+                    chatLieu: reader.GetString(reader.GetOrdinal("ChatLieu")),
+                    size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
+                    giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
+                    giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
+                    trangThai: reader.GetString(reader.GetOrdinal("TrangThai"))
+                );
+            }
+
+            list.Add(ct);
+        }
+
+        return list;
     }
 }

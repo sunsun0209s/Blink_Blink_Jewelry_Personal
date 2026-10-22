@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using BlinkBlink.Application.Services.Catalog;
 using BlinkBlink.Application.Services.Identity;
 using BlinkBlink.Application.Services.Inventory;
@@ -25,7 +24,7 @@ namespace BlinkBlink.Admin.Services;
 
 /// <summary>
 /// Quản lý vòng đời dịch vụ và cung cấp điểm truy cập Use Cases trung tâm cho WinForms Admin.
-/// Tự động kết nối cơ sở dữ liệu và nạp dữ liệu mẫu trang sức cao cấp ban đầu nếu cần thiết.
+/// Tự động kết nối cơ sở dữ liệu qua ADO.NET thuần (DatabaseHelper).
 /// </summary>
 public class AdminServiceScope
 {
@@ -74,43 +73,32 @@ public class AdminServiceScope
 
     private AdminServiceScope()
     {
-        // Khởi tạo DbContext kết nối SQL Server LocalDb / Express
-        var connStr = "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelry;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=4;";
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer(connStr);
+        // Khởi tạo DatabaseHelper kết nối SQL Server LocalDb / Express
+        var connStr = "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=4;";
+        var dbHelper = new DatabaseHelper(connStr);
 
-        AppDbContext? db = null;
         try
         {
-            db = new AppDbContext(optionsBuilder.Options);
-            if (db.Database.CanConnect())
-            {
-                db.Database.EnsureCreated();
-                IsDatabaseConnected = true;
-            }
-            else
-            {
-                IsDatabaseConnected = false;
-            }
+            IsDatabaseConnected = dbHelper.TestConnection();
         }
         catch
         {
             IsDatabaseConnected = false;
         }
 
-        if (IsDatabaseConnected && db != null)
+        if (IsDatabaseConnected)
         {
-            SanPhamRepo = new SanPhamRepository(db);
-            DanhMucRepo = new DanhMucRepository(db);
-            HoaDonRepo = new HoaDonRepository(db);
-            GioHangRepo = new GioHangRepository(db);
-            BaoHanhRepo = new BaoHanhRepository(db);
-            NhanVienRepo = new NhanVienRepository(db);
-            KhachHangRepo = new KhachHangRepository(db);
-            VaiTroRepo = new VaiTroRepository(db);
-            ThongKeRepo = new ThongKeRepository(db);
-            PhieuNhapKhoRepo = new PhieuNhapKhoRepositoryImpl(db);
-            PhieuKiemKeRepo = new PhieuKiemKeRepository(db);
+            SanPhamRepo = new SanPhamRepository(dbHelper);
+            DanhMucRepo = new DanhMucRepository(dbHelper);
+            HoaDonRepo = new HoaDonRepository(dbHelper);
+            GioHangRepo = new GioHangRepository(dbHelper);
+            BaoHanhRepo = new BaoHanhRepository(dbHelper);
+            NhanVienRepo = new NhanVienRepository(dbHelper);
+            KhachHangRepo = new KhachHangRepository(dbHelper);
+            VaiTroRepo = new VaiTroRepository(dbHelper);
+            ThongKeRepo = new ThongKeRepository(dbHelper);
+            PhieuNhapKhoRepo = new PhieuNhapKhoRepositoryImpl(dbHelper);
+            PhieuKiemKeRepo = new PhieuKiemKeRepository(dbHelper);
         }
         else
         {

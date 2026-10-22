@@ -377,7 +377,7 @@
         <mxCell id="618drPIvKTOmIINHH8TA-112" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="NguoiDungRepository" vertex="1">
           <mxGeometry height="112" width="290" x="1395" y="1615" as="geometry" />
         </mxCell>
-        <mxCell id="618drPIvKTOmIINHH8TA-113" parent="618drPIvKTOmIINHH8TA-112" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: DbContext" vertex="1">
+        <mxCell id="618drPIvKTOmIINHH8TA-113" parent="618drPIvKTOmIINHH8TA-112" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="290" y="26" as="geometry" />
         </mxCell>
         <mxCell id="618drPIvKTOmIINHH8TA-114" parent="618drPIvKTOmIINHH8TA-112" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -392,7 +392,7 @@
         <mxCell id="618drPIvKTOmIINHH8TA-117" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="NhanVienRepository" vertex="1">
           <mxGeometry height="112" width="230" x="1820" y="1630" as="geometry" />
         </mxCell>
-        <mxCell id="618drPIvKTOmIINHH8TA-118" parent="618drPIvKTOmIINHH8TA-117" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: DbContext" vertex="1">
+        <mxCell id="618drPIvKTOmIINHH8TA-118" parent="618drPIvKTOmIINHH8TA-117" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="230" y="26" as="geometry" />
         </mxCell>
         <mxCell id="618drPIvKTOmIINHH8TA-119" parent="618drPIvKTOmIINHH8TA-117" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -407,7 +407,7 @@
         <mxCell id="618drPIvKTOmIINHH8TA-121" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="KhachHangRepository" vertex="1">
           <mxGeometry height="112" width="270" x="950" y="1642" as="geometry" />
         </mxCell>
-        <mxCell id="618drPIvKTOmIINHH8TA-122" parent="618drPIvKTOmIINHH8TA-121" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: DbContext" vertex="1">
+        <mxCell id="618drPIvKTOmIINHH8TA-122" parent="618drPIvKTOmIINHH8TA-121" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="270" y="26" as="geometry" />
         </mxCell>
         <mxCell id="618drPIvKTOmIINHH8TA-123" parent="618drPIvKTOmIINHH8TA-121" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -467,7 +467,7 @@
         <mxCell id="o8xdw3D-7y6MNSQKYjrI-7" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="VaiTroRepository" vertex="1">
           <mxGeometry height="138" width="220" x="610" y="1615" as="geometry" />
         </mxCell>
-        <mxCell id="o8xdw3D-7y6MNSQKYjrI-8" parent="o8xdw3D-7y6MNSQKYjrI-7" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _dbContext: DbContext" vertex="1">
+        <mxCell id="o8xdw3D-7y6MNSQKYjrI-8" parent="o8xdw3D-7y6MNSQKYjrI-7" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _DatabaseHelper: DatabaseHelper" vertex="1">
           <mxGeometry height="26" width="220" y="26" as="geometry" />
         </mxCell>
         <mxCell id="o8xdw3D-7y6MNSQKYjrI-9" parent="o8xdw3D-7y6MNSQKYjrI-7" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
