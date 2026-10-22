@@ -16,13 +16,16 @@ namespace BlinkBlink.Web.Controllers;
 public class KhachHangController : ControllerBase
 {
     private readonly DangKyKhachHangUseCase _dangKyUseCase;
+    private readonly QuanLyKhachHangUseCase _quanLyKhachHangUseCase;
     private readonly IKhachHangRepository _khachHangRepo;
 
     public KhachHangController(
         DangKyKhachHangUseCase dangKyUseCase,
+        QuanLyKhachHangUseCase quanLyKhachHangUseCase,
         IKhachHangRepository khachHangRepo)
     {
         _dangKyUseCase = dangKyUseCase ?? throw new ArgumentNullException(nameof(dangKyUseCase));
+        _quanLyKhachHangUseCase = quanLyKhachHangUseCase ?? throw new ArgumentNullException(nameof(quanLyKhachHangUseCase));
         _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
     }
 
@@ -76,6 +79,55 @@ public class KhachHangController : ControllerBase
         {
             return BadRequest(new { Success = false, Message = "Lỗi khi đăng ký tài khoản: " + ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Cập nhật hồ sơ thông tin cá nhân khách hàng.
+    /// Khớp Use Case: QuanLyKhachHangUseCase.CapNhatThongTin
+    /// </summary>
+    /// <param name="request">Dữ liệu cập nhật khách hàng</param>
+    /// <returns>HTTP Status 200 nếu thành công, 400 nếu thất bại</returns>
+    [HttpPut("cap-nhat")]
+    public IActionResult CapNhatThongTin([FromBody] CapNhatKhachHangDTO request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.MaKhachHang))
+        {
+            return BadRequest(new { Success = false, Message = "Dữ liệu cập nhật không hợp lệ." });
+        }
+
+        var khHienTai = _khachHangRepo.TimTheoMa(request.MaKhachHang);
+        if (khHienTai == null)
+        {
+            return NotFound(new { Success = false, Message = "Không tìm thấy hồ sơ khách hàng để cập nhật." });
+        }
+
+        if (!khHienTai.TrangThai)
+        {
+            return StatusCode(403, new { Success = false, Message = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng." });
+        }
+
+        var result = _quanLyKhachHangUseCase.CapNhatThongTin(request);
+        if (!result)
+        {
+            return BadRequest(new { Success = false, Message = "Không thể cập nhật hồ sơ khách hàng. Vui lòng kiểm tra lại thông tin." });
+        }
+
+        var khMoi = _khachHangRepo.TimTheoMa(request.MaKhachHang);
+        return Ok(new
+        {
+            Success = true,
+            Message = "Cập nhật thông tin cá nhân thành công.",
+            Data = new
+            {
+                khMoi?.MaKhachHang,
+                khMoi?.MaNguoiDung,
+                khMoi?.HoTen,
+                khMoi?.SoDienThoai,
+                khMoi?.TenDangNhap,
+                khMoi?.NgaySinh,
+                khMoi?.TrangThai
+            }
+        });
     }
 
     /// <summary>

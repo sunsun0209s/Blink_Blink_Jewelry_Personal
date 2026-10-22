@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BlinkBlink.Admin.Services;
 using BlinkBlink.Admin.Views.Helpers;
@@ -14,7 +16,7 @@ namespace BlinkBlink.Admin.Views.UserControls.Catalog;
 /// <summary>
 /// Hộp thoại modal thêm mới và chỉnh sửa thông tin sản phẩm trang sức.
 /// Tự động thích ứng kích thước hiển thị chống đè nút trên màn hình độ phân giải cao (High DPI 125% - 150%).
-/// Hỗ trợ chọn tệp ảnh thực tế, xem trước ảnh và chọn danh mục động từ CSDL.
+/// Hỗ trợ chọn tệp ảnh thực tế, sao chép ảnh vào thư mục tĩnh web, xem trước ảnh đa nguồn và chọn danh mục động từ CSDL.
 /// </summary>
 public class ProductEditDialog : Form
 {
@@ -32,8 +34,10 @@ public class ProductEditDialog : Form
     private NumericUpDown _nudPhanTramGiamGia = null!;
 
     private PictureBox _picPreview = null!;
+    private TextBox _txtHinhAnhUrl = null!;
     private Label _lblImagePath = null!;
     private string _selectedImagePath = string.Empty;
+    private bool _isInternalUpdating;
 
     public ProductEditDialog(bool isEditMode, SanPhamTrangSuc? targetProduct = null)
     {
@@ -253,27 +257,59 @@ public class ProductEditDialog : Form
 
         _picPreview = new PictureBox
         {
-            Location = new Point(0, 34),
+            Location = new Point(0, 30),
             Width = 280,
-            Height = 240,
+            Height = 205,
             BorderStyle = BorderStyle.FixedSingle,
             SizeMode = PictureBoxSizeMode.Zoom,
             BackColor = Color.FromArgb(248, 250, 252)
         };
 
-        var btnChooseImage = UITheme.CreateFlatButton("📁 Chọn Tệp Ảnh...", UITheme.DarkHeader, Color.White);
-        btnChooseImage.Location = new Point(0, 286);
+        var lblUrl = new Label
+        {
+            Text = "Đường dẫn tệp hoặc URL ảnh online:",
+            Location = new Point(0, 242),
+            Width = 280,
+            Height = 18,
+            ForeColor = UITheme.TextSecondary,
+            Font = new Font("Segoe UI", 8.25F, FontStyle.Regular),
+            UseMnemonic = false
+        };
+
+        _txtHinhAnhUrl = new TextBox
+        {
+            Location = new Point(0, 262),
+            Width = 280,
+            Height = 28,
+            Font = UITheme.RegularFont,
+            PlaceholderText = "https://... hoặc /images/..."
+        };
+        _txtHinhAnhUrl.TextChanged += (s, e) =>
+        {
+            if (!_isInternalUpdating)
+            {
+                _selectedImagePath = _txtHinhAnhUrl.Text.Trim();
+                LoadPreviewImage(_selectedImagePath);
+            }
+        };
+
+        var btnChooseImage = UITheme.CreateFlatButton("📁 Chọn Tệp Ảnh Từ Máy Tính...", UITheme.DarkHeader, Color.White);
+        btnChooseImage.Location = new Point(0, 298);
         btnChooseImage.Width = 280;
-        btnChooseImage.Height = 38;
+        btnChooseImage.Height = 36;
         btnChooseImage.Click += BtnChooseImage_Click;
 
         var btnRemoveImage = UITheme.CreateFlatButton("✕ Xóa Ảnh", Color.FromArgb(241, 245, 249), UITheme.DangerColor);
-        btnRemoveImage.Location = new Point(0, 332);
+        btnRemoveImage.Location = new Point(0, 340);
         btnRemoveImage.Width = 280;
-        btnRemoveImage.Height = 34;
+        btnRemoveImage.Height = 32;
         btnRemoveImage.Click += (s, e) =>
         {
+            _isInternalUpdating = true;
             _selectedImagePath = string.Empty;
+            _txtHinhAnhUrl.Text = string.Empty;
+            _isInternalUpdating = false;
+
             _picPreview.Image?.Dispose();
             _picPreview.Image = null;
             _lblImagePath.Text = "Chưa có hình ảnh";
@@ -281,9 +317,9 @@ public class ProductEditDialog : Form
 
         _lblImagePath = new Label
         {
-            Location = new Point(0, 376),
+            Location = new Point(0, 378),
             Width = 280,
-            Height = 45,
+            Height = 44,
             ForeColor = UITheme.TextSecondary,
             Font = new Font("Segoe UI", 8.25F, FontStyle.Italic),
             Text = "Chưa có hình ảnh",
@@ -292,6 +328,8 @@ public class ProductEditDialog : Form
 
         pnlRight.Controls.Add(lblPicTitle);
         pnlRight.Controls.Add(_picPreview);
+        pnlRight.Controls.Add(lblUrl);
+        pnlRight.Controls.Add(_txtHinhAnhUrl);
         pnlRight.Controls.Add(btnChooseImage);
         pnlRight.Controls.Add(btnRemoveImage);
         pnlRight.Controls.Add(_lblImagePath);
@@ -349,8 +387,11 @@ public class ProductEditDialog : Form
             // Nạp hình ảnh nếu có
             if (!string.IsNullOrWhiteSpace(_targetProduct.HinhAnh))
             {
+                _isInternalUpdating = true;
                 _selectedImagePath = _targetProduct.HinhAnh;
-                _lblImagePath.Text = Path.GetFileName(_selectedImagePath);
+                _txtHinhAnhUrl.Text = _selectedImagePath;
+                _isInternalUpdating = false;
+
                 LoadPreviewImage(_selectedImagePath);
             }
         }
@@ -369,7 +410,7 @@ public class ProductEditDialog : Form
     {
         using var ofd = new OpenFileDialog
         {
-            Title = "Chọn Hình Ảnh Trang Sức",
+            Title = "Chọn Hình Ảnh Trang Sức Từ Máy Tính",
             Filter = "Tệp Hình Ảnh (*.jpg;*.jpeg;*.png;*.webp)|*.jpg;*.jpeg;*.png;*.webp|Tất cả tệp (*.*)|*.*",
             RestoreDirectory = true
         };
@@ -377,31 +418,165 @@ public class ProductEditDialog : Form
         if (ofd.ShowDialog() == DialogResult.OK)
         {
             _selectedImagePath = ofd.FileName;
-            _lblImagePath.Text = Path.GetFileName(_selectedImagePath);
+            _isInternalUpdating = true;
+            _txtHinhAnhUrl.Text = _selectedImagePath;
+            _isInternalUpdating = false;
+
             LoadPreviewImage(_selectedImagePath);
         }
     }
 
-    private void LoadPreviewImage(string path)
+    private async void LoadPreviewImage(string pathOrUrl)
     {
+        if (string.IsNullOrWhiteSpace(pathOrUrl))
+        {
+            _picPreview.Image?.Dispose();
+            _picPreview.Image = null;
+            _lblImagePath.Text = "Chưa có hình ảnh";
+            return;
+        }
+
+        var trimmed = pathOrUrl.Trim();
         try
         {
-            if (File.Exists(path))
+            // Dạng 1: Đường link trực tuyến (http:// hoặc https://)
+            if (trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                // Dùng MemoryStream để không khóa tệp ảnh
-                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                _lblImagePath.Text = "Đang tải ảnh online...";
+                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+                var bytes = await client.GetByteArrayAsync(trimmed);
+                using var ms = new MemoryStream(bytes);
+                _picPreview.Image?.Dispose();
+                _picPreview.Image = Image.FromStream(ms);
+                _lblImagePath.Text = "✓ Ảnh trực tuyến (URL Web)";
+                return;
+            }
+
+            // Dạng 2: Đường dẫn web tương đối (/images/products/...)
+            if (trimmed.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
+            {
+                var folder = GetWebProductsImageFolder();
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    var fileName = Path.GetFileName(trimmed);
+                    var fullPath = Path.Combine(folder, fileName);
+                    if (File.Exists(fullPath))
+                    {
+                        using var fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                        using var ms = new MemoryStream();
+                        fs.CopyTo(ms);
+                        ms.Position = 0;
+                        _picPreview.Image?.Dispose();
+                        _picPreview.Image = Image.FromStream(ms);
+                        _lblImagePath.Text = $"✓ Ảnh kho hệ thống: {fileName}";
+                        return;
+                    }
+                }
+            }
+
+            // Dạng 3: File cục bộ trên máy tính
+            if (File.Exists(trimmed))
+            {
+                using var fs = new FileStream(trimmed, FileMode.Open, FileAccess.Read);
                 using var ms = new MemoryStream();
                 fs.CopyTo(ms);
                 ms.Position = 0;
-
                 _picPreview.Image?.Dispose();
                 _picPreview.Image = Image.FromStream(ms);
+                _lblImagePath.Text = $"✓ File máy tính: {Path.GetFileName(trimmed)}";
+                return;
             }
+
+            _lblImagePath.Text = "Không tìm thấy file ảnh tương ứng.";
         }
         catch
         {
-            _lblImagePath.Text = "Không thể tải xem trước ảnh.";
+            _lblImagePath.Text = "Không thể nạp xem trước ảnh.";
         }
+    }
+
+    /// <summary>
+    /// Tìm thư mục lưu trữ ảnh sản phẩm tĩnh trong BlinkBlink.Web (wwwroot/images/products)
+    /// </summary>
+    private static string? GetWebProductsImageFolder()
+    {
+        var current = AppDomain.CurrentDomain.BaseDirectory;
+        while (!string.IsNullOrEmpty(current))
+        {
+            var webFolder = Path.Combine(current, "src", "BlinkBlink.Web");
+            if (Directory.Exists(webFolder))
+            {
+                var target = Path.Combine(webFolder, "wwwroot", "images", "products");
+                if (!Directory.Exists(target))
+                {
+                    Directory.CreateDirectory(target);
+                }
+                return target;
+            }
+            var parent = Directory.GetParent(current);
+            if (parent == null) break;
+            current = parent.FullName;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Chuẩn hóa và lưu trữ ảnh: Tự động copy file máy cục bộ vào wwwroot/images/products
+    /// và sinh đường dẫn tương đối dạng web (/images/products/...) để Web và Admin đều nạp được.
+    /// </summary>
+    private static string ProcessAndNormalizeImage(string inputImage, string maSP)
+    {
+        if (string.IsNullOrWhiteSpace(inputImage))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = inputImage.Trim();
+
+        // 1. Nếu là đường link trực tuyến (http:// hoặc https://)
+        if (trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return trimmed;
+        }
+
+        // 2. Nếu đã là đường dẫn web tương đối chuẩn (/images/products/...)
+        if (trimmed.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
+        {
+            return trimmed;
+        }
+
+        // 3. Nếu là tệp file trên máy tính của người dùng
+        if (File.Exists(trimmed))
+        {
+            var webProductsFolder = GetWebProductsImageFolder();
+            if (!string.IsNullOrEmpty(webProductsFolder))
+            {
+                try
+                {
+                    var ext = Path.GetExtension(trimmed).ToLowerInvariant();
+                    if (string.IsNullOrEmpty(ext)) ext = ".png";
+
+                    var rawName = Path.GetFileNameWithoutExtension(trimmed);
+                    var safeName = new string(rawName.Where(c => char.IsLetterOrDigit(c) || c == '_' || c == '-').ToArray());
+                    if (string.IsNullOrWhiteSpace(safeName)) safeName = "item";
+
+                    var destFileName = $"{maSP}_{safeName}{ext}";
+                    var destFullPath = Path.Combine(webProductsFolder, destFileName);
+
+                    File.Copy(trimmed, destFullPath, true);
+
+                    return $"/images/products/{destFileName}";
+                }
+                catch
+                {
+                    return trimmed;
+                }
+            }
+        }
+
+        return trimmed;
     }
 
     private void BtnSave_Click(object? sender, EventArgs e)
@@ -426,6 +601,10 @@ public class ProductEditDialog : Form
             _txtTenSP.Focus();
             return;
         }
+
+        // Chuẩn hóa và tự động lưu trữ ảnh vào thư mục tĩnh của Web
+        var rawImagePath = string.IsNullOrWhiteSpace(_txtHinhAnhUrl.Text) ? _selectedImagePath : _txtHinhAnhUrl.Text.Trim();
+        var processedImage = ProcessAndNormalizeImage(rawImagePath, maSP);
 
         if (_isEditMode)
         {
@@ -455,7 +634,7 @@ public class ProductEditDialog : Form
                 Size = size,
                 GiaNhap = _targetProduct?.GiaNhap ?? 0,
                 GiaBan = giaBan,
-                HinhAnh = _selectedImagePath,
+                HinhAnh = processedImage,
                 PhanTramGiamGia = phanTramGiamGia
             };
 
@@ -482,7 +661,7 @@ public class ProductEditDialog : Form
                 Size = size,
                 GiaNhap = 0,
                 GiaBan = 0,
-                HinhAnh = _selectedImagePath,
+                HinhAnh = processedImage,
                 PhanTramGiamGia = 0
             };
 

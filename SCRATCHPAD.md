@@ -1,23 +1,19 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Đồng bộ nhánh & Cập nhật mã nguồn mới nhất từ `origin/main`:**
-  - Kéo và gộp thành công toàn bộ các cập nhật mới nhất từ `origin/main` vào nhánh làm việc `feature/customer-web-ui`.
-  - Khắc phục triệt để các lỗi giao diện WinForms Admin: triệt tiêu hiện tượng căn lề so le trong DataGridView, chống tràn/đè thẻ KPI "Tổng Mẫu", cấu trúc `FlowLayoutPanel` cho modal Nhập kho, tính giá nhập bình quân gia quyền và bổ sung % giảm giá sản phẩm.
-- **Phân hệ Web Khách Hàng (`BlinkBlink.Web`):**
-  - **Bộ lưu trữ giỏ hàng độc lập & Bền vững dữ liệu (`src/BlinkBlink.Web/wwwroot/js/storefront.js`):** Sử dụng khóa `localStorage` riêng biệt `blink_jewelry_cart` độc lập hoàn toàn với phiên đăng nhập. Khi đăng xuất tài khoản (`logoutUser`), chỉ xóa phiên `blink_currentUser`, giỏ hàng và danh sách sản phẩm đã chọn giữ nguyên 100%. Khi tải lại trang (F5), giỏ hàng tự động nạp lại chính xác từ bộ nhớ trình duyệt.
-  - **Khắc phục lỗi Menu Dropdown & Đăng xuất:** `storefront.css` loại bỏ hover tự động, menu chỉ hiển thị khi có class `.logged-in` và đang mở `.open`. Hàm `logoutUser()` reset ngay lập tức họ tên về "Khách Hàng", mã về "Thành viên Blink Blink", đóng dropdown tức thì mà không cần F5.
-  - **Loại bỏ dữ liệu mồi & Khối đăng nhập 1-click (`_Layout.cshtml`, `storefront.js`):** Xóa sạch mồi dữ liệu, giữ nguyên 100% CSDL chuẩn trong SQL Server.
-  - **Xử lý ngoại lệ CSDL trong API Backend (`KhachHangController.cs`):** Bắt lỗi `SqlException` 2601/2627 khi trùng tên đăng nhập, trả về thông báo tiếng Việt thân thiện thay vì lỗi 500.
-  - **Bộ Kiểm Thử Tự Động Toàn Diện:** Kịch bản API & Database hoàn thành 10/10 test cases PASS 100%; kịch bản E2E trên trình duyệt 10/10 bước PASS 100%.
-- **Toàn bộ Unit Tests Solution:** 31/31 unit tests pass 100%, solution biên dịch 0 lỗi, 0 cảnh báo.
+- **Đồng bộ ảnh sản phẩm đơn hàng từ CSDL SQL Server thật & Triệt tiêu lỗi vỡ ảnh (Taste Skill):**
+  - Đã khắc phục [HoaDonRepository.cs](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/HoaDonRepository.cs): `LayChiTietHoaDon` nạp đầy đủ `s.HinhAnh` và `s.PhanTramGiamGia` vào đối tượng `SanPhamTrangSuc` của từng `ChiTietHoaDon`.
+  - Đã cập nhật [storefront.js](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/js/storefront.js): `renderCustomerOrders` và `renderCheckoutSummary` nhận diện an toàn cả camelCase lẫn PascalCase, fallback về ảnh kim hoàn chuẩn `/images/hero-jewelry.jpg` kèm `onerror=null` và `loading="lazy"`.
+  - Đã tạo tệp ảnh tĩnh dự phòng hợp lệ tại `src/BlinkBlink.Web/wwwroot/images/products/no-image.png`.
+  - Hoàn tất chuỗi 12 vòng kiểm thử thương mại (`run_12_image_order_tests.ps1`) đạt 12/12 PASS 100%. Xác nhận đơn hàng `HD20261022210438990` từ screenshot của khách hàng nạp chính xác ảnh thật 100% không còn vỡ ảnh.
 
 ## 2. Quyết định kỹ thuật đã chốt
-- Web Khách Hàng giao tiếp hoàn toàn với Backend qua RESTful API, tuân thủ Clean Architecture .NET 8 LTS.
-- Dữ liệu CSDL SQL Server `BlinkBlinkJewelryDb` trên `Server=.` được giữ nguyên vẹn cấu trúc và dữ liệu.
-- Phân hệ Web và WinForms hoàn toàn độc lập ở tầng Presentation, dùng chung tầng Domain & Application và CSDL SQL Server.
+- Đơn hàng online lưu trực tiếp vào CSDL SQL Server thật (`dbo.HoaDon`, `dbo.ChiTietHoaDon`).
+- Phía Web Storefront và WinForms Admin cùng chia sẻ một nguồn chân lý dữ liệu (Single Source of Truth) từ SQL Server thông qua RESTful API và ADO.NET thuần.
+- Không sử dụng bất kỳ mảng dữ liệu giả lập (mock/sample) nào trong luồng thương mại thực tế của Web Storefront.
+- Mọi hình ảnh fallback đều trỏ về ảnh kim hoàn Haute Joaillerie thật, tuân thủ tuyệt đối quy định Anti-Slop Bans trong `GEMINI.md`.
 
 ## 3. Hành động cụ thể tiếp theo
-1. Kiểm thử liên thông: Đặt hàng trên Web Khách Hàng -> Đơn hàng tức thì xuất hiện trên WinForms Admin và tiến hành Duyệt đơn / Cập nhật trạng thái.
-2. Hoàn thiện tài liệu `PRD.md` và các sơ đồ phân tích nghiệp vụ nâng cao nếu có yêu cầu bổ sung.
-3. Tạo Pull Request đưa `feature/customer-web-ui` vào `main`.
+1. Hoàn thiện tài liệu `PRD.md` và các sơ đồ phân tích nghiệp vụ nâng cao theo danh sách `TODO.md`.
+2. Đóng gói và phát hành tài liệu hướng dẫn vận hành hệ thống.
+3. Mở Pull Request đưa nhánh `feature/customer-web-ui` vào `main`.

@@ -639,6 +639,15 @@ a {
     color: var(--dark-obsidian);
 }
 
+.product-status-tag.sale {
+    background: rgba(184, 51, 42, 0.95);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(184, 51, 42, 0.35);
+    letter-spacing: 0.08em;
+}
+
 .product-card-actions {
     position: absolute;
     bottom: -50px;
@@ -749,6 +758,49 @@ a {
     color: var(--dark-obsidian);
     font-feature-settings: "tnum";
     letter-spacing: -0.02em;
+}
+
+.product-price-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.price-original-strikethrough {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    opacity: 0.7;
+    font-feature-settings: "tnum";
+    font-weight: 500;
+}
+
+.product-price-tabular.has-sale {
+    color: #B8332A;
+    font-weight: 700;
+}
+
+.cart-item-price-original {
+    text-decoration: line-through;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-right: 6px;
+    font-feature-settings: "tnum";
+}
+
+.cart-item-price-sale {
+    color: #B8332A;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+}
+
+.modal-price-original {
+    text-decoration: line-through;
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-right: 10px;
+    font-feature-settings: "tnum";
 }
 
 /* Phần Tra Cứu Bảo Hành Kim Hoàn (Warranty Lookup Section) */
@@ -1775,6 +1827,77 @@ a {
     text-transform: uppercase;
 }
 
+.status-badge-dangdonggoi {
+    background: rgba(13, 148, 136, 0.15);
+    color: #0f766e;
+    border: 1px solid rgba(13, 148, 136, 0.35);
+    padding: 3px 10px;
+    border-radius: var(--radius-xs);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge-dahuy {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    padding: 3px 10px;
+    border-radius: var(--radius-xs);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.btn-refresh-drawer {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.btn-refresh-drawer:hover {
+    color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    background-color: var(--bg-cream);
+}
+
+.btn-refresh-drawer.spinning svg {
+    animation: spinOrders 0.8s linear infinite;
+}
+
+@keyframes spinOrders {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.orders-loading-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.orders-loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(197, 168, 128, 0.25);
+    border-top-color: var(--gold-primary);
+    border-radius: 50%;
+    animation: spinOrders 0.8s linear infinite;
+}
+
 .order-items-preview {
     display: flex;
     flex-direction: column;
@@ -1831,3 +1954,701 @@ a {
     font-weight: 700;
     color: var(--dark-obsidian);
 }
+
+/* ====================================================================================
+   4. INLINE FEEDBACK BANNER (CHUẨN TASTE SKILL LUXURY)
+   ==================================================================================== */
+.auth-feedback-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-xs);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    margin-bottom: 18px;
+    animation: shake 0.35s ease;
+}
+
+.auth-feedback-banner.error {
+    background-color: rgba(185, 28, 28, 0.08);
+    border: 1px solid rgba(185, 28, 28, 0.3);
+    color: #991b1b;
+}
+
+.auth-feedback-banner.error svg {
+    flex-shrink: 0;
+    stroke: #b91c1c;
+}
+
+.auth-feedback-banner.success {
+    background-color: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #065f46;
+}
+
+.auth-feedback-banner.success svg {
+    flex-shrink: 0;
+    stroke: #10b981;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+/* ====================================================================================
+   5. NÂNG CẤP TOAST ĐA TRẠNG THÁI (SUCCESS, ERROR, WARNING, INFO)
+   ==================================================================================== */
+.luxury-toast-msg {
+    position: relative;
+    overflow: hidden;
+    min-width: 300px;
+    max-width: 420px;
+    padding: 14px 18px;
+    border-radius: var(--radius-xs);
+    background: var(--dark-obsidian);
+    color: #FFFFFF;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-toast-msg.toast-success {
+    border-left: 4px solid #10b981;
+}
+.luxury-toast-msg.toast-success svg {
+    stroke: #10b981;
+}
+
+.luxury-toast-msg.toast-error {
+    border-left: 4px solid #ef4444;
+}
+.luxury-toast-msg.toast-error svg {
+    stroke: #ef4444;
+}
+
+.luxury-toast-msg.toast-warning {
+    border-left: 4px solid #f59e0b;
+}
+.luxury-toast-msg.toast-warning svg {
+    stroke: #f59e0b;
+}
+
+.luxury-toast-msg.toast-info {
+    border-left: 4px solid var(--gold-primary);
+}
+.luxury-toast-msg.toast-info svg {
+    stroke: var(--gold-primary);
+}
+
+.toast-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.25);
+    width: 100%;
+    animation: toastProgress 3.8s linear forwards;
+}
+
+.luxury-toast-msg.toast-success .toast-progress-bar {
+    background: #10b981;
+}
+.luxury-toast-msg.toast-error .toast-progress-bar {
+    background: #ef4444;
+}
+.luxury-toast-msg.toast-warning .toast-progress-bar {
+    background: #f59e0b;
+}
+.luxury-toast-msg.toast-info .toast-progress-bar {
+    background: var(--gold-primary);
+}
+
+@keyframes toastProgress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* ====================================================================================
+   6. HỘP THOẠI ĐẶT HÀNG KIM HOÀN CAO CẤP (CHECKOUT MODAL)
+   ==================================================================================== */
+.checkout-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(17, 22, 27, 0.78);
+    backdrop-filter: blur(8px);
+    z-index: 2600;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.checkout-modal-backdrop.active {
+    display: flex;
+}
+
+.checkout-card-dialog {
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    max-width: 960px;
+    width: 100%;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding: 36px 40px;
+    animation: fadeIn 0.35s ease;
+    max-height: 92vh;
+    overflow-y: auto;
+}
+
+.checkout-modal-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 18px;
+}
+
+.checkout-title-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-hover);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.checkout-modal-title {
+    font-size: 2rem;
+    font-family: var(--font-heading);
+    color: var(--dark-obsidian);
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.checkout-modal-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+.checkout-body-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 36px;
+}
+
+.checkout-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark-obsidian);
+    letter-spacing: 0.03em;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+}
+
+.payment-method-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-method-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 12px 16px;
+    cursor: pointer;
+    background: var(--bg-cream);
+    transition: var(--transition);
+}
+
+.payment-method-card:hover {
+    border-color: var(--gold-primary);
+}
+
+.payment-method-card input[type="radio"] {
+    margin-top: 3px;
+    accent-color: var(--gold-primary);
+}
+
+.payment-method-card.active,
+.payment-method-card:has(input:checked) {
+    background: #FFFFFF;
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 12px rgba(197, 168, 128, 0.15);
+}
+
+.payment-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--dark-obsidian);
+}
+
+.payment-desc {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.form-group-luxury textarea {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    background-color: var(--bg-cream);
+    outline: none;
+    font-family: var(--font-body);
+    resize: vertical;
+    transition: var(--transition);
+}
+
+.form-group-luxury textarea:focus {
+    border-color: var(--gold-primary);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.18);
+}
+
+/* Cột tóm tắt đơn hàng */
+.checkout-summary-column {
+    background-color: var(--bg-cream);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout-items-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 6px;
+    margin-bottom: 20px;
+}
+
+.checkout-mini-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xs);
+    padding: 8px 10px;
+}
+
+.checkout-mini-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--radius-xs);
+}
+
+.checkout-mini-info {
+    flex-grow: 1;
+}
+
+.checkout-mini-title {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--dark-obsidian);
+    line-height: 1.3;
+}
+
+.checkout-mini-meta {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+.checkout-mini-price {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--dark-obsidian);
+    text-align: right;
+}
+
+.checkout-price-breakdown {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkout-price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.text-free-ship {
+    color: #065f46;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.checkout-divider {
+    height: 1px;
+    background-color: var(--border-subtle);
+    margin: 4px 0;
+}
+
+.checkout-price-row.total-row {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dark-obsidian);
+    align-items: baseline;
+}
+
+.checkout-final-total {
+    font-size: 1.45rem;
+    color: var(--dark-obsidian);
+    font-family: var(--font-heading);
+}
+
+/* ====================================================================================
+   7. HỘP THOẠI CHỨNG NHẬN ĐƠN HÀNG HOÀNG GIA (ROYAL ORDER SUCCESS MODAL)
+   ==================================================================================== */
+.order-success-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(17, 22, 27, 0.82);
+    backdrop-filter: blur(8px);
+    z-index: 2700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.order-success-backdrop.active {
+    display: flex;
+}
+
+.order-success-dialog {
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    max-width: 580px;
+    width: 100%;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    position: relative;
+    padding: 44px 38px 36px;
+    text-align: center;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.royal-seal-badge {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(197, 168, 128, 0.2), rgba(197, 168, 128, 0.05));
+    border: 2px solid var(--gold-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 24px rgba(197, 168, 128, 0.3);
+}
+
+.royal-tagline {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-hover);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.order-success-title {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--dark-obsidian);
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.order-success-desc {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.order-certificate-card {
+    background-color: var(--bg-cream);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-xs);
+    padding: 20px 22px;
+    text-align: left;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.certificate-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 0.84rem;
+}
+
+.cert-label {
+    color: var(--text-muted);
+}
+
+.cert-value {
+    color: var(--dark-obsidian);
+    font-weight: 500;
+}
+
+.cert-code {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--gold-hover);
+    font-size: 1.15rem;
+}
+
+.certificate-divider {
+    height: 1px;
+    background-color: var(--border-light);
+    margin: 8px 0;
+}
+
+.certificate-row.total-highlight {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.cert-amount {
+    font-size: 1.35rem;
+    color: var(--dark-obsidian);
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.certificate-status-box {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.cert-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #f59e0b;
+    box-shadow: 0 0 6px #f59e0b;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.order-success-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.order-success-actions button {
+    flex: 1;
+    padding: 13px;
+    font-size: 0.85rem;
+}
+
+.btn-luxury-outline {
+    background: transparent;
+    color: var(--dark-obsidian);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-luxury-outline:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+    background-color: var(--bg-cream);
+}
+
+@media (max-width: 840px) {
+    .checkout-body-grid {
+        grid-template-columns: 1fr;
+    }
+    .order-success-actions {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   HỘP THOẠI HỒ SƠ THÀNH VIÊN KIM HOÀN (PROFILE MODAL)
+   ========================================================================== */
+.profile-card-dialog {
+    max-width: 520px;
+    width: 90%;
+    border: 1px solid var(--gold-border);
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    padding: 36px 36px 32px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.28), 0 0 40px rgba(212, 175, 55, 0.12);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.profile-card-dialog .btn-close-modal {
+    top: 18px;
+    right: 20px;
+}
+
+.profile-modal-header {
+    text-align: center;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.profile-badge-royal {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1C1917, #292524);
+    color: var(--gold-primary);
+    border: 2px solid var(--gold-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+}
+
+.profile-modal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    color: var(--dark-obsidian);
+    margin: 0 0 6px 0;
+    letter-spacing: 0.04em;
+}
+
+.profile-modal-header p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+}
+
+.profile-cust-id-pill {
+    display: inline-block;
+    padding: 4px 14px;
+    background-color: var(--bg-cream);
+    border: 1px solid var(--gold-border);
+    border-radius: 20px;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.profile-cust-id-pill strong {
+    color: var(--gold-hover);
+    font-weight: 700;
+}
+
+.input-readonly {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed;
+}
+
+.form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.profile-actions-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    align-items: center;
+}
+
+.profile-actions-row .btn-luxury-outline {
+    flex: 1;
+    padding: 13px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-profile-submit {
+    flex: 2;
+    background-color: var(--dark-obsidian);
+    color: #FFFFFF;
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-xs);
+    padding: 13px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-profile-submit:hover {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 15px rgba(197, 168, 128, 0.35);
+}
+
+.btn-profile-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+@media (max-width: 580px) {
+    .profile-card-dialog {
+        padding: 28px 20px 24px;
+    }
+    .form-row-2col {
+        grid-template-columns: 1fr;
+    }
+    .profile-actions-row {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+    .profile-actions-row button {
+        width: 100%;
+    }
+}
+

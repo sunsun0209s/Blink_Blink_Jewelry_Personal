@@ -94,7 +94,7 @@ public class UsersView : UserControl
         tabStaff.BackColor = UITheme.CanvasBackground;
         BuildStaffTab(tabStaff);
 
-        var tabCustomers = new TabPage("👑 Khách Hàng Thân Thiết");
+        var tabCustomers = new TabPage("👤 Quản Lý Khách Hàng");
         tabCustomers.BackColor = UITheme.CanvasBackground;
         BuildCustomersTab(tabCustomers);
 
@@ -185,6 +185,14 @@ public class UsersView : UserControl
         _txtSearchCustomer = new TextBox { Width = 200, Height = 28, PlaceholderText = "Tên, mã KH, SĐT...", Margin = new Padding(0, 4, 15, 4) };
         _txtSearchCustomer.TextChanged += (s, e) => FilterCustomers();
 
+        var btnEditCust = UITheme.CreateFlatButton("✏️ Chỉnh Sửa", UITheme.PrimaryGold, Color.Black);
+        btnEditCust.Margin = new Padding(0, 2, 8, 2);
+        btnEditCust.Click += BtnEditCustomer_Click;
+
+        var btnOrderHistory = UITheme.CreateFlatButton("📜 Lịch Sử Mua Hàng", UITheme.DarkHeader, Color.White);
+        btnOrderHistory.Margin = new Padding(0, 2, 8, 2);
+        btnOrderHistory.Click += BtnCustomerOrders_Click;
+
         var btnLockCust = UITheme.CreateFlatButton("🔒 Khóa / Mở Khóa", UITheme.DangerColor, Color.White);
         btnLockCust.Margin = new Padding(0, 2, 8, 2);
         btnLockCust.Click += BtnLockCustomer_Click;
@@ -195,6 +203,8 @@ public class UsersView : UserControl
 
         toolbar.Controls.Add(lblS);
         toolbar.Controls.Add(_txtSearchCustomer);
+        toolbar.Controls.Add(btnEditCust);
+        toolbar.Controls.Add(btnOrderHistory);
         toolbar.Controls.Add(btnLockCust);
         toolbar.Controls.Add(btnRef);
 
@@ -203,6 +213,7 @@ public class UsersView : UserControl
 
         _dgvCustomers = new DataGridView();
         UITheme.ApplyGridViewStyle(_dgvCustomers);
+        _dgvCustomers.CellDoubleClick += (s, e) => BtnCustomerOrders_Click(s, e);
         _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKH", HeaderText = "MÃ KHÁCH HÀNG", FillWeight = 90, MinimumWidth = 100 });
         _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "HoTen", HeaderText = "HỌ VÀ TÊN", FillWeight = 180, MinimumWidth = 180 });
         _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDangNhap", HeaderText = "TÊN ĐĂNG NHẬP", FillWeight = 120, MinimumWidth = 130 });
@@ -254,12 +265,7 @@ public class UsersView : UserControl
 
     private void LoadStaffData()
     {
-        var nv1 = _services.NhanVienRepo.TimTheoMa("NV001");
-        var nv2 = _services.NhanVienRepo.TimTheoMa("NV002");
-        _allStaff = new List<NhanVien>();
-        if (nv1 != null) _allStaff.Add(nv1);
-        if (nv2 != null) _allStaff.Add(nv2);
-
+        _allStaff = _services.NhanVienRepo.LayTatCa();
         var viVn = new CultureInfo("vi-VN");
         _lblKpiStaffTotal.Text = _allStaff.Count.ToString("N0", viVn);
         _lblKpiStaffAdmin.Text = _allStaff.Count(n => n.MaVaiTro == "VT01").ToString("N0", viVn);
@@ -299,12 +305,7 @@ public class UsersView : UserControl
 
     private void LoadCustomerData()
     {
-        var kh1 = _services.KhachHangRepo.TimTheoMa("KH001");
-        var kh2 = _services.KhachHangRepo.TimTheoMa("KH002");
-        _allCustomers = new List<KhachHang>();
-        if (kh1 != null) _allCustomers.Add(kh1);
-        if (kh2 != null) _allCustomers.Add(kh2);
-
+        _allCustomers = _services.KhachHangRepo.LayTatCa();
         var viVn = new CultureInfo("vi-VN");
         _lblKpiCustomerTotal.Text = _allCustomers.Count.ToString("N0", viVn);
         _lblKpiCustomerActive.Text = _allCustomers.Count(c => c.TrangThai).ToString("N0", viVn);
@@ -467,11 +468,180 @@ public class UsersView : UserControl
         var maKh = _dgvCustomers.SelectedRows[0].Cells["MaKH"].Value?.ToString();
         if (string.IsNullOrEmpty(maKh)) return;
 
+        var kh = _allCustomers.FirstOrDefault(c => c.MaKhachHang == maKh);
+        var actionText = (kh != null && kh.TrangThai) ? "khóa" : "mở khóa";
+
         var ok = _services.QuanLyKhachHang.KhoaTaiKhoanKhachHang(maKh);
         if (ok)
         {
-            MessageBox.Show($"Đã thay đổi trạng thái khóa tài khoản khách hàng [{maKh}].", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Đã {actionText} tài khoản khách hàng [{maKh}] thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             LoadCustomerData();
         }
+        else
+        {
+            MessageBox.Show("Thao tác thất bại. Không tìm thấy khách hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void BtnEditCustomer_Click(object? sender, EventArgs e)
+    {
+        if (_dgvCustomers.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn khách hàng cần chỉnh sửa thông tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maKh = _dgvCustomers.SelectedRows[0].Cells["MaKH"].Value?.ToString();
+        if (string.IsNullOrEmpty(maKh)) return;
+
+        var kh = _allCustomers.FirstOrDefault(c => c.MaKhachHang == maKh) ?? _services.KhachHangRepo.TimTheoMa(maKh);
+        if (kh == null)
+        {
+            MessageBox.Show("Không tìm thấy thông tin khách hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        using var dialog = new Form
+        {
+            Text = $"Chỉnh Sửa Hồ Sơ Khách Hàng - [{kh.MaKhachHang}]",
+            Width = 440,
+            Height = 350,
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            BackColor = Color.White
+        };
+
+        var lblHead = new Label { Text = "CẬP NHẬT THÔNG TIN KHÁCH HÀNG", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, Location = new Point(25, 18), AutoSize = true };
+        dialog.Controls.Add(lblHead);
+
+        int top = 55;
+        TextBox AddField(string labelText, string defaultVal)
+        {
+            var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 230 };
+            dialog.Controls.Add(l);
+            dialog.Controls.Add(t);
+            top += 40;
+            return t;
+        }
+
+        var txtMaKh = AddField("Mã Khách Hàng:", kh.MaKhachHang);
+        txtMaKh.ReadOnly = true;
+        txtMaKh.BackColor = Color.FromArgb(245, 245, 245);
+
+        var txtHoTen = AddField("Họ và Tên:", kh.HoTen);
+        var txtPhone = AddField("Số Điện Thoại:", kh.SoDienThoai);
+
+        var lblDob = new Label { Text = "Ngày Sinh:", Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var dtpDob = new DateTimePicker { Location = new Point(160, top - 3), Width = 230, Format = DateTimePickerFormat.Short, Value = kh.NgaySinh > DateTime.MinValue ? kh.NgaySinh : new DateTime(1995, 1, 1) };
+        dialog.Controls.Add(lblDob);
+        dialog.Controls.Add(dtpDob);
+        top += 45;
+
+        var btnSave = UITheme.CreateFlatButton("Lưu Thay Đổi", UITheme.PrimaryGold, Color.Black);
+        btnSave.Location = new Point(160, top + 10);
+        btnSave.Click += (s, ev) =>
+        {
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+            {
+                MessageBox.Show("Họ và tên khách hàng không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var dto = new CapNhatKhachHangDTO
+            {
+                MaKhachHang = kh.MaKhachHang,
+                HoTen = txtHoTen.Text.Trim(),
+                SoDienThoai = txtPhone.Text.Trim(),
+                NgaySinh = dtpDob.Value
+            };
+
+            var ok = _services.QuanLyKhachHang.CapNhatThongTin(dto);
+            if (ok)
+            {
+                MessageBox.Show("Cập nhật hồ sơ khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dialog.DialogResult = DialogResult.OK;
+                dialog.Close();
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật thông tin thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        };
+
+        dialog.Controls.Add(btnSave);
+
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+            LoadCustomerData();
+        }
+    }
+
+    private void BtnCustomerOrders_Click(object? sender, EventArgs e)
+    {
+        if (_dgvCustomers.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn khách hàng cần xem lịch sử mua hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maKh = _dgvCustomers.SelectedRows[0].Cells["MaKH"].Value?.ToString();
+        var hoTen = _dgvCustomers.SelectedRows[0].Cells["HoTen"].Value?.ToString() ?? maKh;
+        if (string.IsNullOrEmpty(maKh)) return;
+
+        var orders = _services.HoaDonRepo.LayTheoKhachHang(maKh);
+
+        using var dialog = new Form
+        {
+            Text = $"Lịch Sử Đơn Hàng - Khách Hàng: {hoTen} ({maKh})",
+            Width = 780,
+            Height = 450,
+            StartPosition = FormStartPosition.CenterParent,
+            BackColor = UITheme.CanvasBackground
+        };
+
+        var pnlTop = new Panel { Dock = DockStyle.Top, Height = 55, Padding = new Padding(20, 15, 20, 0), BackColor = Color.White };
+        var titleText = $"DANH SÁCH ĐƠN HÀNG CỦA {(hoTen ?? maKh).ToUpper()} (TỔNG CỘNG: {orders.Count} ĐƠN)";
+        var lblTitle = new Label { Text = titleText, Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, AutoSize = true };
+        pnlTop.Controls.Add(lblTitle);
+
+        var pnlGrid = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15), BackColor = UITheme.CanvasBackground };
+        var dgvOrders = new DataGridView();
+        UITheme.ApplyGridViewStyle(dgvOrders);
+        dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaHD", HeaderText = "MÃ ĐƠN HÀNG", FillWeight = 120, MinimumWidth = 140 });
+        dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayLap", HeaderText = "NGÀY LẬP", FillWeight = 110, MinimumWidth = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter } });
+        dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongTien", HeaderText = "TỔNG TIỀN (VND)", FillWeight = 120, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "PhuongThuc", HeaderText = "PHƯƠNG THỨC TT", FillWeight = 110, MinimumWidth = 120 });
+        dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 100, MinimumWidth = 110 });
+
+        var viVn = new CultureInfo("vi-VN");
+        foreach (var hd in orders)
+        {
+            var rowIdx = dgvOrders.Rows.Add(
+                hd.MaHoaDon,
+                hd.NgayLap.ToString("dd/MM/yyyy HH:mm"),
+                hd.TongThanhToan.ToString("N0", viVn),
+                hd.PhuongThucThanhToan,
+                hd.TrangThaiDonHang
+            );
+
+            if (hd.TrangThaiDonHang == "HoanTat")
+                dgvOrders.Rows[rowIdx].Cells["TrangThai"].Style.ForeColor = UITheme.SuccessColor;
+            else if (hd.TrangThaiDonHang == "DaHuy")
+                dgvOrders.Rows[rowIdx].Cells["TrangThai"].Style.ForeColor = UITheme.DangerColor;
+            else
+                dgvOrders.Rows[rowIdx].Cells["TrangThai"].Style.ForeColor = UITheme.PrimaryGold;
+        }
+
+        var pnlInner = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(1) };
+        pnlInner.Controls.Add(dgvOrders);
+        pnlGrid.Controls.Add(pnlInner);
+
+        dialog.Controls.Add(pnlGrid);
+        dialog.Controls.Add(pnlTop);
+
+        dialog.ShowDialog();
     }
 }

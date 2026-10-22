@@ -392,7 +392,23 @@ public class ProductsView : UserControl
 
         foreach (var p in filtered)
         {
-            var hasImage = !string.IsNullOrWhiteSpace(p.HinhAnh) ? "🖼 Có ảnh" : "-";
+            var hasImage = "-";
+            if (!string.IsNullOrWhiteSpace(p.HinhAnh))
+            {
+                if (p.HinhAnh.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                    p.HinhAnh.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasImage = "🌐 Link web";
+                }
+                else if (p.HinhAnh.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasImage = "📁 Ảnh kho";
+                }
+                else
+                {
+                    hasImage = "🖼 File máy";
+                }
+            }
             var discountText = p.PhanTramGiamGia > 0 ? $"{p.PhanTramGiamGia}%" : "0%";
             var rowIdx = _dgvProducts.Rows.Add(
                 p.MaSanPham,

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BlinkBlink.Domain.Entities.Identity;
 
 namespace BlinkBlink.Domain.Interfaces;
@@ -20,4 +21,10 @@ public interface INhanVienRepository
     /// <param name="maNV">Mã nhân viên (ví dụ: NV001)</param>
     /// <returns>Thực thể NhanVien nếu tìm thấy; ngược lại null</returns>
     NhanVien? TimTheoMa(string maNV);
+
+    /// <summary>
+    /// Lấy toàn bộ danh sách nhân viên trong hệ thống phục vụ quản lý nhân sự
+    /// </summary>
+    /// <returns>Danh sách thực thể nhân viên</returns>
+    List<NhanVien> LayTatCa();
 }

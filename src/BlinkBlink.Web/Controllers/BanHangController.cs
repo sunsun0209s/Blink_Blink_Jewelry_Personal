@@ -20,15 +20,18 @@ public class BanHangController : ControllerBase
     private readonly DatHangUseCase _datHangUseCase;
     private readonly XuLyDonHangUseCase _xuLyDonHangUseCase;
     private readonly IHoaDonRepository _hoaDonRepo;
+    private readonly IKhachHangRepository _khachHangRepo;
 
     public BanHangController(
         DatHangUseCase datHangUseCase,
         XuLyDonHangUseCase xuLyDonHangUseCase,
-        IHoaDonRepository hoaDonRepo)
+        IHoaDonRepository hoaDonRepo,
+        IKhachHangRepository khachHangRepo)
     {
         _datHangUseCase = datHangUseCase ?? throw new ArgumentNullException(nameof(datHangUseCase));
         _xuLyDonHangUseCase = xuLyDonHangUseCase ?? throw new ArgumentNullException(nameof(xuLyDonHangUseCase));
         _hoaDonRepo = hoaDonRepo ?? throw new ArgumentNullException(nameof(hoaDonRepo));
+        _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
     }
 
     /// <summary>
@@ -46,13 +49,26 @@ public class BanHangController : ControllerBase
             return BadRequest(new { Success = false, Message = "Dữ liệu đặt hàng không được để trống." });
         }
 
+        // Kiểm tra quyền truy cập: Chặn khách hàng bị quản trị viên khóa tài khoản
+        var khach = _khachHangRepo.TimTheoMa(request.MaKhachHang);
+        if (khach != null && !khach.TrangThai)
+        {
+            return StatusCode(403, new { Success = false, Message = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng Blink Blink." });
+        }
+
         var result = await _datHangUseCase.ExecuteAsync(request, cancellationToken);
         if (!result)
         {
             return BadRequest(new { Success = false, Message = "Không thể tạo đơn hàng. Giỏ hàng rỗng hoặc sản phẩm không khả dụng." });
         }
 
-        return Ok(new { Success = true, Message = "Đặt hàng thành công. Đơn hàng đang chờ nhân viên duyệt." });
+        var donMoi = (await _hoaDonRepo.LayTheoKhachHangAsync(request.MaKhachHang, cancellationToken)).FirstOrDefault();
+
+        return Ok(new { 
+            Success = true, 
+            Message = "Đặt hàng thành công. Đơn hàng đang chờ nhân viên duyệt.",
+            Data = donMoi
+        });
     }
 
     /// <summary>

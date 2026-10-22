@@ -66,7 +66,15 @@ public class QuanLyKhachHangUseCase
             return false;
         }
 
-        khachHang.KhoaTaiKhoan();
+        if (khachHang.TrangThai)
+        {
+            khachHang.KhoaTaiKhoan();
+        }
+        else
+        {
+            khachHang.TrangThai = true;
+        }
+
         _khachHangRepo.LuuKhachHang(khachHang);
         return true;
     }
