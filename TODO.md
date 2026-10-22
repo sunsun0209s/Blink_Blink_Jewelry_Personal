@@ -5,4 +5,4 @@
 - [ ] Đóng gói và phát hành tài liệu hướng dẫn vận hành hệ thống.
 
 #### 2. Kế hoạch tiếp theo:
-- [ ] Mở Pull Request đưa nhánh `feature/customer-web-ui` vào `main`.
+- [ ] Rà soát nghiệm thu hệ thống và hoàn thiện tài liệu dự án.

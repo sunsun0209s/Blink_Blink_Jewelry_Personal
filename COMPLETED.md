@@ -1,5 +1,10 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Git Workflow: Hoàn Tất Hợp Nhất & Đẩy Nhánh `feature/customer-web-ui` Lên Nhánh Chính `main`]:
+  - Hợp nhất toàn diện nhánh `feature/customer-web-ui` vào `main` thông qua chiến lược `merge --no-ff`, bảo toàn 100% lịch sử commit và tài liệu quy chuẩn.
+  - Toàn bộ solution biên dịch thành công 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+  - Đã đẩy đồng bộ thành công cả 2 nhánh lên GitHub repository từ xa (`git push origin feature/customer-web-ui` và `git push origin main`).
+
 - [x] [2026-10-23] [Web Storefront & Infrastructure: Khắc Phục Triệt Để Lỗi Vỡ Ảnh Đơn Hàng, Đồng Bộ Ảnh CSDL SQL Server Thật & Cơ Chế Dự Phòng Kim Hoàn Haute Joaillerie - Đạt 12/12 Vòng Kiểm Thử]:
   - **Khắc phục tận gốc tại Backend Repository:** Bổ sung `s.HinhAnh` và `s.PhanTramGiamGia` vào câu lệnh `SELECT` của phương thức `LayChiTietHoaDon` trong `HoaDonRepository.cs`; ánh xạ chuẩn xác vào thuộc tính Domain Entity `SanPhamTrangSuc` của từng `ChiTietHoaDon`; bảo đảm API `GET /api/BanHang/khach-hang/{maKH}` và `GET /api/BanHang/danh-sach` trả về đầy đủ URL ảnh kim cương và đường dẫn ảnh sản phẩm thật.
   - **Triệt tiêu 100% lỗi vỡ ảnh & alt text méo mó trên Web Storefront:** Tinh chỉnh hàm `renderCustomerOrders` và `renderCheckoutSummary` trong `storefront.js`; tự động nhận diện cả thuộc tính camelCase và PascalCase; thiết lập fallback an toàn tuyệt đối về hình ảnh kim hoàn Haute Joaillerie `/images/hero-jewelry.jpg` (kèm `loading="lazy"` và ngắt lặp `onerror=null`), ngăn chặn hoàn toàn hiện tượng icon vỡ ảnh vi phạm quy chuẩn Anti-Slop Bans trong `GEMINI.md`.
