@@ -110,8 +110,9 @@ partial class MainForm
         // 
         this.AutoScaleDimensions = new SizeF(8F, 20F);
         this.AutoScaleMode = AutoScaleMode.Font;
-        this.ClientSize = new Size(1280, 760);
-        this.MinimumSize = new Size(1024, 600);
+        this.ClientSize = new Size(1480, 880);
+        this.WindowState = FormWindowState.Maximized;
+        this.MinimumSize = new Size(1280, 720);
         this.StartPosition = FormStartPosition.CenterScreen;
         this.Text = "Blink Blink Jewelry - Quản Trị Hệ Thống";
         this.Controls.Add(this.panelContent);

@@ -89,45 +89,41 @@ public class ProductsView : UserControl
         topHeaderPanel.Controls.Add(lblSubTitle);
         topHeaderPanel.Controls.Add(pnlKpis);
 
-        // Toolbar Panel
-        var toolbarPanel = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 54,
-            Padding = new Padding(20, 8, 20, 8),
-            BackColor = Color.White
-        };
+        // Toolbar Panel Responsive chống tràn chữ
+        var toolbarPanel = UITheme.CreateResponsiveToolbar();
 
         var lblSearch = new Label
         {
             Text = "Tìm kiếm:",
-            Location = new Point(20, 17),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _txtSearch = new TextBox
         {
-            Location = new Point(88, 14),
-            Width = 160,
-            Height = 26,
-            PlaceholderText = "Tên, mã SP, chất liệu..."
+            Width = 170,
+            Height = 28,
+            Font = UITheme.RegularFont,
+            PlaceholderText = "Tên, mã SP, chất liệu...",
+            Margin = new Padding(0, 4, 15, 4)
         };
         _txtSearch.TextChanged += (s, e) => FilterProducts();
 
         var lblCat = new Label
         {
             Text = "Danh mục:",
-            Location = new Point(260, 17),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _cboCategory = new ComboBox
         {
-            Location = new Point(335, 14),
             Width = 145,
-            DropDownStyle = ComboBoxStyle.DropDownList
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 4, 15, 4)
         };
         _cboCategory.Items.AddRange(new object[] { "Tất Cả Danh Mục", "DM01", "DM02", "DM03", "DM04" });
         _cboCategory.SelectedIndex = 0;
@@ -137,29 +133,29 @@ public class ProductsView : UserControl
         var lblPrice = new Label
         {
             Text = "Giá mới (VND):",
-            Location = new Point(495, 17),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _txtEditPrice = new TextBox
         {
-            Location = new Point(590, 14),
-            Width = 110,
-            Height = 26,
-            Font = UITheme.TabularNumericFont
+            Width = 115,
+            Height = 28,
+            Font = UITheme.TabularNumericFont,
+            Margin = new Padding(0, 4, 12, 4)
         };
 
         _btnUpdatePrice = UITheme.CreateFlatButton("Cập Nhật Giá", UITheme.PrimaryGold, Color.Black);
-        _btnUpdatePrice.Location = new Point(710, 10);
+        _btnUpdatePrice.Margin = new Padding(0, 2, 8, 2);
         _btnUpdatePrice.Click += BtnUpdatePrice_Click;
 
         _btnAddProduct = UITheme.CreateFlatButton("+ Thêm Sản Phẩm", UITheme.DarkHeader, Color.White);
-        _btnAddProduct.Location = new Point(840, 10);
+        _btnAddProduct.Margin = new Padding(0, 2, 8, 2);
         _btnAddProduct.Click += BtnAddProduct_Click;
 
         _btnRefresh = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
-        _btnRefresh.Location = new Point(995, 10);
+        _btnRefresh.Margin = new Padding(0, 2, 0, 2);
         _btnRefresh.Click += (s, e) => LoadProductsData();
 
         toolbarPanel.Controls.Add(lblSearch);
@@ -237,14 +233,14 @@ public class ProductsView : UserControl
     private void ConfigureGridColumns()
     {
         _dgvProducts.Columns.Clear();
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SP", FillWeight = 75 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 200 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaDanhMuc", HeaderText = "DANH MỤC", FillWeight = 80 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChatLieu", HeaderText = "CHẤT LIỆU", FillWeight = 130 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "Size", HeaderText = "KÍCH CỠ", FillWeight = 75 });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaNhap", HeaderText = "GIÁ NHẬP (VND)", FillWeight = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaBan", HeaderText = "ĐƠN GIÁ BÁN (VND)", FillWeight = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI KHO", FillWeight = 95 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SP", FillWeight = 80, MinimumWidth = 95 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 200, MinimumWidth = 220 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaDanhMuc", HeaderText = "DANH MỤC", FillWeight = 80, MinimumWidth = 95 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChatLieu", HeaderText = "CHẤT LIỆU", FillWeight = 130, MinimumWidth = 140 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "Size", HeaderText = "KÍCH CỠ", FillWeight = 75, MinimumWidth = 85 });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaNhap", HeaderText = "GIÁ NHẬP (VND)", FillWeight = 110, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaBan", HeaderText = "ĐƠN GIÁ BÁN (VND)", FillWeight = 120, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI KHO", FillWeight = 95, MinimumWidth = 115 });
     }
 
     private void LoadProductsData()

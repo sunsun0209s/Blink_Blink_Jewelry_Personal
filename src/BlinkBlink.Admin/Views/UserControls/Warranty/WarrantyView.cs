@@ -91,68 +91,64 @@ public class WarrantyView : UserControl
         topHeaderPanel.Controls.Add(lblSubTitle);
         topHeaderPanel.Controls.Add(pnlKpis);
 
-        // Toolbar
-        var toolbarPanel = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 54,
-            Padding = new Padding(20, 8, 20, 8),
-            BackColor = Color.White
-        };
+        // Toolbar Panel Responsive chống tràn chữ
+        var toolbarPanel = UITheme.CreateResponsiveToolbar();
 
         var lblSearch = new Label
         {
             Text = "Tìm kiếm:",
-            Location = new Point(20, 17),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _txtSearch = new TextBox
         {
-            Location = new Point(88, 14),
-            Width = 160,
-            Height = 26,
-            PlaceholderText = "Số phiếu, mã SP, khách..."
+            Width = 170,
+            Height = 28,
+            Font = UITheme.RegularFont,
+            PlaceholderText = "Số phiếu, mã SP, khách...",
+            Margin = new Padding(0, 4, 15, 4)
         };
         _txtSearch.TextChanged += (s, e) => FilterWarranty();
 
         var lblStatus = new Label
         {
             Text = "Trạng thái:",
-            Location = new Point(260, 17),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _cboStatus = new ComboBox
         {
-            Location = new Point(335, 14),
             Width = 145,
-            DropDownStyle = ComboBoxStyle.DropDownList
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 4, 15, 4)
         };
         _cboStatus.Items.AddRange(new object[] { "Tất Cả", "DangBaoHanh", "DaHoanTat", "DaHuy" });
         _cboStatus.SelectedIndex = 0;
         _cboStatus.SelectedIndexChanged += (s, e) => FilterWarranty();
 
         _btnNew = UITheme.CreateFlatButton("+ Tiếp Nhận Mới", UITheme.PrimaryGold, Color.Black);
-        _btnNew.Location = new Point(495, 10);
+        _btnNew.Margin = new Padding(0, 2, 8, 2);
         _btnNew.Click += BtnNew_Click;
 
         _btnProcessing = UITheme.CreateFlatButton("🔧 Đang Xử Lý", UITheme.DarkHeader, Color.White);
-        _btnProcessing.Location = new Point(635, 10);
+        _btnProcessing.Margin = new Padding(0, 2, 8, 2);
         _btnProcessing.Click += (s, e) => UpdateTicketStatus("DangBaoHanh");
 
         _btnComplete = UITheme.CreateFlatButton("✓ Quyết Toán", UITheme.SuccessColor, Color.White);
-        _btnComplete.Location = new Point(755, 10);
+        _btnComplete.Margin = new Padding(0, 2, 8, 2);
         _btnComplete.Click += BtnComplete_Click;
 
         _btnCancelTicket = UITheme.CreateFlatButton("✕ Hủy Phiếu", UITheme.DangerColor, Color.White);
-        _btnCancelTicket.Location = new Point(865, 10);
+        _btnCancelTicket.Margin = new Padding(0, 2, 8, 2);
         _btnCancelTicket.Click += (s, e) => UpdateTicketStatus("DaHuy");
 
         _btnRefresh = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
-        _btnRefresh.Location = new Point(965, 10);
+        _btnRefresh.Margin = new Padding(0, 2, 0, 2);
         _btnRefresh.Click += (s, e) => LoadWarrantyData();
 
         toolbarPanel.Controls.Add(lblSearch);
@@ -229,14 +225,14 @@ public class WarrantyView : UserControl
     private void ConfigureGridColumns()
     {
         _dgvWarranty.Columns.Clear();
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoPhieuBH", HeaderText = "SỐ PHIẾU BH", FillWeight = 85 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 80 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", HeaderText = "KHÁCH HÀNG", FillWeight = 80 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayTiepNhan", HeaderText = "TIẾP NHẬN", FillWeight = 85 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayHenTra", HeaderText = "HẸN TRẢ", FillWeight = 85 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "LyDoBaoHanh", HeaderText = "LÝ DO TIẾP NHẬN", FillWeight = 190 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiBaoHanh", HeaderText = "CHI PHÍ (VND)", FillWeight = 100, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThaiXuLy", HeaderText = "TRẠNG THÁI", FillWeight = 90 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoPhieuBH", HeaderText = "SỐ PHIẾU BH", FillWeight = 85, MinimumWidth = 100 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85, MinimumWidth = 110 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", HeaderText = "KHÁCH HÀNG", FillWeight = 80, MinimumWidth = 95 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayTiepNhan", HeaderText = "TIẾP NHẬN", FillWeight = 85, MinimumWidth = 100 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayHenTra", HeaderText = "HẸN TRẢ", FillWeight = 85, MinimumWidth = 100 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "LyDoBaoHanh", HeaderText = "LÝ DO TIẾP NHẬN", FillWeight = 190, MinimumWidth = 180 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiBaoHanh", HeaderText = "CHI PHÍ (VND)", FillWeight = 105, MinimumWidth = 125, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThaiXuLy", HeaderText = "TRẠNG THÁI", FillWeight = 90, MinimumWidth = 110 });
     }
 
     private void LoadWarrantyData()

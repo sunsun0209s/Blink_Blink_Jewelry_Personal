@@ -98,4 +98,21 @@ public static class UITheme
         btn.FlatAppearance.BorderSize = 0;
         return btn;
     }
+
+    /// <summary>
+    /// Tạo thanh công cụ tác vụ dạng FlowLayoutPanel linh hoạt, tự co giãn và chống tràn chữ khi thay đổi độ phân giải.
+    /// </summary>
+    /// <returns>Đối tượng FlowLayoutPanel chuẩn giao diện Blink Blink Jewelry</returns>
+    public static FlowLayoutPanel CreateResponsiveToolbar()
+    {
+        return new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = true,
+            Padding = new Padding(20, 10, 20, 10),
+            BackColor = Color.White
+        };
+    }
 }

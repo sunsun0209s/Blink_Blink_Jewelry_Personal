@@ -1,21 +1,24 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Chuyển đổi toàn bộ CSDL và tầng Data Access sang ADO.NET thuần (không dùng EF Core Migrations):**
-  - [`database/BlinkBlinkJewelry.sql`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/database/BlinkBlinkJewelry.sql): Kịch bản SQL Server độc lập chứa đầy đủ DDL 15 bảng chuẩn 3NF và DML nạp dữ liệu mẫu kim hoàn thực tế cao cấp.
-  - [`DatabaseHelper.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs): Lớp tiện ích ADO.NET quản lý `SqlConnection`, thực thi câu lệnh SQL với `SqlParameter` an toàn tuyệt đối.
-  - Viết lại toàn bộ 12 Repositories trong [`src/BlinkBlink.Infrastructure/Repositories/`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/) bằng ADO.NET thuần.
-  - Xóa bỏ `AppDbContext.cs` và thư mục `Configurations/` trong Infrastructure; xóa bỏ hoàn toàn dữ liệu mồi tĩnh trong mã nguồn C# ([`InMemoryDataContext.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/InMemoryDataContext.cs), [`AdminServiceScope.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/AdminServiceScope.cs)).
-  - Cập nhật đồng bộ các sơ đồ kiến trúc XML ([`XML/Class Diagram.xml`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Class%20Diagram.xml) và 5 file sơ đồ phân hệ XML) thay thế `AppDbContext` bằng `DatabaseHelper`.
-  - Cập nhật tài liệu [`CONG_NGHE_VA_QUY_TRINH.md`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/CONG_NGHE_VA_QUY_TRINH.md): Ghi nhận vai trò Admin & Nhân viên, WinForms Admin Desktop, Web Khách hàng HTML/CSS/JS/PHP và ADO.NET thuần.
-  - Toàn bộ 27/27 tests (Unit & Integration) pass 100%, Solution biên dịch 0 lỗi, 0 cảnh báo.
+- **Tối ưu hóa không gian hiển thị & nới rộng giao diện WinForms Admin (`BlinkBlink.Admin`):**
+  - [`MainForm.Designer.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/MainForm.Designer.cs): Mở rộng `ClientSize = 1480 x 880`, `MinimumSize = 1280 x 720` và thiết lập `WindowState = FormWindowState.Maximized` khi khởi chạy.
+  - [`UITheme.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/Helpers/UITheme.cs): Bổ sung helper `CreateResponsiveToolbar()` dạng `FlowLayoutPanel` tự động co giãn và bẻ dòng linh hoạt khi thay đổi kích thước hoặc tỉ lệ High DPI.
+  - Tái cấu trúc thanh công cụ và thiết lập `MinimumWidth` chuẩn cho toàn bộ các cột DataGridView trên 5 phân hệ quản trị:
+    - [`OrdersView.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs): Bố cục thanh công cụ responsive, cân đối bộ chia `SplitContainer` tỉ lệ 55%/45% kèm kích thước tối thiểu, bảo đảm hiển thị trọn vẹn 10 cột đơn hàng và 4 cột chi tiết mặt hàng.
+    - [`ProductsView.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs): Bố cục thanh công cụ responsive, đặt `MinimumWidth` cho 8 cột sản phẩm.
+    - [`WarrantyView.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Warranty/WarrantyView.cs): Bố cục thanh công cụ responsive, đặt `MinimumWidth` cho 8 cột bảo hành.
+    - [`UsersView.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Identity/UsersView.cs): Bố cục responsive cho cả 2 tab Nhân viên và Khách hàng.
+    - [`ReportingView.cs`](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs): Bố cục responsive cho thanh chọn khoảng ngày báo cáo và đặt `MinimumWidth` cho 3 chế độ xem báo cáo.
+  - Toàn bộ 27/27 unit & integration tests pass 100%, solution biên dịch 0 lỗi, 0 cảnh báo.
 
 ## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- Đã hoàn tất 100% việc chuyển đổi sang ADO.NET thuần và khởi tạo kịch bản SQL Server.
-- CSDL được quản lý độc lập qua file `.sql`, sẵn sàng chạy trực tiếp trên SSMS.
-- Kiến trúc cho phân hệ tiếp theo: **Giao diện Web Khách hàng (`BlinkBlink.Web`)** (HTML, CSS, JS, PHP nếu có) giao tiếp với backend qua RESTful Web API Controller.
+- Hoàn tất 100% việc sửa lỗi giao diện hẹp và tràn chữ trên WinForms Admin.
+- Đang ở nhánh `bugfix/admin-ui-layout`, chuẩn bị commit và merge vào `main`.
+- Phân hệ kế tiếp: Xây dựng Giao diện Web Khách Hàng (`BlinkBlink.Web`) mua sắm, giỏ hàng, tra cứu bảo hành kết nối Web API theo chuẩn Clean Architecture và Taste Skill.
 
 ## 3. Hành động cụ thể tiếp theo cho phiên làm việc sau
-1. Gộp nhánh `refactor/adonet-database` vào `main`.
-2. Tạo nhánh mới `feature/customer-web-ui` từ `main`.
-3. Trình bày **Bước 1 (Idea & Proposal)** thiết kế giao diện Web Khách hàng mua sắm, giỏ hàng và tra cứu bảo hành kết nối RESTful API.
+1. Commit các thay đổi trên nhánh `bugfix/admin-ui-layout`.
+2. Hợp nhất (merge) nhánh `bugfix/admin-ui-layout` vào nhánh `main`.
+3. Đẩy (push) lên GitHub remote.
+4. Bắt đầu phân hệ Giao diện Web Khách Hàng (Tạo nhánh `feature/customer-web-ui`, trình bày Bước 1 Đề xuất Ý tưởng & Giải pháp).

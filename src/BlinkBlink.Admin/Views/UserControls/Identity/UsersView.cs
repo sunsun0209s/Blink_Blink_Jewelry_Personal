@@ -115,32 +115,26 @@ public class UsersView : UserControl
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Nhân Viên", out _lblKpiStaffTotal, UITheme.TextPrimary));
         pnlKpis.Controls.Add(CreateKpiCard("Quản Trị Viên (Admin)", out _lblKpiStaffAdmin, UITheme.PrimaryGold));
 
-        var toolbar = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 52,
-            Padding = new Padding(15, 8, 15, 8),
-            BackColor = Color.White
-        };
+        var toolbar = UITheme.CreateResponsiveToolbar();
 
-        var lblS = new Label { Text = "Tìm kiếm:", Location = new Point(15, 16), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        _txtSearchStaff = new TextBox { Location = new Point(85, 13), Width = 200, PlaceholderText = "Tên, mã NV, username..." };
+        var lblS = new Label { Text = "Tìm kiếm:", AutoSize = true, ForeColor = UITheme.TextSecondary, Margin = new Padding(0, 8, 6, 0) };
+        _txtSearchStaff = new TextBox { Width = 200, Height = 28, PlaceholderText = "Tên, mã NV, username...", Margin = new Padding(0, 4, 15, 4) };
         _txtSearchStaff.TextChanged += (s, e) => FilterStaff();
 
         var btnAdd = UITheme.CreateFlatButton("+ Thêm Nhân Viên", UITheme.PrimaryGold, Color.Black);
-        btnAdd.Location = new Point(300, 9);
+        btnAdd.Margin = new Padding(0, 2, 8, 2);
         btnAdd.Click += BtnAddStaff_Click;
 
         var btnLock = UITheme.CreateFlatButton("🔒 Khóa Tài Khoản", UITheme.DangerColor, Color.White);
-        btnLock.Location = new Point(445, 9);
+        btnLock.Margin = new Padding(0, 2, 8, 2);
         btnLock.Click += BtnLockStaff_Click;
 
         var btnReset = UITheme.CreateFlatButton("🔑 Đặt Lại Mật Khẩu", UITheme.DarkHeader, Color.White);
-        btnReset.Location = new Point(585, 9);
+        btnReset.Margin = new Padding(0, 2, 8, 2);
         btnReset.Click += BtnResetPassword_Click;
 
         var btnRef = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
-        btnRef.Location = new Point(745, 9);
+        btnRef.Margin = new Padding(0, 2, 0, 2);
         btnRef.Click += (s, e) => LoadStaffData();
 
         toolbar.Controls.Add(lblS);
@@ -155,13 +149,13 @@ public class UsersView : UserControl
 
         _dgvStaff = new DataGridView();
         UITheme.ApplyGridViewStyle(_dgvStaff);
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaNV", HeaderText = "MÃ NHÂN VIÊN", FillWeight = 85 });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "HoTen", HeaderText = "HỌ VÀ TÊN", FillWeight = 170 });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDangNhap", HeaderText = "TÊN ĐĂNG NHẬP", FillWeight = 120 });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoDienThoai", HeaderText = "SỐ ĐIỆN THOẠI", FillWeight = 110 });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaVaiTro", HeaderText = "MÃ VAI TRÒ", FillWeight = 85 });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "LuongCoBan", HeaderText = "LƯƠNG CƠ BẢN (VND)", FillWeight = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 90 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaNV", HeaderText = "MÃ NHÂN VIÊN", FillWeight = 85, MinimumWidth = 100 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "HoTen", HeaderText = "HỌ VÀ TÊN", FillWeight = 170, MinimumWidth = 180 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDangNhap", HeaderText = "TÊN ĐĂNG NHẬP", FillWeight = 120, MinimumWidth = 130 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoDienThoai", HeaderText = "SỐ ĐIỆN THOẠI", FillWeight = 110, MinimumWidth = 115 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaVaiTro", HeaderText = "MÃ VAI TRÒ", FillWeight = 85, MinimumWidth = 95 });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "LuongCoBan", HeaderText = "LƯƠNG CƠ BẢN (VND)", FillWeight = 120, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvStaff.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 90, MinimumWidth = 100 });
 
         pnlWhite.Controls.Add(_dgvStaff);
         pnlGrid.Controls.Add(pnlWhite);
@@ -183,24 +177,18 @@ public class UsersView : UserControl
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Khách Hàng", out _lblKpiCustomerTotal, UITheme.TextPrimary));
         pnlKpis.Controls.Add(CreateKpiCard("Đang Hoạt Động", out _lblKpiCustomerActive, UITheme.SuccessColor));
 
-        var toolbar = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 52,
-            Padding = new Padding(15, 8, 15, 8),
-            BackColor = Color.White
-        };
+        var toolbar = UITheme.CreateResponsiveToolbar();
 
-        var lblS = new Label { Text = "Tìm kiếm:", Location = new Point(15, 16), AutoSize = true, ForeColor = UITheme.TextSecondary };
-        _txtSearchCustomer = new TextBox { Location = new Point(85, 13), Width = 200, PlaceholderText = "Tên, mã KH, SĐT..." };
+        var lblS = new Label { Text = "Tìm kiếm:", AutoSize = true, ForeColor = UITheme.TextSecondary, Margin = new Padding(0, 8, 6, 0) };
+        _txtSearchCustomer = new TextBox { Width = 200, Height = 28, PlaceholderText = "Tên, mã KH, SĐT...", Margin = new Padding(0, 4, 15, 4) };
         _txtSearchCustomer.TextChanged += (s, e) => FilterCustomers();
 
         var btnLockCust = UITheme.CreateFlatButton("🔒 Khóa / Mở Khóa", UITheme.DangerColor, Color.White);
-        btnLockCust.Location = new Point(300, 9);
+        btnLockCust.Margin = new Padding(0, 2, 8, 2);
         btnLockCust.Click += BtnLockCustomer_Click;
 
         var btnRef = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
-        btnRef.Location = new Point(445, 9);
+        btnRef.Margin = new Padding(0, 2, 0, 2);
         btnRef.Click += (s, e) => LoadCustomerData();
 
         toolbar.Controls.Add(lblS);
@@ -213,12 +201,12 @@ public class UsersView : UserControl
 
         _dgvCustomers = new DataGridView();
         UITheme.ApplyGridViewStyle(_dgvCustomers);
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKH", HeaderText = "MÃ KHÁCH HÀNG", FillWeight = 90 });
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "HoTen", HeaderText = "HỌ VÀ TÊN", FillWeight = 180 });
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDangNhap", HeaderText = "TÊN ĐĂNG NHẬP", FillWeight = 120 });
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoDienThoai", HeaderText = "SỐ ĐIỆN THOẠI", FillWeight = 110 });
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgaySinh", HeaderText = "NGÀY SINH", FillWeight = 100, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 90 });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKH", HeaderText = "MÃ KHÁCH HÀNG", FillWeight = 90, MinimumWidth = 100 });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "HoTen", HeaderText = "HỌ VÀ TÊN", FillWeight = 180, MinimumWidth = 180 });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDangNhap", HeaderText = "TÊN ĐĂNG NHẬP", FillWeight = 120, MinimumWidth = 130 });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoDienThoai", HeaderText = "SỐ ĐIỆN THOẠI", FillWeight = 110, MinimumWidth = 115 });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgaySinh", HeaderText = "NGÀY SINH", FillWeight = 100, MinimumWidth = 105, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        _dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 90, MinimumWidth = 100 });
 
         pnlWhite.Controls.Add(_dgvCustomers);
         pnlGrid.Controls.Add(pnlWhite);

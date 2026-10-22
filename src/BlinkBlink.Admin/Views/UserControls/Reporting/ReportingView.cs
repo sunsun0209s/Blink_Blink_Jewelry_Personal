@@ -98,62 +98,56 @@ public class ReportingView : UserControl
         topHeaderPanel.Controls.Add(lblSubTitle);
         topHeaderPanel.Controls.Add(pnlKpis);
 
-        // Toolbar chứa dtpTuNgay, dtpDenNgay và các nút bấm khớp Diagram
-        var toolbarPanel = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 56,
-            Padding = new Padding(20, 8, 20, 8),
-            BackColor = Color.White
-        };
+        // Toolbar chứa dtpTuNgay, dtpDenNgay và các nút bấm dạng Responsive chống tràn chữ
+        var toolbarPanel = UITheme.CreateResponsiveToolbar();
 
         var lblTuNgay = new Label
         {
             Text = "Từ ngày:",
-            Location = new Point(20, 18),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _dtpTuNgay = new DateTimePicker
         {
-            Location = new Point(80, 14),
-            Width = 125,
+            Width = 130,
             Format = DateTimePickerFormat.Short,
-            Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+            Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+            Margin = new Padding(0, 4, 15, 4)
         };
 
         var lblDenNgay = new Label
         {
             Text = "Đến ngày:",
-            Location = new Point(215, 18),
             AutoSize = true,
-            ForeColor = UITheme.TextSecondary
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 6, 0)
         };
 
         _dtpDenNgay = new DateTimePicker
         {
-            Location = new Point(285, 14),
-            Width = 125,
+            Width = 130,
             Format = DateTimePickerFormat.Short,
-            Value = DateTime.Now
+            Value = DateTime.Now,
+            Margin = new Padding(0, 4, 15, 4)
         };
 
         // Các nút bấm chính xác theo FormBaoCaoThongKe trong XML
         _btnXemDoanhThu = UITheme.CreateFlatButton("📊 Doanh Thu", UITheme.PrimaryGold, Color.Black);
-        _btnXemDoanhThu.Location = new Point(430, 10);
+        _btnXemDoanhThu.Margin = new Padding(0, 2, 8, 2);
         _btnXemDoanhThu.Click += BtnXemDoanhThu_Click;
 
         _btnXemTonKho = UITheme.CreateFlatButton("💎 Báo Cáo Tồn Kho", UITheme.DarkHeader, Color.White);
-        _btnXemTonKho.Location = new Point(545, 10);
+        _btnXemTonKho.Margin = new Padding(0, 2, 8, 2);
         _btnXemTonKho.Click += BtnXemTonKho_Click;
 
         _btnXemTopBanChay = UITheme.CreateFlatButton("🏆 Top Bán Chạy", UITheme.DarkHeader, Color.White);
-        _btnXemTopBanChay.Location = new Point(695, 10);
+        _btnXemTopBanChay.Margin = new Padding(0, 2, 8, 2);
         _btnXemTopBanChay.Click += BtnXemTopBanChay_Click;
 
         _btnXuatBaoCao = UITheme.CreateFlatButton("📥 Xuất File CSV/Excel", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
-        _btnXuatBaoCao.Location = new Point(830, 10);
+        _btnXuatBaoCao.Margin = new Padding(0, 2, 0, 2);
         _btnXuatBaoCao.Click += BtnXuatBaoCao_Click;
 
         toolbarPanel.Controls.Add(lblTuNgay);
@@ -244,10 +238,10 @@ public class ReportingView : UserControl
         _lblReportMode.Text = $"BẢNG KẾT QUẢ THỐNG KÊ DOANH THU ({_dtpTuNgay.Value:dd/MM/yyyy} - {_dtpDenNgay.Value:dd/MM/yyyy})";
 
         _dgvKetQua.Columns.Clear();
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayThang", HeaderText = "NGÀY THÁNG", FillWeight = 90 });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongDon", HeaderText = "SỐ LƯỢNG ĐƠN", FillWeight = 75, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongDoanhThu", HeaderText = "TỔNG DOANH THU (VND)", FillWeight = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "LoiNhuanUocTinh", HeaderText = "LỢI NHUẬN ƯỚC TÍNH (VND)", FillWeight = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.SuccessColor } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayThang", HeaderText = "NGÀY THÁNG", FillWeight = 90, MinimumWidth = 110 });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongDon", HeaderText = "SỐ LƯỢNG ĐƠN", FillWeight = 75, MinimumWidth = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongDoanhThu", HeaderText = "TỔNG DOANH THU (VND)", FillWeight = 110, MinimumWidth = 160, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "LoiNhuanUocTinh", HeaderText = "LỢI NHUẬN ƯỚC TÍNH (VND)", FillWeight = 110, MinimumWidth = 170, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.SuccessColor } });
 
         var data = await _services.ThongKeDoanhThu.ExecuteAsync(_dtpTuNgay.Value, _dtpDenNgay.Value);
 
@@ -288,11 +282,11 @@ public class ReportingView : UserControl
         _lblReportMode.Text = "BÁO CÁO TỒN KHO & ĐỐI CHIẾU CHÊNH LỆCH KIỂM KÊ KIM HOÀN";
 
         _dgvKetQua.Columns.Clear();
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85 });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 190 });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongTon", HeaderText = "SỐ LƯỢNG TỒN", FillWeight = 75, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChenhLechKiemKe", HeaderText = "CHÊNH LỆCH KIỂM KÊ", FillWeight = 85, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaTriTonKho", HeaderText = "GIÁ TRỊ TỒN KHO (VND)", FillWeight = 115, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85, MinimumWidth = 110 });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 190, MinimumWidth = 220 });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongTon", HeaderText = "SỐ LƯỢNG TỒN", FillWeight = 75, MinimumWidth = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChenhLechKiemKe", HeaderText = "CHÊNH LỆCH KIỂM KÊ", FillWeight = 85, MinimumWidth = 135, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaTriTonKho", HeaderText = "GIÁ TRỊ TỒN KHO (VND)", FillWeight = 115, MinimumWidth = 160, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
 
         var data = await _services.ThongKeKhoHang.LayBaoCaoTonKhoAsync();
 
@@ -332,10 +326,10 @@ public class ReportingView : UserControl
         _lblReportMode.Text = "BÁO CÁO TOP SẢN PHẨM TRANG SỨC BÁN CHẠY NHẤT";
 
         _dgvKetQua.Columns.Clear();
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85 });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 200 });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongDaBan", HeaderText = "ĐÃ BÁN (CHIẾC)", FillWeight = 80, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongTienThu", HeaderText = "TỔNG TIỀN THU (VND)", FillWeight = 115, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85, MinimumWidth = 110 });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 200, MinimumWidth = 220 });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongDaBan", HeaderText = "ĐÃ BÁN (CHIẾC)", FillWeight = 80, MinimumWidth = 110, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        _dgvKetQua.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongTienThu", HeaderText = "TỔNG TIỀN THU (VND)", FillWeight = 115, MinimumWidth = 160, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
 
         var data = await _services.ThongKeKhoHang.LayTopBanChayAsync(10);
 
