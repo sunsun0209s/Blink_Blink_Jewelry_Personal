@@ -191,10 +191,22 @@ public class CategoryView : UserControl
     private void ConfigureGridColumns()
     {
         _dgvCategories.Columns.Clear();
-        _dgvCategories.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaDanhMuc", HeaderText = "MÃ DANH MỤC", FillWeight = 90, MinimumWidth = 110 });
-        _dgvCategories.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenDanhMuc", HeaderText = "TÊN DANH MỤC TRANG SỨC", FillWeight = 200, MinimumWidth = 220 });
-        _dgvCategories.Columns.Add(new DataGridViewTextBoxColumn { Name = "MoTa", HeaderText = "MÔ TẢ CHI TIẾT", FillWeight = 320, MinimumWidth = 300 });
-        _dgvCategories.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuongSP", HeaderText = "SỐ MẪU TRANG SỨC", FillWeight = 110, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
+        var colMa = new DataGridViewTextBoxColumn { Name = "MaDanhMuc", HeaderText = "MÃ DANH MỤC", FillWeight = 90, MinimumWidth = 110 };
+        colMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colTen = new DataGridViewTextBoxColumn { Name = "TenDanhMuc", HeaderText = "TÊN DANH MỤC TRANG SỨC", FillWeight = 200, MinimumWidth = 220 };
+        colTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colMoTa = new DataGridViewTextBoxColumn { Name = "MoTa", HeaderText = "MÔ TẢ CHI TIẾT", FillWeight = 320, MinimumWidth = 300 };
+        colMoTa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colMoTa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colSl = new DataGridViewTextBoxColumn { Name = "SoLuongSP", HeaderText = "SỐ MẪU TRANG SỨC", FillWeight = 110, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } };
+        colSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        _dgvCategories.Columns.AddRange(colMa, colTen, colMoTa, colSl);
     }
 
     public void LoadCategoryData()

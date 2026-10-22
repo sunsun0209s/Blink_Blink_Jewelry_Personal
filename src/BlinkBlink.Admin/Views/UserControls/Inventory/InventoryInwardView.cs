@@ -208,23 +208,56 @@ public class InventoryInwardView : UserControl
     private void ConfigureReceiptGridColumns()
     {
         _dgvReceipts.Columns.Clear();
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaPhieuNhap", HeaderText = "MÃ PHIẾU NHẬP", FillWeight = 110, MinimumWidth = 120 });
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayNhap", HeaderText = "NGÀY NHẬP", FillWeight = 120, MinimumWidth = 130 });
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "NhaCungCap", HeaderText = "NHÀ CUNG CẤP TRANG SỨC", FillWeight = 220, MinimumWidth = 200 });
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaNhanVien", HeaderText = "NGƯỜI TIẾP NHẬN", FillWeight = 100, MinimumWidth = 110 });
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongSoLuong", HeaderText = "TỔNG SỐ LƯỢNG", FillWeight = 95, MinimumWidth = 105, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvReceipts.Columns.Add(new DataGridViewTextBoxColumn { Name = "TongGiaTri", HeaderText = "TỔNG TIỀN NHẬP (VND)", FillWeight = 140, MinimumWidth = 150, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        var colMa = new DataGridViewTextBoxColumn { Name = "MaPhieuNhap", HeaderText = "MÃ PHIẾU NHẬP", FillWeight = 110, MinimumWidth = 120 };
+        colMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colNgay = new DataGridViewTextBoxColumn { Name = "NgayNhap", HeaderText = "NGÀY NHẬP", FillWeight = 120, MinimumWidth = 130 };
+        colNgay.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colNgay.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colNcc = new DataGridViewTextBoxColumn { Name = "NhaCungCap", HeaderText = "NHÀ CUNG CẤP TRANG SỨC", FillWeight = 220, MinimumWidth = 200 };
+        colNcc.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colNcc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colNv = new DataGridViewTextBoxColumn { Name = "MaNhanVien", HeaderText = "NGƯỜI TIẾP NHẬN", FillWeight = 100, MinimumWidth = 110 };
+        colNv.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colNv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colSl = new DataGridViewTextBoxColumn { Name = "TongSoLuong", HeaderText = "TỔNG SỐ LƯỢNG", FillWeight = 95, MinimumWidth = 115, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        colSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colTong = new DataGridViewTextBoxColumn { Name = "TongGiaTri", HeaderText = "TỔNG TIỀN NHẬP (VND)", FillWeight = 140, MinimumWidth = 160, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        colTong.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        _dgvReceipts.Columns.AddRange(colMa, colNgay, colNcc, colNv, colSl, colTong);
     }
 
     private void ConfigureDetailGridColumns()
     {
         _dgvDetails.Columns.Clear();
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 100, MinimumWidth = 100 });
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 200 });
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 80, MinimumWidth = 80, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaVonNhap", HeaderText = "ĐƠN GIÁ VỐN (VND)", FillWeight = 120, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
-        _dgvDetails.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoChungTu", HeaderText = "SỐ CHỨNG TỪ", FillWeight = 110, MinimumWidth = 110 });
+        var colMa = new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 100, MinimumWidth = 100 };
+        colMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 200 };
+        colTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 85, MinimumWidth = 95, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        colSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVonNhap", HeaderText = "ĐƠN GIÁ VỐN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        colGiaVon.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 140, MinimumWidth = 150, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        colThanhTien.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colChungTu = new DataGridViewTextBoxColumn { Name = "SoChungTu", HeaderText = "SỐ CHỨNG TỪ", FillWeight = 110, MinimumWidth = 110 };
+        colChungTu.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colChungTu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        _dgvDetails.Columns.AddRange(colMa, colTen, colSl, colGiaVon, colThanhTien, colChungTu);
     }
 
     public void LoadReceiptsData()
@@ -374,21 +407,21 @@ public class InventoryInwardView : UserControl
 
         pnlInfo.Controls.AddRange(new Control[] { lblMaP, txtMaP, lblNcc, txtNcc, lblNv, txtNv, lblChungTu, txtChungTu });
 
-        // Thêm mặt hàng nhập
-        var pnlAddItem = new Panel { Dock = DockStyle.Top, Height = 88, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(12, 10, 12, 10) };
-        var lblSp = new Label { Text = "Sản Phẩm Nhập:", Location = new Point(12, 14), Width = 120, ForeColor = UITheme.TextSecondary };
-        var cboSp = new ComboBox { Location = new Point(135, 10), Width = 320, Height = 30, DropDownStyle = ComboBoxStyle.DropDownList };
+        // Thêm mặt hàng nhập: Bố cục 2 hàng rộng rãi, chống tràn chữ 100% trên màn hình High DPI
+        var pnlAddItem = new Panel { Dock = DockStyle.Top, Height = 108, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(16, 12, 16, 12) };
+        var lblSp = new Label { Text = "Sản Phẩm Nhập (*):", Location = new Point(16, 16), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
+        var cboSp = new ComboBox { Location = new Point(160, 12), Width = 430, Height = 30, DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.RegularFont };
         foreach (var sp in allProducts)
         {
             cboSp.Items.Add(new ProductComboItem(sp.MaSanPham, sp.TenSanPham, sp.GiaNhap));
         }
         if (cboSp.Items.Count > 0) cboSp.SelectedIndex = 0;
 
-        var lblSl = new Label { Text = "Số Lượng:", Location = new Point(475, 14), Width = 70, ForeColor = UITheme.TextSecondary };
-        var nudSl = new NumericUpDown { Location = new Point(550, 10), Width = 85, Height = 30, Minimum = 1, Maximum = 1000, Value = 5 };
+        var lblSl = new Label { Text = "Số Lượng (*):", Location = new Point(620, 16), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
+        var nudSl = new NumericUpDown { Location = new Point(720, 12), Width = 90, Height = 30, Minimum = 1, Maximum = 1000, Value = 5, Font = UITheme.TabularNumericFont };
 
-        var lblGiaVon = new Label { Text = "Đơn Giá Vốn:", Location = new Point(655, 14), Width = 95, ForeColor = UITheme.TextSecondary };
-        var txtGiaVon = new TextBox { Location = new Point(755, 10), Width = 175, Height = 30, Font = UITheme.TabularNumericFont, Text = "12000000" };
+        var lblGiaVon = new Label { Text = "Đơn Giá Vốn (VND) (*):", Location = new Point(16, 60), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
+        var txtGiaVon = new TextBox { Location = new Point(160, 56), Width = 240, Height = 30, Font = UITheme.TabularNumericFont, Text = "12000000" };
 
         cboSp.SelectedIndexChanged += (s, e) =>
         {
@@ -398,21 +431,36 @@ public class InventoryInwardView : UserControl
             }
         };
 
-        var btnAddRow = UITheme.CreateFlatButton("+ Thêm Vào Phiếu", UITheme.DarkHeader, Color.White);
-        btnAddRow.Location = new Point(755, 46);
-        btnAddRow.Width = 175;
-        btnAddRow.Height = 32;
+        var btnAddRow = UITheme.CreateFlatButton("+ Thêm Vào Phiếu Nhập", UITheme.DarkHeader, Color.White);
+        btnAddRow.Location = new Point(420, 54);
+        btnAddRow.Height = 36;
+        btnAddRow.AutoSize = true;
+        btnAddRow.Padding = new Padding(16, 4, 16, 4);
 
         pnlAddItem.Controls.AddRange(new Control[] { lblSp, cboSp, lblSl, nudSl, lblGiaVon, txtGiaVon, btnAddRow });
 
         // Bảng các dòng chi tiết tạm
         var dgvTemp = new DataGridView();
         UITheme.ApplyGridViewStyle(dgvTemp);
-        dgvTemp.Columns.Add("MaSanPham", "MÃ SẢN PHẨM");
-        dgvTemp.Columns.Add("TenSanPham", "TÊN TRANG SỨC");
-        dgvTemp.Columns.Add("SoLuong", "SỐ LƯỢNG");
-        dgvTemp.Columns.Add("GiaVon", "GIÁ VỐN (VND)");
-        dgvTemp.Columns.Add("ThanhTien", "THÀNH TIỀN (VND)");
+        
+        var tempColMa = new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 95, MinimumWidth = 100 };
+        tempColMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        tempColMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var tempColTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 220 };
+        tempColTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        tempColTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var tempColSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 85, MinimumWidth = 95, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        tempColSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var tempColGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVon", HeaderText = "GIÁ VỐN (VND)", FillWeight = 120, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        tempColGiaVon.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var tempColThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        tempColThanhTien.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        dgvTemp.Columns.AddRange(tempColMa, tempColTen, tempColSl, tempColGiaVon, tempColThanhTien);
 
         var tempItems = new List<ChiTietNhapKhoDTO>();
         var viVn = new CultureInfo("vi-VN");

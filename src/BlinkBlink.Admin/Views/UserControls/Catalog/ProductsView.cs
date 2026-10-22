@@ -220,70 +220,97 @@ public class ProductsView : UserControl
         _dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
         _dgvProducts.ScrollBars = ScrollBars.Both;
 
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        var colMa = new DataGridViewTextBoxColumn 
         { 
             Name = "MaSanPham", 
             HeaderText = "MÃ SP", 
             Width = 95 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colTen = new DataGridViewTextBoxColumn 
         { 
             Name = "TenSanPham", 
             HeaderText = "TÊN TRANG SỨC", 
             Width = 240 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colDm = new DataGridViewTextBoxColumn 
         { 
             Name = "MaDanhMuc", 
             HeaderText = "DANH MỤC", 
-            Width = 110 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+            Width = 110,
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+        };
+        colDm.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        var colChatLieu = new DataGridViewTextBoxColumn 
         { 
             Name = "ChatLieu", 
             HeaderText = "CHẤT LIỆU", 
             Width = 160 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colChatLieu.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colChatLieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colSize = new DataGridViewTextBoxColumn 
         { 
             Name = "Size", 
             HeaderText = "KÍCH CỠ", 
-            Width = 90 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+            Width = 95,
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+        };
+        colSize.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        var colGiaNhap = new DataGridViewTextBoxColumn 
         { 
             Name = "GiaNhap", 
             HeaderText = "GIÁ NHẬP BÌNH QUÂN\n(VND)", 
-            Width = 165, 
+            Width = 175, 
             DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colGiaNhap.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colGiaBan = new DataGridViewTextBoxColumn 
         { 
             Name = "GiaBan", 
             HeaderText = "ĐƠN GIÁ BÁN\n(VND)", 
-            Width = 150, 
+            Width = 160, 
             DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colGiaBan.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+        var colGiamGia = new DataGridViewTextBoxColumn 
         { 
             Name = "PhanTramGiamGia", 
             HeaderText = "% GIẢM GIÁ", 
-            Width = 110, 
+            Width = 115, 
             DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colGiamGia.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        var colTrangThai = new DataGridViewTextBoxColumn 
         { 
             Name = "TrangThai", 
             HeaderText = "TRẠNG THÁI KHO", 
             Width = 140 
-        });
-        _dgvProducts.Columns.Add(new DataGridViewTextBoxColumn 
+        };
+        colTrangThai.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+        var colHinhAnh = new DataGridViewTextBoxColumn 
         { 
             Name = "HinhAnh", 
             HeaderText = "HÌNH ẢNH", 
-            Width = 85, 
+            Width = 95, 
             DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter } 
-        });
+        };
+        colHinhAnh.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        _dgvProducts.Columns.AddRange(colMa, colTen, colDm, colChatLieu, colSize, colGiaNhap, colGiaBan, colGiamGia, colTrangThai, colHinhAnh);
     }
 
     public void LoadProductsData()

@@ -54,14 +54,13 @@ public static class UITheme
         dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
         dgv.RowTemplate.Height = 42;
 
-        // Tiêu đề cột: Chiều cao tối ưu 52px, WrapMode tự ngắt dòng khi tiêu đề dài
+        // Tiêu đề cột: Tự động đo đạc và giãn chiều cao theo nội dung thực tế (AutoSize)
         dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-        dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-        dgv.ColumnHeadersHeight = 52;
+        dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgv.ColumnHeadersDefaultCellStyle.BackColor = DarkHeader;
         dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
         dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-        dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 4, 8, 4);
+        dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
         dgv.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
         dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
