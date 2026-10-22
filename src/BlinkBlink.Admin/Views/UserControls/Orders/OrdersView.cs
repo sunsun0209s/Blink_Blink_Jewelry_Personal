@@ -287,6 +287,10 @@ public class OrdersView : UserControl
 
     private void ConfigureOrdersGrid()
     {
+        // 1. Tắt tự động co giãn để cho phép đặt chiều cao cố định
+        _dgvOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+        // 2. Chỉnh chiều cao mong muốn (ví dụ: 50, 56, 60...)
+        _dgvOrders.ColumnHeadersHeight = 100;
         _dgvOrders.Columns.Clear();
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaHoaDon", HeaderText = "MÃ ĐƠN", FillWeight = 75, MinimumWidth = 85 });
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayLap", HeaderText = "NGÀY LẬP", FillWeight = 90, MinimumWidth = 95 });
