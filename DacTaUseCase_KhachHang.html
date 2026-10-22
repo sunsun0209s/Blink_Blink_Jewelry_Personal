@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặc Tả Use Case & Lược Đồ Hoạt Động (Activity Diagram) - Phân Hệ Khách Hàng</title>
+    <style>
+        /* ====================================================================================
+           QUY CHUẨN ĐỊNH DẠNG VĂN BẢN HỌC THUẬT / BÁO CÁO ĐỒ ÁN (NGHỊ ĐỊNH 30/2020/NĐ-CP)
+           - Phông chữ chủ đạo: Times New Roman
+           - Tiêu đề cấp 1: 14pt, In đậm
+           - Tiêu đề cấp 2: 13pt, In đậm
+           - Tiêu đề cấp 3: 13pt, In đậm nghiêng
+           - Tiêu đề cấp 4: 13pt, In đậm nghiêng
+           - Nội dung thông thường: 13pt, Canh đều 2 bên, Thụt đầu dòng 1.27cm, Giãn dòng 1.4
+           - Bảng biểu: Cỡ chữ 13pt, Tiêu đề cột in đậm; Tiêu đề Bảng/Hình: 12pt, In nghiêng, căn giữa
+           - Không có khoảng cách thừa trước và sau đoạn
+           ==================================================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #E8E8E8;
+            color: #000000;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .paper-sheet {
+            background: #FFFFFF;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm 20mm 20mm 25mm; /* Chuẩn lề trang văn bản chuẩn A4: Trên 2cm, Dưới 2cm, Phải 2cm, Trái 2.5cm */
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Tiêu đề chính trang tài liệu */
+        .header-title-block {
+            text-align: center;
+            margin: 0;
+            padding: 0 0 16px 0;
+            border-bottom: 1.5px solid #000000;
+        }
+
+        .header-org {
+            font-size: 13pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-sub-org {
+            font-size: 13pt;
+            font-weight: normal;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-doc-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.3;
+            margin: 14px 0 6px 0;
+            padding: 0;
+        }
+
+        .main-doc-subtitle {
+            font-size: 13pt;
+            font-style: italic;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Tiêu đề mục cấp 1 (1., 2., 3...): Size 14pt, In đậm */
+        h1.heading-level-1 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.4;
+            margin: 18px 0 6px 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        /* Tiêu đề mục cấp 2 (1.1, 1.2, 2.1, 3.1...): Size 13pt, In đậm */
+        h2.heading-level-2 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            font-weight: bold;
+            line-height: 1.4;
+            margin: 14px 0 4px 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        /* Tiêu đề mục cấp 3 (1.1.1, 1.1.2...): Size 13pt, In đậm nghiêng */
+        h3.heading-level-3 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.4;
+            margin: 10px 0 4px 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        /* Tiêu đề mục cấp 4 (1.1.1.1, 1.1.2.1...): Size 13pt, In đậm nghiêng */
+        h4.heading-level-4 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.4;
+            margin: 8px 0 2px 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        /* Nội dung văn bản thông thường (Body text): Size 13pt, Regular, Canh đều 2 bên, Thụt đầu dòng 1.27cm, Giãn dòng 1.4 */
+        p.body-text, p {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            font-weight: normal;
+            text-align: justify;
+            text-indent: 1.27cm;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+
+        p.body-text-noindent {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            font-weight: normal;
+            text-align: justify;
+            text-indent: 0;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Bảng biểu (Table): Cỡ chữ 13pt, Tiêu đề cột in đậm */
+        table.formal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            line-height: 1.35;
+            margin: 4px 0 2px 0;
+        }
+
+        table.formal-table th, table.formal-table td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        table.formal-table th {
+            font-weight: bold;
+            background-color: #F8F8F8;
+            text-align: center;
+        }
+
+        table.formal-table ol, table.formal-table ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        table.formal-table li {
+            margin: 0;
+            padding: 0;
+            text-align: justify;
+        }
+
+        /* Tiêu đề bảng / hình: Size 12pt, In nghiêng, căn giữa, không có khoảng cách trước sau */
+        .caption-title {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            font-style: italic;
+            font-weight: normal;
+            text-align: center;
+            line-height: 1.3;
+            margin: 4px 0 4px 0;
+            padding: 0;
+        }
+
+        /* Vùng chứa lược đồ SVG */
+        .diagram-wrapper {
+            text-align: center;
+            margin: 4px 0 2px 0;
+            padding: 0;
+        }
+
+        .diagram-svg {
+            display: inline-block;
+            border: 1px solid #CCCCCC;
+            background-color: #FFFFFF;
+        }
+
+        .page-break {
+            page-break-before: always;
+            margin-top: 24px;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .paper-sheet {
+                width: 100%;
+                box-shadow: none;
+                margin: 0;
+                padding: 20mm 20mm 20mm 25mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper-sheet">
+    <!-- Tiêu đề văn bản học thuật -->
+    <div class="header-title-block">
+        <div class="header-org">DỰ ÁN HỆ THỐNG QUẢN LÝ BÁN TRANG SỨC BLINK BLINK JEWELRY</div>
+        <div class="header-sub-org">KIẾN TRÚC CLEAN ARCHITECTURE .NET 8 • PHÂN HỆ KHÁCH HÀNG (WEB CLIENT)</div>
+        <div class="main-doc-title">TÀI LIỆU ĐẶC TẢ USE CASE VÀ LƯỢC ĐỒ HOẠT ĐỘNG</div>
+        <div class="main-doc-subtitle">(Căn cứ: XML/Class Diagram.xml, Phân hệ Quản lý bán hàng, Người dùng và Bảo hành)</div>
+    </div>
+
+    <!-- MỤC 1: TỔNG QUAN -->
+    <h1 class="heading-level-1">1. TỔNG QUAN PHÂN HỆ KHÁCH HÀNG</h1>
+    
+    <h2 class="heading-level-2">1.1. Mục tiêu và phạm vi nghiệp vụ</h2>
+    <p class="body-text">
+        Phân hệ Khách hàng trên giao diện Web (Web Client) được thiết kế nhằm phục vụ các khách hàng mua sắm trực tuyến đối với các dòng sản phẩm kim hoàn cao cấp của thương hiệu Blink Blink Jewelry. Toàn bộ các tương tác từ giao diện người dùng Web đều giao tiếp với tầng ứng dụng Clean Architecture thông qua hệ thống giao diện lập trình ứng dụng RESTful API. Hệ thống cung cấp đầy đủ các tiện ích bao gồm: đăng ký tài khoản thành viên mới, xác thực đăng nhập, duyệt và chọn mua trang sức vào giỏ hàng trực tuyến, lập hóa đơn đặt hàng, tra cứu lịch sử các đơn hàng đã đặt cùng chức năng kiểm tra tiến độ phục hồi và bảo hành sản phẩm trực tuyến.
+    </p>
+
+    <h2 class="heading-level-2">1.2. Danh mục các Use Case trong phân hệ</h2>
+    <p class="body-text">
+        Dựa trên bản vẽ kỹ thuật trong tập tin XML/Class Diagram.xml và các phân hệ chức năng tương ứng, các trường hợp sử dụng (Use Case) dành cho tác nhân Khách hàng được chuẩn hóa và tổng hợp như trong Bảng 1.1 dưới đây.
+    </p>
+
+    <div class="caption-title">Bảng 1.1. Danh mục các Use Case thuộc phân hệ Khách hàng</div>
+    <table class="formal-table">
+        <thead>
+            <tr>
+                <th style="width: 12%;">STT</th>
+                <th style="width: 18%;">Mã Use Case</th>
+                <th style="width: 38%;">Tên trường hợp sử dụng</th>
+                <th style="width: 32%;">Lớp xử lý nghiệp vụ liên kết</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td><strong>UC-KH-01</strong></td>
+                <td>Đăng ký tài khoản khách hàng mới</td>
+                <td>DangKyKhachHangUseCase</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2</td>
+                <td><strong>UC-KH-02</strong></td>
+                <td>Đăng nhập hệ thống khách hàng</td>
+                <td>DangNhapUseCase</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">3</td>
+                <td><strong>UC-KH-03</strong></td>
+                <td>Chọn mua trang sức &amp; Quản lý giỏ hàng</td>
+                <td>GioHang, ChiTietGioHang</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">4</td>
+                <td><strong>UC-KH-04</strong></td>
+                <td>Đặt hàng trang sức trực tuyến</td>
+                <td>DatHangUseCase</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">5</td>
+                <td><strong>UC-KH-05</strong></td>
+                <td>Tra cứu lịch sử &amp; Theo dõi tiến độ đơn hàng</td>
+                <td>HoaDonRepository.LayTheoKhachHangAsync</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">6</td>
+                <td><strong>UC-KH-06</strong></td>
+                <td>Tra cứu dịch vụ &amp; Tiến độ bảo hành kim hoàn</td>
+                <td>BaoHanhRepository.TimTheoSoPhieuAsync</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- MỤC 2: ĐẶC TẢ CHI TIẾT -->
+    <h1 class="heading-level-1 page-break">2. ĐẶC TẢ CHI TIẾT CÁC USE CASE VÀ LƯỢC ĐỒ HOẠT ĐỘNG</h1>
+
+    <!-- ====================================================================================
+         2.1. USE CASE UC-KH-01: ĐĂNG KÝ
+         ==================================================================================== -->
+    <h2 class="heading-level-2">2.1. Use Case UC-KH-01: Đăng ký tài khoản khách hàng mới</h2>
+    
+    <h3 class="heading-level-3">2.1.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.1. Đặc tả Use Case Đăng ký tài khoản khách hàng mới</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-01</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Đăng ký tài khoản khách hàng mới</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống (Storefront Web &amp; Web API)</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Thực thể liên quan</strong></td>
+                <td>DangKyKhachHangUseCase, DangKyKhachHangDTO, KhachHang, IKhachHangRepository</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Cho phép khách hàng mới tạo tài khoản định danh trên hệ thống để lưu thông tin giao hàng và thuận tiện theo dõi đơn hàng sau khi đặt.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Khách hàng đang ở trang chủ Web bán lẻ và chưa đăng nhập vào hệ thống.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Hồ sơ khách hàng mới được tạo trong cơ sở dữ liệu với vai trò KHACHHANG, tài khoản được kích hoạt, khởi tạo giỏ hàng trực tuyến và tự động đăng nhập.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng bấm nút "Tài Khoản" trên thanh điều hướng và chọn tab "Đăng Ký".</li>
+                        <li>Khách hàng nhập các thông tin bắt buộc: Họ tên, Số điện thoại, Ngày sinh, Tên đăng nhập và Mật khẩu.</li>
+                        <li>Khách hàng bấm nút "Tạo Tài Khoản".</li>
+                        <li>Hệ thống kiểm tra tính đầy đủ và hợp lệ của dữ liệu nhập (không để trống, số điện thoại đúng quy chuẩn).</li>
+                        <li>Hệ thống kiểm tra Tên đăng nhập đã được đăng ký trong hệ thống chưa.</li>
+                        <li>Hệ thống tự động sinh mã khách hàng KH_xxxx, tạo đối tượng KhachHang mới với vai trò KHACHHANG.</li>
+                        <li>Hệ thống lưu hồ sơ khách hàng vào cơ sở dữ liệu qua phương thức IKhachHangRepository.LuuKhachHang(kh).</li>
+                        <li>Hệ thống tự động tạo giỏ hàng trống liên kết với mã khách hàng mới.</li>
+                        <li>Hệ thống thông báo đăng ký thành công, tự động đăng nhập và cập nhật trạng thái hiển thị trên giao diện.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>4a. Dữ liệu bị để trống hoặc sai định dạng: Hệ thống hiển thị thông báo lỗi yêu cầu điền đầy đủ và giữ nguyên các trường đã nhập đúng.</li>
+                        <li>5a. Tên đăng nhập đã tồn tại: Hệ thống thông báo lỗi "Tên đăng nhập này đã được sử dụng" và đặt con trỏ vào ô nhập tên đăng nhập để người dùng đổi tên khác.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.1.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Tiến trình nghiệp vụ thực thi đăng ký tài khoản khách hàng mới được mô hình hóa chi tiết bằng lược đồ hoạt động tại Hình 2.1 dưới đây.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="740" viewBox="0 0 600 740" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid1" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E5E5E5" stroke-width="1"/>
+                </pattern>
+                <marker id="arr1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#000000" />
+                </marker>
+                <marker id="arr-red1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#D32F2F" />
+                </marker>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <!-- Initial Node -->
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <!-- Bước 1 -->
+            <rect x="180" y="80" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Truy cập giao diện Đăng ký tài khoản</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 2 -->
+            <rect x="160" y="152" width="280" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="177" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Nhập Họ tên, SĐT, Ngày sinh, Tên ĐN, Mật khẩu</text>
+            <line x1="300" y1="194" x2="300" y2="222" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 3 -->
+            <rect x="200" y="224" width="200" height="40" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="249" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Bấm "Tạo Tài Khoản"</text>
+            <line x1="300" y1="264" x2="300" y2="292" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision 1 -->
+            <polygon points="300,294 420,326 300,358 180,326" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="331" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Dữ liệu hợp lệ &amp; đủ ô?</text>
+
+            <line x1="420" y1="326" x2="520" y2="326" stroke="#000000" stroke-width="1.5"/>
+            <line x1="520" y1="326" x2="520" y2="173" stroke="#000000" stroke-width="1.5"/>
+            <line x1="520" y1="173" x2="445" y2="173" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="440" y="320" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Không</text>
+
+            <line x1="300" y1="358" x2="300" y2="388" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="376" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Có</text>
+
+            <!-- Decision 2 -->
+            <polygon points="300,390 430,424 300,458 170,424" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="429" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Tên đăng nhập đã tồn tại?</text>
+
+            <line x1="170" y1="424" x2="80" y2="424" stroke="#000000" stroke-width="1.5"/>
+            <line x1="80" y1="424" x2="80" y2="173" stroke="#000000" stroke-width="1.5"/>
+            <line x1="80" y1="173" x2="155" y2="173" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="125" y="418" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Có (Trùng)</text>
+
+            <line x1="300" y1="458" x2="300" y2="492" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="480" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Không</text>
+
+            <!-- Bước 4 -->
+            <rect x="155" y="494" width="290" height="46" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="514" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Sinh mã KH_xxxx &amp; tạo thực thể KhachHang</text>
+            <text x="300" y="530" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#444444">Lưu qua IKhachHangRepository.LuuKhachHang</text>
+            <line x1="300" y1="540" x2="300" y2="570" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 5 -->
+            <rect x="180" y="572" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="598" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Khởi tạo Giỏ hàng trực tuyến cho khách</text>
+            <line x1="300" y1="614" x2="300" y2="644" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 6 -->
+            <rect x="160" y="646" width="280" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="672" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Thông báo thành công &amp; Tự động đăng nhập</text>
+            <line x1="300" y1="688" x2="300" y2="714" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Final Node -->
+            <circle cx="300" cy="726" r="12" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="726" r="7" fill="#000000" stroke="#D32F2F" stroke-width="1.2"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.1. Lược đồ hoạt động quy trình Đăng ký tài khoản khách hàng mới</div>
+
+    <!-- ====================================================================================
+         2.2. USE CASE UC-KH-02: ĐĂNG NHẬP
+         ==================================================================================== -->
+    <h2 class="heading-level-2 page-break">2.2. Use Case UC-KH-02: Đăng nhập hệ thống khách hàng</h2>
+    
+    <h3 class="heading-level-3">2.2.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.2. Đặc tả Use Case Đăng nhập hệ thống khách hàng</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-02</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Đăng nhập hệ thống khách hàng</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống (Storefront Web &amp; Web API)</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Thực thể liên quan</strong></td>
+                <td>DangNhapUseCase, DangNhapDTO, NguoiDung, INguoiDungRepository</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Xác thực danh tính tài khoản khách hàng để cấp quyền truy xuất các chức năng thành viên, lưu giữ giỏ hàng và tra cứu lịch sử các đơn đặt hàng đã lập.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Khách hàng đã có tài khoản trên hệ thống và chưa thực hiện đăng nhập.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Phiên làm việc được xác lập an toàn với vai trò KHACHHANG, giao diện cập nhật hiển thị họ tên khách hàng và kích hoạt quyền xem lịch sử đơn hàng.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng bấm nút "Tài Khoản" trên thanh điều hướng và chọn tab "Đăng Nhập".</li>
+                        <li>Khách hàng nhập Tên đăng nhập và Mật khẩu.</li>
+                        <li>Khách hàng bấm nút "Đăng Nhập".</li>
+                        <li>Hệ thống tìm kiếm thông tin tài khoản qua INguoiDungRepository.TimTheoTenDangNhap().</li>
+                        <li>Hệ thống xác thực mật khẩu thông qua phương thức nghiệp vụ thực thể user.DangNhap(tenDN, mk).</li>
+                        <li>Hệ thống kiểm tra trạng thái kích hoạt của tài khoản (TrangThai == true).</li>
+                        <li>Hệ thống xác lập phiên làm việc và cấp quyền hạn vai trò KHACHHANG.</li>
+                        <li>Hệ thống nạp giỏ hàng đã lưu và cập nhật giao diện thanh điều hướng hiển thị tên khách hàng.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>4a. Tên đăng nhập không tồn tại hoặc mật khẩu sai: Hệ thống thông báo lỗi "Tên đăng nhập hoặc mật khẩu không chính xác" và yêu cầu nhập lại.</li>
+                        <li>6a. Tài khoản đang bị tạm khóa (TrangThai == false): Hệ thống thông báo "Tài khoản của quý khách hiện đang bị tạm khóa, vui lòng liên hệ tổng đài CSKH Blink Blink".</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.2.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Tiến trình nghiệp vụ xác thực đăng nhập của khách hàng được chuẩn hóa và sửa đổi chính xác so với bản vẽ nháp ban đầu, thể hiện tại Hình 2.2.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="740" viewBox="0 0 600 740" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <!-- Initial Node -->
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <!-- Bước 1 -->
+            <rect x="180" y="80" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Mở hộp thoại Đăng nhập Storefront</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 2 -->
+            <rect x="185" y="152" width="230" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="177" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Nhập Tên đăng nhập và Mật khẩu</text>
+            <line x1="300" y1="194" x2="300" y2="222" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 3 -->
+            <rect x="205" y="224" width="190" height="40" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="249" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Bấm "Đăng Nhập"</text>
+            <line x1="300" y1="264" x2="300" y2="292" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision 1 -->
+            <polygon points="300,294 435,328 300,362 165,328" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="325" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Tài khoản &amp; Mật khẩu đúng?</text>
+            <text x="300" y="340" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10pt" fill="#555555">(user.DangNhap)</text>
+
+            <line x1="435" y1="328" x2="520" y2="328" stroke="#000000" stroke-width="1.5"/>
+            <line x1="520" y1="328" x2="520" y2="173" stroke="#000000" stroke-width="1.5"/>
+            <line x1="520" y1="173" x2="420" y2="173" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="445" y="322" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Sai / Không tồn tại</text>
+
+            <line x1="300" y1="362" x2="300" y2="394" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="380" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Đúng</text>
+
+            <!-- Decision 2 -->
+            <polygon points="300,396 425,428 300,460 175,428" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="432" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Tài khoản có bị khóa không?</text>
+
+            <line x1="175" y1="428" x2="80" y2="428" stroke="#000000" stroke-width="1.5"/>
+            <line x1="80" y1="428" x2="80" y2="173" stroke="#000000" stroke-width="1.5"/>
+            <line x1="80" y1="173" x2="180" y2="173" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="110" y="420" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Có (Khóa)</text>
+
+            <line x1="300" y1="460" x2="300" y2="492" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="478" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Không (Hoạt động)</text>
+
+            <!-- Bước 4 -->
+            <rect x="160" y="494" width="280" height="46" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="514" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Khởi tạo phiên làm việc vai trò KHACHHANG</text>
+            <text x="300" y="530" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#555555">(Trả về mã người dùng xác thực thành công)</text>
+            <line x1="300" y1="540" x2="300" y2="570" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 5 -->
+            <rect x="170" y="572" width="260" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="598" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Nạp giỏ hàng đã lưu &amp; danh sách đơn hàng</text>
+            <line x1="300" y1="614" x2="300" y2="644" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Bước 6 -->
+            <rect x="160" y="646" width="280" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="672" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Cập nhật Header: Tên khách hàng &amp; Menu đơn</text>
+            <line x1="300" y1="688" x2="300" y2="714" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Final Node -->
+            <circle cx="300" cy="726" r="12" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="726" r="7" fill="#000000" stroke="#D32F2F" stroke-width="1.2"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.2. Lược đồ hoạt động quy trình Đăng nhập hệ thống khách hàng</div>
+
+    <!-- ====================================================================================
+         2.3. USE CASE UC-KH-03: CHỌN MUA & GIỎ HÀNG
+         ==================================================================================== -->
+    <h2 class="heading-level-2 page-break">2.3. Use Case UC-KH-03: Chọn mua trang sức &amp; Quản lý giỏ hàng</h2>
+    
+    <h3 class="heading-level-3">2.3.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.3. Đặc tả Use Case Chọn mua trang sức và Quản lý giỏ hàng</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-03</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Chọn mua trang sức &amp; Quản lý giỏ hàng</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống Storefront</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Thực thể liên quan</strong></td>
+                <td>SanPhamTrangSuc, DanhMuc, GioHang, ChiTietGioHang, IGioHangRepository</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Khách hàng xem danh mục, lọc sản phẩm theo chất liệu và loại trang sức, xem nhanh thông số chi tiết và thêm/bớt số lượng các món trong giỏ hàng.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Khách hàng truy cập danh mục sản phẩm của Blink Blink Jewelry.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Sản phẩm được lưu trong giỏ hàng, tổng tiền tạm tính được tính toán lại theo đơn giá VND, badge số lượng trên thanh Header cập nhật tức thì.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng duyệt danh mục, chọn lọc theo loại trang sức (Nhẫn kim cương, Dây chuyền, Bông tai, Vòng tay).</li>
+                        <li>Khách hàng xem ảnh phóng to, thông số kích cỡ và chất liệu vàng qua nút "Xem Nhanh".</li>
+                        <li>Khách hàng bấm nút "Chọn Mua" trên thẻ sản phẩm.</li>
+                        <li>Hệ thống kiểm tra sản phẩm đã tồn tại trong giỏ hàng hiện tại chưa.</li>
+                        <li>Nếu đã tồn tại: hệ thống tăng số lượng sản phẩm lên 1. Nếu chưa có: hệ thống thêm một dòng ChiTietGioHang mới với số lượng bằng 1.</li>
+                        <li>Hệ thống tự động tính lại tổng tiền tạm tính của giỏ hàng.</li>
+                        <li>Hệ thống hiển thị thông báo xác nhận và cập nhật số lượng món đồ trên Header.</li>
+                        <li>Khách hàng có thể mở ngăn kéo Giỏ Hàng (Cart Drawer) để tăng/giảm số lượng hoặc xóa bỏ sản phẩm.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>4a. Sản phẩm tạm hết hàng hoặc trạng thái không khả dụng (TrangThai != SanSang): Nút mua bị khóa kèm thông báo "Tạm hết hàng".</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.3.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Tiến trình chọn mua sản phẩm và cập nhật giỏ hàng trực tuyến được mô hình hóa trong Hình 2.3.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="660" viewBox="0 0 600 660" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <rect x="180" y="80" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Duyệt sản phẩm qua danh mục / bộ lọc</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="195" y="152" width="210" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="177" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Xem chi tiết / Bấm "Chọn Mua"</text>
+            <line x1="300" y1="194" x2="300" y2="222" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision -->
+            <polygon points="300,224 420,256 300,288 180,256" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="260" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Sản phẩm đã có trong giỏ?</text>
+
+            <line x1="420" y1="256" x2="475" y2="256" stroke="#000000" stroke-width="1.5"/>
+            <line x1="475" y1="256" x2="475" y2="330" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="430" y="248" font-family="'Times New Roman', serif" font-size="11pt" fill="#2980B9" font-weight="bold">Đã có</text>
+
+            <rect x="385" y="332" width="180" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="475" y="358" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Tăng số lượng món (+1)</text>
+
+            <line x1="180" y1="256" x2="125" y2="256" stroke="#000000" stroke-width="1.5"/>
+            <line x1="125" y1="256" x2="125" y2="330" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="135" y="248" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Chưa có</text>
+
+            <rect x="35" y="332" width="180" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="125" y="358" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Thêm dòng ChiTiet mới</text>
+
+            <line x1="125" y1="374" x2="125" y2="420" stroke="#000000" stroke-width="1.5"/>
+            <line x1="475" y1="374" x2="475" y2="420" stroke="#000000" stroke-width="1.5"/>
+            <line x1="125" y1="420" x2="300" y2="420" stroke="#000000" stroke-width="1.5"/>
+            <line x1="475" y1="420" x2="300" y2="420" stroke="#000000" stroke-width="1.5"/>
+            <line x1="300" y1="420" x2="300" y2="444" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="170" y="446" width="260" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="472" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Tính lại tổng giá trị giỏ hàng (VND)</text>
+            <line x1="300" y1="488" x2="300" y2="518" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="165" y="520" width="270" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="546" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Cập nhật Badge Header &amp; Toast thông báo</text>
+            <line x1="300" y1="562" x2="300" y2="590" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="185" y="592" width="230" height="38" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="616" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Sẵn sàng điều chỉnh trong Cart Drawer</text>
+            <line x1="300" y1="630" x2="300" y2="650" stroke="#000000" stroke-width="1.5"/>
+
+            <circle cx="300" cy="656" r="10" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="656" r="6" fill="#000000" stroke="#D32F2F" stroke-width="1"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.3. Lược đồ hoạt động quy trình Chọn mua trang sức và Quản lý giỏ hàng</div>
+
+    <!-- ====================================================================================
+         2.4. USE CASE UC-KH-04: ĐẶT HÀNG
+         ==================================================================================== -->
+    <h2 class="heading-level-2 page-break">2.4. Use Case UC-KH-04: Đặt hàng trang sức trực tuyến</h2>
+    
+    <h3 class="heading-level-3">2.4.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.4. Đặc tả Use Case Đặt hàng trang sức trực tuyến</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-04</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Đặt hàng trang sức trực tuyến</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống (BanHangController &amp; DatHangUseCase)</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Thực thể liên quan</strong></td>
+                <td>DatHangUseCase, DatHangDTO, HoaDon, ChiTietHoaDon, IHoaDonRepository</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Khách hàng xác nhận mua các sản phẩm trong giỏ, điền địa chỉ giao hàng và phương thức thanh toán để hệ thống tạo hóa đơn bán hàng trực tuyến mới.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Giỏ hàng có ít nhất một sản phẩm hợp lệ và khách hàng đang mở ngăn kéo Giỏ Hàng.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Hóa đơn mới được lưu trong cơ sở dữ liệu với trạng thái ChoDuyet, các dòng ChiTietHoaDon được ghi nhận, giỏ hàng được làm sạch và khách hàng nhận được mã hóa đơn tra cứu.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng kiểm tra danh sách món đồ trong giỏ hàng và bấm "Tiến Hành Đặt Hàng".</li>
+                        <li>Khách hàng nhập thông tin người nhận: Họ tên, Số điện thoại, Địa chỉ giao hàng và Ghi chú.</li>
+                        <li>Khách hàng chọn phương thức thanh toán (Chuyển khoản hoặc Thẻ ngân hàng).</li>
+                        <li>Khách hàng bấm "Xác Nhận Đặt Hàng".</li>
+                        <li>Hệ thống kiểm tra tính khả dụng của sản phẩm trong kho và tính đầy đủ của thông tin người nhận.</li>
+                        <li>Hệ thống sinh mã hóa đơn duy nhất (VD: HD1004), tạo thực thể HoaDon với TrangThaiDonHang = "ChoDuyet".</li>
+                        <li>Hệ thống lưu các bản ghi ChiTietHoaDon cho từng món trang sức.</li>
+                        <li>Hệ thống làm rỗng giỏ hàng của khách hàng qua XoaGioHang().</li>
+                        <li>Hệ thống hiển thị hộp thoại xác nhận thành công và cung cấp mã đơn hàng để khách hàng theo dõi.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>5a. Giỏ hàng rỗng hoặc sản phẩm đã hết tồn kho: Hệ thống thông báo lỗi "Không thể tạo đơn hàng do sản phẩm không khả dụng" và hủy tiến trình đặt hàng.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.4.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Lược đồ hoạt động của quy trình đặt hàng trang sức trực tuyến được trình bày tại Hình 2.4.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="720" viewBox="0 0 600 720" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <rect x="185" y="80" width="230" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Mở Giỏ hàng &amp; Bấm "Tiến Hành Đặt Hàng"</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="170" y="152" width="260" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="177" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Nhập Họ tên, SĐT, Địa chỉ, Chọn thanh toán</text>
+            <line x1="300" y1="194" x2="300" y2="222" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="200" y="224" width="200" height="40" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="249" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Bấm "Xác Nhận Đặt Hàng"</text>
+            <line x1="300" y1="264" x2="300" y2="292" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision -->
+            <polygon points="300,294 425,326 300,358 175,326" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="330" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Giỏ hàng &amp; Tồn kho khả dụng?</text>
+
+            <line x1="425" y1="326" x2="510" y2="326" stroke="#000000" stroke-width="1.5"/>
+            <line x1="510" y1="326" x2="510" y2="400" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="435" y="320" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Không (Hết/Rỗng)</text>
+
+            <rect x="415" y="402" width="190" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="510" y="428" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B">Báo lỗi "Sản phẩm không khả dụng"</text>
+            <line x1="510" y1="444" x2="510" y2="695" stroke="#000000" stroke-width="1.5"/>
+            <line x1="510" y1="695" x2="315" y2="695" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <line x1="300" y1="358" x2="300" y2="390" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="378" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Có</text>
+
+            <rect x="165" y="392" width="270" height="46" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="412" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Sinh mã hóa đơn HDxxxx</text>
+            <text x="300" y="428" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#555555">Khởi tạo HoaDon (Trạng thái: ChoDuyet)</text>
+            <line x1="300" y1="438" x2="300" y2="468" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="170" y="470" width="260" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="496" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Lưu từng món vào ChiTietHoaDon</text>
+            <line x1="300" y1="512" x2="300" y2="542" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="180" y="544" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="570" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Xóa các món trong Giỏ hàng trực tuyến</text>
+            <line x1="300" y1="586" x2="300" y2="616" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="165" y="618" width="270" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="644" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Hiển thị Modal xác nhận &amp; Mã đơn hàng</text>
+            <line x1="300" y1="660" x2="300" y2="688" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <circle cx="300" cy="695" r="12" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="695" r="7" fill="#000000" stroke="#D32F2F" stroke-width="1.2"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.4. Lược đồ hoạt động quy trình Đặt hàng trang sức trực tuyến</div>
+
+    <!-- ====================================================================================
+         2.5. USE CASE UC-KH-05: TRA CỨU ĐƠN HÀNG
+         ==================================================================================== -->
+    <h2 class="heading-level-2 page-break">2.5. Use Case UC-KH-05: Tra cứu lịch sử &amp; Theo dõi tiến độ đơn hàng</h2>
+    
+    <h3 class="heading-level-3">2.5.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.5. Đặc tả Use Case Tra cứu lịch sử đơn hàng</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-05</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Tra cứu lịch sử &amp; Theo dõi tiến độ đơn hàng</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống (BanHangController &amp; IHoaDonRepository)</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Phương thức liên kết</strong></td>
+                <td>HoaDon, ChiTietHoaDon, IHoaDonRepository.LayTheoKhachHangAsync, GET /api/BanHang/khach-hang/{maKH}</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Khách hàng đã đăng nhập theo dõi tình trạng xử lý các đơn hàng của mình (Chờ duyệt, Đang giao, Đã giao thành công hoặc Đã hủy) kèm chi tiết tiền hàng và địa chỉ nhận.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Khách hàng đã đăng nhập thành công vào hệ thống Storefront Web.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Toàn bộ các đơn hàng đã lập của tài khoản khách hàng được truy xuất và hiển thị theo trình tự thời gian mới nhất.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng bấm vào tên của mình trên Header và chọn mục "Đơn Hàng Của Tôi".</li>
+                        <li>Hệ thống gửi yêu cầu tra cứu tới API GET /api/BanHang/khach-hang/{maKH} với mã khách hàng hiện tại.</li>
+                        <li>Hệ thống truy vấn cơ sở dữ liệu lấy danh sách các hóa đơn HoaDon của khách hàng.</li>
+                        <li>Hệ thống sắp xếp các đơn hàng theo ngày lập mới nhất lên đầu.</li>
+                        <li>Hệ thống hiển thị danh sách thẻ đơn hàng kèm huy hiệu trạng thái (Chờ duyệt, Đang giao, Đã giao).</li>
+                        <li>Khách hàng kiểm tra chi tiết các món đồ, số lượng và tổng thanh toán của từng đơn.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>3a. Khách hàng chưa từng đặt đơn nào: Hệ thống hiển thị thông báo "Quý khách chưa có đơn hàng nào tại Blink Blink" kèm nút chuyển hướng đến danh mục sản phẩm.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.5.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Tiến trình tra cứu đơn hàng cá nhân của khách hàng được minh họa trong Hình 2.5.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="570" viewBox="0 0 600 570" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <rect x="190" y="80" width="220" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Bấm chọn "Đơn Hàng Của Tôi"</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="170" y="152" width="260" height="44" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="172" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Gọi GET /api/BanHang/khach-hang/{maKH}</text>
+            <text x="300" y="188" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#555555">(Truy vấn danh sách HoaDon từ CSDL)</text>
+            <line x1="300" y1="196" x2="300" y2="224" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision -->
+            <polygon points="300,226 415,258 300,290 185,258" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="262" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Có đơn hàng nào không?</text>
+
+            <line x1="415" y1="258" x2="480" y2="258" stroke="#000000" stroke-width="1.5"/>
+            <line x1="480" y1="258" x2="480" y2="330" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="425" y="250" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Chưa có</text>
+
+            <rect x="390" y="332" width="180" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="480" y="358" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#555555">Báo "Chưa có đơn hàng nào"</text>
+            <line x1="480" y1="374" x2="480" y2="520" stroke="#000000" stroke-width="1.5"/>
+            <line x1="480" y1="520" x2="315" y2="520" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <line x1="300" y1="290" x2="300" y2="328" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="310" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Có đơn</text>
+
+            <rect x="165" y="330" width="270" height="44" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="350" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Sắp xếp theo ngày đặt mới nhất</text>
+            <text x="300" y="366" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#555555">Gắn badge trạng thái (Chờ duyệt / Đã giao)</text>
+            <line x1="300" y1="374" x2="300" y2="410" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="170" y="412" width="260" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="438" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Hiển thị thẻ đơn hàng trong Orders Drawer</text>
+            <line x1="300" y1="454" x2="300" y2="508" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <circle cx="300" cy="520" r="12" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="520" r="7" fill="#000000" stroke="#D32F2F" stroke-width="1.2"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.5. Lược đồ hoạt động quy trình Tra cứu lịch sử và theo dõi đơn hàng</div>
+
+    <!-- ====================================================================================
+         2.6. USE CASE UC-KH-06: TRA CỨU BẢO HÀNH
+         ==================================================================================== -->
+    <h2 class="heading-level-2 page-break">2.6. Use Case UC-KH-06: Tra cứu dịch vụ &amp; Tiến độ bảo hành kim hoàn</h2>
+    
+    <h3 class="heading-level-3">2.6.1. Thông tin đặc tả Use Case</h3>
+    <div class="caption-title">Bảng 2.6. Đặc tả Use Case Tra cứu bảo hành kim hoàn</div>
+    <table class="formal-table">
+        <tbody>
+            <tr>
+                <td style="width: 25%;"><strong>Mã Use Case</strong></td>
+                <td>UC-KH-06</td>
+            </tr>
+            <tr>
+                <td><strong>Tên Use Case</strong></td>
+                <td>Tra cứu dịch vụ &amp; Tiến độ bảo hành kim hoàn</td>
+            </tr>
+            <tr>
+                <td><strong>Tác nhân (Actor)</strong></td>
+                <td>Khách hàng (Customer), Hệ thống (BaoHanhController &amp; IBaoHanhRepository)</td>
+            </tr>
+            <tr>
+                <td><strong>Lớp / Phương thức liên kết</strong></td>
+                <td>PhieuBaoHanh, IBaoHanhRepository.TimTheoSoPhieuAsync, GET /api/BaoHanh/tra-cuu/{soPhieu}</td>
+            </tr>
+            <tr>
+                <td><strong>Mô tả tóm tắt</strong></td>
+                <td>Khách hàng nhập mã số phiếu bảo hành để theo dõi tiến độ phục hồi, đánh bóng siêu âm hoặc sửa chữa chấu giữ đá quý từ xưởng kim hoàn Blink Blink.</td>
+            </tr>
+            <tr>
+                <td><strong>Tiền điều kiện</strong></td>
+                <td>Khách hàng đã nhận được mã phiếu bảo hành khi gửi sản phẩm tại showroom.</td>
+            </tr>
+            <tr>
+                <td><strong>Hậu điều kiện</strong></td>
+                <td>Phiếu bảo hành điện tử được hiển thị đầy đủ thông tin: tên sản phẩm, lý do bảo hành, chi phí, ngày hẹn giao trả và ghi chú kỹ thuật của nghệ nhân.</td>
+            </tr>
+            <tr>
+                <td><strong>Luồng sự kiện chính (Basic Flow)</strong></td>
+                <td>
+                    <ol>
+                        <li>Khách hàng cuộn đến mục "Tra Cứu Bảo Hành" trên trang chủ Storefront.</li>
+                        <li>Khách hàng nhập mã số phiếu bảo hành (ví dụ: BH2001, BH2002) vào ô tìm kiếm.</li>
+                        <li>Khách hàng bấm nút "Tra Cứu Tiến Độ".</li>
+                        <li>Hệ thống gửi yêu cầu tra cứu tới API GET /api/BaoHanh/tra-cuu/{soPhieu}.</li>
+                        <li>Hệ thống tìm kiếm thông tin phiếu trong cơ sở dữ liệu qua IBaoHanhRepository.</li>
+                        <li>Hệ thống kết xuất và hiển thị Thẻ Chứng Nhận Bảo Hành điện tử.</li>
+                        <li>Khách hàng xem ngày hẹn giao trả và trạng thái ("Đang bảo dưỡng" hoặc "Đã hoàn tất dịch vụ").</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Luồng ngoại lệ (Alternative Flow)</strong></td>
+                <td>
+                    <ul>
+                        <li>5a. Mã phiếu không tồn tại trong hệ thống: Hệ thống hiển thị thông báo lỗi "Không tìm thấy thông tin phiếu bảo hành với mã đã nhập. Quý khách vui lòng kiểm tra lại".</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="heading-level-3">2.6.2. Lược đồ hoạt động (Activity Diagram)</h3>
+    <p class="body-text">
+        Tiến trình tra cứu phiếu bảo hành kim hoàn điện tử được mô hình hóa trong Hình 2.6.
+    </p>
+
+    <div class="diagram-wrapper">
+        <svg class="diagram-svg" width="600" height="590" viewBox="0 0 600 590" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grid1)"/>
+
+            <circle cx="300" cy="30" r="13" fill="#000000" stroke="#D32F2F" stroke-width="2.5"/>
+            <line x1="300" y1="43" x2="300" y2="78" stroke="#D32F2F" stroke-width="1.8" marker-end="url(#arr-red1)"/>
+
+            <rect x="180" y="80" width="240" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="106" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Nhập mã số phiếu bảo hành (VD: BH2001)</text>
+            <line x1="300" y1="122" x2="300" y2="150" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="200" y="152" width="200" height="40" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="177" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Bấm "Tra Cứu Tiến Độ"</text>
+            <line x1="300" y1="192" x2="300" y2="220" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <!-- Decision -->
+            <polygon points="300,222 420,254 300,286 180,254" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="258" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Tìm thấy phiếu trong CSDL?</text>
+
+            <line x1="420" y1="254" x2="510" y2="254" stroke="#000000" stroke-width="1.5"/>
+            <line x1="510" y1="254" x2="510" y2="101" stroke="#000000" stroke-width="1.5"/>
+            <line x1="510" y1="101" x2="425" y2="101" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="430" y="246" font-family="'Times New Roman', serif" font-size="11pt" fill="#C0392B" font-weight="bold">Không tìm thấy</text>
+
+            <line x1="300" y1="286" x2="300" y2="320" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <text x="310" y="306" font-family="'Times New Roman', serif" font-size="11pt" fill="#27AE60" font-weight="bold">Tìm thấy</text>
+
+            <rect x="165" y="322" width="270" height="46" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="342" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Đọc thông tin thực thể PhieuBaoHanh</text>
+            <text x="300" y="358" text-anchor="middle" font-family="'Times New Roman', serif" font-size="10.5pt" fill="#555555">(Tên SP, Ngày hẹn trả, Trạng thái, Ghi chú)</text>
+            <line x1="300" y1="368" x2="300" y2="400" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="160" y="402" width="280" height="42" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="428" text-anchor="middle" font-family="'Times New Roman', serif" font-size="12pt" fill="#000000">Hiển thị Thẻ Bảo Hành Điện Tử sang trọng</text>
+            <line x1="300" y1="444" x2="300" y2="474" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <rect x="185" y="476" width="230" height="38" rx="8" ry="8" fill="#FFFFFF" stroke="#000000" stroke-width="1.6"/>
+            <text x="300" y="500" text-anchor="middle" font-family="'Times New Roman', serif" font-size="11.5pt" fill="#000000">Khách hàng theo dõi tiến độ phục hồi</text>
+            <line x1="300" y1="514" x2="300" y2="538" stroke="#000000" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+            <circle cx="300" cy="550" r="12" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+            <circle cx="300" cy="550" r="7" fill="#000000" stroke="#D32F2F" stroke-width="1.2"/>
+        </svg>
+    </div>
+    <div class="caption-title">Hình 2.6. Lược đồ hoạt động quy trình Tra cứu bảo hành kim hoàn</div>
+</div>
+
+</body>
+</html>

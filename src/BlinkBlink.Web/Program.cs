@@ -14,10 +14,34 @@ using BlinkBlink.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình chuỗi kết nối và tiện ích truy xuất CSDL ADO.NET thuần
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
-builder.Services.AddSingleton(new DatabaseHelper(connectionString));
+// Cấu hình chuỗi kết nối và tiện ích truy xuất CSDL ADO.NET thuần (Tự động dò tìm SQL Server cục bộ)
+var candidateConnections = new[]
+{
+    builder.Configuration.GetConnectionString("DefaultConnection"),
+    "Server=.;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+    "Server=localhost;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+    "Server=.\\MSSQL;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+    "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;"
+}.Where(s => !string.IsNullOrWhiteSpace(s));
+
+DatabaseHelper? dbHelper = null;
+foreach (var connStr in candidateConnections)
+{
+    try
+    {
+        var helper = new DatabaseHelper(connStr!);
+        if (helper.TestConnection())
+        {
+            dbHelper = helper;
+            Console.WriteLine($"[BlinkBlink.Web] Da ket noi thanh cong co so du lieu SQL Server: {connStr}");
+            break;
+        }
+    }
+    catch { }
+}
+
+dbHelper ??= new DatabaseHelper("Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
+builder.Services.AddSingleton(dbHelper);
 
 // Đăng ký các Kho dữ liệu (Repositories) sử dụng ADO.NET thuần
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();

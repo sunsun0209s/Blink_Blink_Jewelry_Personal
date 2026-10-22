@@ -1,50 +1,324 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BlinkBlink.Web</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BlinkBlink.Web.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Blink Blink Haute Joaillerie</title>
+    
+    <!-- Phông chữ kim hoàn cao cấp: Cormorant Garamond & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hệ thống phong cách Storefront sang trọng -->
+    <link rel="stylesheet" href="~/css/storefront.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BlinkBlink.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<body id="top">
+    <!-- Thanh thông báo thương hiệu danh giá -->
+    <div class="top-announcement-bar">
+        Cam kết Vàng chuẩn tuổi • Kim Cương Thiên Nhiên GIA • Bảo dưỡng trọn đời • Giao hàng bảo hiểm toàn quốc
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - BlinkBlink.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Thanh Header điều hướng chính -->
+    <header class="storefront-header">
+        <div class="header-inner">
+            <!-- Logo thương hiệu Blink Blink Haute Joaillerie -->
+            <a href="/" class="brand-logo-wrap">
+                <span class="brand-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <polygon points="6 3 18 3 22 9 12 22 2 9" />
+                    </svg>
+                    Blink Blink
+                </span>
+                <span class="brand-tagline">Haute Joaillerie • Sài Gòn</span>
+            </a>
+
+            <!-- Menu liên kết điều hướng -->
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-link-item"><a href="#top" class="active">Trang Chủ</a></li>
+                    <li class="nav-link-item"><a href="#collections">Bộ Sưu Tập</a></li>
+                    <li class="nav-link-item"><a href="#catalog">Sản Phẩm</a></li>
+                    <li class="nav-link-item"><a href="#warranty">Tra Cứu Bảo Hành</a></li>
+                    <li class="nav-link-item"><a href="/docs/DacTaUseCase_KhachHang.html" target="_blank" title="Xem tài liệu đặc tả & Lược đồ Activity Diagram">Đặc Tả Use Case</a></li>
+                </ul>
+            </nav>
+
+            <!-- Nút chức năng: Tài khoản & Giỏ hàng kim hoàn -->
+            <div class="header-actions">
+                <!-- Nút Tài Khoản Khách Hàng (Đăng Nhập / Đăng Ký) -->
+                <div class="user-auth-action-wrapper">
+                    <button type="button" class="btn-icon-action" id="btn-auth-user" aria-label="Tài khoản khách hàng">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span id="user-display-name">Đăng Nhập / Đăng Ký</span>
+                    </button>
+
+                    <!-- Dropdown Menu tài khoản khi đã đăng nhập -->
+                    <div class="user-dropdown-menu" id="user-dropdown-menu">
+                        <div class="dropdown-header-user">
+                            <div class="dropdown-user-name" id="menu-user-fullname">Khách Hàng</div>
+                            <div class="dropdown-user-role" id="menu-user-id">Thành viên Blink Blink</div>
+                        </div>
+                        <ul class="dropdown-nav-list">
+                            <li>
+                                <a href="javascript:void(0)" onclick="openOrdersDrawer()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                    Đơn Hàng Của Tôi
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#warranty" onclick="closeUserDropdown()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    Phiếu Bảo Hành Của Tôi
+                                </a>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="logoutUser()" class="logout-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    Đăng Xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Nút Giỏ Hàng -->
+                <button type="button" class="btn-icon-action" id="btn-open-cart" aria-label="Mở giỏ hàng">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <span>Giỏ Hàng</span>
+                    <span class="cart-count-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Thân trang chính -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- ====================================================================================
+         HỘP THOẠI ĐĂNG NHẬP & ĐĂNG KÝ (LUXURY AUTH MODAL)
+         ==================================================================================== -->
+    <div class="auth-modal-backdrop" id="auth-modal">
+        <div class="auth-card-dialog">
+            <button type="button" class="btn-close-modal" id="btn-close-auth" aria-label="Đóng">&times;</button>
+            
+            <div class="auth-tabs-header">
+                <button type="button" class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">
+                    Đăng Nhập
+                </button>
+                <button type="button" class="auth-tab-btn" id="tab-btn-register" onclick="switchAuthTab('register')">
+                    Đăng Ký Thành Viên
+                </button>
+            </div>
+
+            <div class="auth-form-container">
+                <!-- FORM 1: ĐĂNG NHẬP -->
+                <div class="auth-pane active" id="pane-login">
+                    <div class="auth-intro-text">
+                        <h3>Chào Mừng Quý Khách Trở Lại</h3>
+                        <p>Đăng nhập để xem lịch sử đơn hàng trang sức và quản lý giỏ hàng đã lưu.</p>
+                    </div>
+
+                    <form id="form-login" onsubmit="handleLoginSubmit(event)">
+                        <div class="form-group-luxury">
+                            <label for="login-username">Tên đăng nhập hoặc Số điện thoại</label>
+                            <input type="text" id="login-username" required placeholder="Nhập tên đăng nhập (VD: ngoc.pham)..." />
+                        </div>
+
+                        <div class="form-group-luxury">
+                            <label for="login-password">Mật khẩu</label>
+                            <input type="password" id="login-password" required placeholder="Nhập mật khẩu..." />
+                        </div>
+
+                        <button type="submit" class="btn-luxury-primary" style="width: 100%; margin-top: 10px;">
+                            Đăng Nhập Ngay
+                        </button>
+                    </form>
+                </div>
+
+                <!-- FORM 2: ĐĂNG KÝ -->
+                <div class="auth-pane" id="pane-register">
+                    <div class="auth-intro-text">
+                        <h3>Trở Thành Hội Viên Blink Blink</h3>
+                        <p>Tạo tài khoản để lưu giữ kiệt tác kim hoàn và theo dõi đơn hàng trực tuyến.</p>
+                    </div>
+
+                    <form id="form-register" onsubmit="handleRegisterSubmit(event)">
+                        <div class="form-group-luxury">
+                            <label for="reg-fullname">Họ và tên quý khách *</label>
+                            <input type="text" id="reg-fullname" required placeholder="Nguyễn Văn A" />
+                        </div>
+
+                        <div class="form-row-dual">
+                            <div class="form-group-luxury">
+                                <label for="reg-phone">Số điện thoại *</label>
+                                <input type="tel" id="reg-phone" required placeholder="0901234567" />
+                            </div>
+                            <div class="form-group-luxury">
+                                <label for="reg-dob">Ngày sinh *</label>
+                                <input type="date" id="reg-dob" required value="1995-01-01" />
+                            </div>
+                        </div>
+
+                        <div class="form-row-dual">
+                            <div class="form-group-luxury">
+                                <label for="reg-username">Tên đăng nhập *</label>
+                                <input type="text" id="reg-username" required placeholder="ten.dangnhap" />
+                            </div>
+                            <div class="form-group-luxury">
+                                <label for="reg-password">Mật khẩu *</label>
+                                <input type="password" id="reg-password" required placeholder="Mật khẩu tối thiểu 6 ký tự" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-luxury-primary" style="width: 100%; margin-top: 10px;">
+                            Hoàn Tất Đăng Ký
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================================
+         NGĂN KÉO TRA CỨU ĐƠN HÀNG (ORDERS DRAWER)
+         ==================================================================================== -->
+    <div class="orders-drawer-overlay" id="orders-drawer-overlay">
+        <aside class="orders-drawer-panel" aria-label="Lịch sử đơn hàng">
+            <div class="drawer-head">
+                <h3 class="drawer-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    Đơn Hàng Của Quý Khách
+                </h3>
+                <button type="button" class="btn-close-drawer" id="btn-close-orders" onclick="closeOrdersDrawer()">&times;</button>
+            </div>
+
+            <!-- Danh sách các hóa đơn của khách hàng -->
+            <div class="drawer-body-items" id="orders-list-container">
+                <!-- Được nạp tự động qua JavaScript -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Ngăn Kéo Giỏ Hàng (Cart Drawer) -->
+    <div class="cart-drawer-overlay" id="cart-drawer-overlay">
+        <aside class="cart-drawer-panel" aria-label="Giỏ hàng trang sức">
+            <div class="drawer-head">
+                <h3 class="drawer-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
+                        <polygon points="6 3 18 3 22 9 12 22 2 9" />
+                    </svg>
+                    Giỏ Hàng Của Bạn
+                </h3>
+                <button type="button" class="btn-close-drawer" id="btn-close-cart" aria-label="Đóng giỏ hàng">&times;</button>
+            </div>
+
+            <!-- Danh sách các món đồ đã chọn -->
+            <div class="drawer-body-items" id="cart-items-list">
+                <!-- Được nạp tự động qua JavaScript -->
+            </div>
+
+            <!-- Tổng kết & Nút đặt hàng -->
+            <div class="drawer-foot">
+                <div class="drawer-subtotal-row">
+                    <span class="subtotal-label">Tổng Giá Trị:</span>
+                    <span class="subtotal-amount" id="cart-subtotal">0 ₫</span>
+                </div>
+                <button type="button" class="btn-proceed-checkout" id="btn-proceed-checkout">
+                    Tiến Hành Đặt Hàng
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Hộp Thoại Xem Nhanh Chi Tiết (Quick View Modal) -->
+    <div class="quickview-modal-backdrop" id="quickview-modal">
+        <div class="quickview-card-dialog">
+            <button type="button" class="btn-close-modal" id="btn-close-modal" aria-label="Đóng">&times;</button>
+            <div class="quickview-img-frame">
+                <img id="modal-img" src="" alt="Hình ảnh sản phẩm kim hoàn" />
+            </div>
+            <div class="quickview-content-pane">
+                <span class="modal-cat-tag" id="modal-cat">Danh Mục</span>
+                <h2 class="modal-prod-title" id="modal-title">Tên Trang Sức</h2>
+                <div class="modal-prod-price" id="modal-price">0 ₫</div>
+                <div class="modal-prod-specs">
+                    <div><strong>Chất liệu:</strong> <span id="modal-material">-</span></div>
+                    <div><strong>Kích cỡ:</strong> <span id="modal-size">-</span></div>
+                    <div><strong>Chế tác:</strong> Thủ công tại xưởng kim hoàn Blink Blink Sài Gòn</div>
+                </div>
+                <p id="modal-desc" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;"></p>
+                <div class="modal-action-row">
+                    <button type="button" class="btn-luxury-primary" id="modal-btn-add" style="width: 100%;">
+                        Thêm Vào Giỏ Hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chân Trang Kim Hoàn (Storefront Footer) -->
+    <footer class="storefront-footer" id="atelier">
+        <div class="footer-top-grid">
+            <div>
+                <span class="brand-title" style="color: #FFFFFF; font-size: 1.6rem;">Blink Blink</span>
+                <span class="brand-tagline">Haute Joaillerie • Sài Gòn</span>
+                <p class="footer-desc-text">
+                    Biểu tượng kim hoàn thủ công cao cấp tại Việt Nam. Từng giác cắt, chấu giữ và viên đá quý đều được tạo tác bởi các nghệ nhân kim hoàn bậc thầy với sự chuẩn xác tuyệt đối.
+                </p>
+            </div>
+            <div>
+                <h4 class="footer-col-title">Kiệt Tác Nổi Bật</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#catalog">Nhẫn Đính Hôn Solitaire</a></li>
+                    <li><a href="#catalog">Dây Chuyền Ruby Huyết Bồ Câu</a></li>
+                    <li><a href="#catalog">Bông Tai Platin Sapphire</a></li>
+                    <li><a href="#catalog">Lắc Tay Tennis Kim Cương</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-col-title">Đặc Quyền Khách Hàng</h4>
+                <ul class="footer-links-list">
+                    <li><a href="javascript:void(0)" onclick="openOrdersDrawer()">Tra Cứu Đơn Hàng Của Tôi</a></li>
+                    <li><a href="#warranty">Tra Cứu Tiến Độ Bảo Hành</a></li>
+                    <li><a href="#top">Bảo Dưỡng Siêu Âm Trọn Đời</a></li>
+                    <li><a href="/docs/DacTaUseCase_KhachHang.html" target="_blank">Tài Liệu Đặc Tả Use Case</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-col-title">Showroom & Bản Tin</h4>
+                <p class="footer-desc-text" style="margin-top: 0;">
+                    45 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh.<br />
+                    Hotline: 1800 6868 (08:30 - 21:00)
+                </p>
+                <div class="footer-newsletter-box">
+                    <input type="email" placeholder="Nhập email nhận bộ sưu tập mới..." />
+                    <button type="button" onclick="showToast('Cảm ơn Quý khách đã đăng ký nhận bản tin kim hoàn.')">Gửi</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom-bar">
+            <span>&copy; 2026 Blink Blink Haute Joaillerie. Bản quyền thuộc về thương hiệu.</span>
+            <span>Thiết kế theo chuẩn mực Kiến trúc Clean Architecture & Taste Skill.</span>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Tập tin kịch bản xử lý tương tác giao diện -->
+    <script src="~/js/storefront.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,26 +1,28 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Tối ưu hóa không gian hiển thị & nới rộng giao diện WinForms Admin (`BlinkBlink.Admin`):**
-  - Mở rộng kích thước cửa sổ chính lên 1480x880 (MinimumSize 1280x720, mở cực đại Maximized).
-  - Tái cấu trúc thanh công cụ dạng FlowLayoutPanel tự co giãn chống tràn chữ trên mọi độ phân giải.
-  - Cấu hình MinimumWidth cho toàn bộ các cột DataGridView trên cả 5 phân hệ.
-  - Sửa lỗi ngoại lệ `SplitContainer` an toàn bằng sự kiện `Load` & `Resize`.
-  - Cấu hình `dgv.Dock = DockStyle.Fill;` trong `UITheme.ApplyGridViewStyle` giúp bảng dữ liệu lấp đầy 100% diện tích.
-  - Tự động dò tìm và kết nối SQL Server cục bộ (`.`, `localhost`, `.\MSSQL`, `(localdb)\mssqllocaldb`).
-- **Khắc phục toàn diện lỗi phông chữ tiếng Việt & bảng mã CSDL:**
-  - Nạp lại CSDL `BlinkBlinkJewelryDb` qua luồng UTF-8 ADO.NET trực tiếp, loại bỏ hoàn toàn hiện tượng lỗi mã ký tự (mojibake) ở các cột `DiaChiGiaoHang`, `TenSanPham`, `TenDanhMuc`, `GhiChu` (hiển thị chuẩn xác tiếng Việt có dấu: Lê Lợi, Hai Bà Trưng, Bến Nghé...).
-  - Nâng cấp toàn bộ hệ thống phông chữ từ `GenericSansSerif` sang phông cao cấp **`Segoe UI`** trên toàn bộ WinForms Admin (tiêu đề, nút bấm, nhãn, bảng dữ liệu, tab control).
-  - Cấu hình `AutoSize = true` cho `lblHeaderTitle` và `lblUserRole` trên thanh Header, loại bỏ lỗi gãy rớt dòng (`Quản / Lý` và `Tài / khoản:`).
-  - Thiết lập `UseMnemonic = false` cho thanh Header, Sidebar menu và các nhãn tiêu đề, đảm bảo hiển thị trọn vẹn ký tự `&` trong các chuỗi chữ kim hoàn.
-  - Toàn bộ 27/27 unit & integration tests pass 100%, solution biên dịch 0 lỗi, 0 cảnh báo.
+- **Bộ lưu trữ giỏ hàng độc lập & Bền vững dữ liệu (`src/BlinkBlink.Web/wwwroot/js/storefront.js`):**
+  - Sử dụng khóa `localStorage` riêng biệt `blink_jewelry_cart` độc lập hoàn toàn với phiên đăng nhập.
+  - Khi đăng xuất tài khoản (`logoutUser`), chỉ xóa phiên `blink_currentUser`, giỏ hàng và danh sách sản phẩm đã chọn giữ nguyên 100%.
+  - Khi tải lại trang (F5), giỏ hàng tự động nạp lại chính xác từ bộ nhớ trình duyệt.
+- **Khắc phục lỗi Menu Dropdown & Đăng xuất:**
+  - `storefront.css`: Loại bỏ hover tự động, menu chỉ hiển thị khi có class `.logged-in` và đang mở `.open`.
+  - `storefront.js`: Hàm `logoutUser()` reset ngay lập tức họ tên về "Khách Hàng", mã về "Thành viên Blink Blink", đóng dropdown tức thì mà không cần F5.
+- **Loại bỏ dữ liệu mồi & Khối đăng nhập 1-click (`_Layout.cshtml`, `storefront.js`):**
+  - Xóa sạch mồi dữ liệu, giữ nguyên 100% CSDL chuẩn trong SQL Server.
+- **Xử lý ngoại lệ CSDL trong API Backend (`KhachHangController.cs`):**
+  - Bắt lỗi `SqlException` 2601/2627 khi trùng tên đăng nhập, trả về thông báo tiếng Việt thân thiện thay vì lỗi 500.
+- **Bộ Kiểm Thử Tự Động Toàn Diện:**
+  - Kịch bản API & Database: Hoàn thành 10/10 test cases PASS 100% (kiểm tra trang chủ, nạp tài nguyên tĩnh, xác thực tài khoản thật `lan.tran`/`lan123`, chặn mật khẩu sai, đăng ký tài khoản mới lưu SQL Server, bắt lỗi trùng tên, tra cứu hồ sơ khách hàng, 27/27 Unit Tests Clean Architecture).
+  - Kịch bản E2E trên trình duyệt: 10/10 bước kiểm thử đều PASS 100%.
 
-## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- WinForms Admin đã hoàn thiện trọn vẹn về mặt mỹ thuật kim hoàn, bố cục responsive, phông chữ Segoe UI và kết nối CSDL SQL Server thật.
-- Phân hệ kế tiếp: Xây dựng Giao diện Web Khách Hàng (`BlinkBlink.Web`) mua sắm, giỏ hàng, tra cứu bảo hành kết nối Web API theo chuẩn Clean Architecture và Taste Skill.
+## 2. Quyết định kỹ thuật đã chốt
+- Web Khách Hàng giao tiếp hoàn toàn với Backend qua RESTful API, tuân thủ Clean Architecture .NET 8 LTS.
+- Dữ liệu CSDL SQL Server `BlinkBlinkJewelryDb` trên `Server=.` được giữ nguyên vẹn cấu trúc và dữ liệu.
+- Phân hệ Web và WinForms hoàn toàn độc lập, dùng chung tầng Domain & Application.
 
-## 3. Hành động cụ thể tiếp theo cho phiên làm việc sau
-1. Commit các thay đổi trên nhánh `bugfix/vietnamese-font-and-utf8-data`.
-2. Hợp nhất (merge) nhánh `bugfix/vietnamese-font-and-utf8-data` vào nhánh `main`.
-3. Đẩy (push) lên GitHub remote.
-4. Bắt đầu phân hệ Giao diện Web Khách Hàng (Tạo nhánh `feature/customer-web-ui`, trình bày Bước 1 Đề xuất Ý tưởng & Giải pháp).
+## 3. Hành động cụ thể tiếp theo
+1. Chuẩn bị tài liệu thuyết trình / demo báo cáo bài tập lớn ngày mai.
+2. Hoàn thiện tài liệu PRD hoặc hướng dẫn vận hành nếu có yêu cầu bổ sung.
+3. Tạo commit và sẵn sàng mở Pull Request đưa `feature/customer-web-ui` vào `main`.
+
