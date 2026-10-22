@@ -23,6 +23,11 @@ public class QuanLyKhachHangUseCaseTests
         {
             return Data.TryGetValue(maKH, out var kh) ? kh : null;
         }
+
+        public List<KhachHang> LayTatCa()
+        {
+            return new List<KhachHang>(Data.Values);
+        }
     }
 
     [Fact]

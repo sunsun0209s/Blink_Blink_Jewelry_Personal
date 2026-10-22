@@ -150,6 +150,7 @@ public class InMemoryDataContext
         public MemoryNhanVienRepository(InMemoryDataContext ctx) => _ctx = ctx;
         public void LuuNhanVien(NhanVien nv) { _ctx.NhanViens.Add(nv); }
         public NhanVien? TimTheoMa(string maNV) => _ctx.NhanViens.FirstOrDefault(n => n.MaNhanVien == maNV || n.MaNguoiDung == maNV);
+        public List<NhanVien> LayTatCa() => _ctx.NhanViens.ToList();
     }
 
     private class MemoryKhachHangRepository : IKhachHangRepository
@@ -158,6 +159,7 @@ public class InMemoryDataContext
         public MemoryKhachHangRepository(InMemoryDataContext ctx) => _ctx = ctx;
         public void LuuKhachHang(KhachHang kh) { _ctx.KhachHangs.Add(kh); }
         public KhachHang? TimTheoMa(string maKH) => _ctx.KhachHangs.FirstOrDefault(k => k.MaKhachHang == maKH || k.MaNguoiDung == maKH);
+        public List<KhachHang> LayTatCa() => _ctx.KhachHangs.ToList();
     }
 
     private class MemoryVaiTroRepository : IVaiTroRepository

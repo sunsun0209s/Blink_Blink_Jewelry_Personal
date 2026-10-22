@@ -22,6 +22,11 @@ public class QuanLyNhanVienUseCaseTests
         {
             return Data.TryGetValue(maNV, out var nv) ? nv : null;
         }
+
+        public List<NhanVien> LayTatCa()
+        {
+            return new List<NhanVien>(Data.Values);
+        }
     }
 
     private class FakeVaiTroRepository : IVaiTroRepository

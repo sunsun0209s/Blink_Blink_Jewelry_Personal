@@ -1,16 +1,19 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành
-- **Khắc phục triệt để các lỗi giao diện theo phản hồi người dùng:**
-  - **Triệt tiêu hiện tượng căn lề so le (18.000.000 vs 12.000.000):** Xóa bỏ ghi đè `Alignment = MiddleLeft` trong `AlternatingRowsDefaultCellStyle` tại [UITheme.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/Helpers/UITheme.cs). Mọi dòng trong DataGridView kế thừa 100% căn lề của cột (`MiddleRight` cho tiền tệ, `MiddleCenter` cho số lượng/% giảm giá, `MiddleLeft` cho văn bản).
-  - **Chống đè thẻ KPI "Tổng Mẫu":** Tái cấu trúc `topHeaderPanel` tại [ProductsView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs), [InventoryInwardView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Inventory/InventoryInwardView.cs), [CategoryView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/CategoryView.cs) và [OrdersView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs) dùng `pnlTitleContainer` neo `Dock = Fill` kết hợp `pnlKpis.SendToBack()`, ngăn chặn tuyệt đối dòng giới thiệu (subtitle) đè qua mép thẻ KPI.
-  - **Chống đè nhãn và ô nhập trong Modal Nhập kho:** Chuyển đổi toàn bộ khu vực `pnlInfo` và `pnlAddItem` trong [InventoryInwardView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Inventory/InventoryInwardView.cs) sang `FlowLayoutPanel` 2 hàng tuần tự với khoảng đệm `Margin` chuẩn xác. Loại bỏ 100% nguy cơ nhãn "Số Lượng (*):" và "Đơn Giá Vốn (VND) (*):" đè lên các ô nhập liệu `nudSl` và `txtGiaVon`.
-- **Cơ sở dữ liệu & Kiểm thử:** Toàn bộ 31/31 unit & integration tests pass 100%, solution biên dịch 0 lỗi, 0 cảnh báo.
+- **Đồng bộ ảnh sản phẩm đơn hàng từ CSDL SQL Server thật & Triệt tiêu lỗi vỡ ảnh (Taste Skill):**
+  - Đã khắc phục [HoaDonRepository.cs](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/HoaDonRepository.cs): `LayChiTietHoaDon` nạp đầy đủ `s.HinhAnh` và `s.PhanTramGiamGia` vào đối tượng `SanPhamTrangSuc` của từng `ChiTietHoaDon`.
+  - Đã cập nhật [storefront.js](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/js/storefront.js): `renderCustomerOrders` và `renderCheckoutSummary` nhận diện an toàn cả camelCase lẫn PascalCase, fallback về ảnh kim hoàn chuẩn `/images/hero-jewelry.jpg` kèm `onerror=null` và `loading="lazy"`.
+  - Đã tạo tệp ảnh tĩnh dự phòng hợp lệ tại `src/BlinkBlink.Web/wwwroot/images/products/no-image.png`.
+  - Hoàn tất chuỗi 12 vòng kiểm thử thương mại (`run_12_image_order_tests.ps1`) đạt 12/12 PASS 100%. Xác nhận đơn hàng `HD20261022210438990` từ screenshot của khách hàng nạp chính xác ảnh thật 100% không còn vỡ ảnh.
 
-## 2. Những gì đang làm dở & Các quyết định kỹ thuật đã chốt
-- Toàn bộ giao diện Admin WinForms và các phân hệ Sản phẩm / Danh mục / Nhập kho / Đơn hàng đã được tối ưu hoàn thiện 100% theo phản hồi thực tế của người dùng.
-- Nhánh hiện tại: `feature/catalog-inventory-refactor`.
+## 2. Quyết định kỹ thuật đã chốt
+- Đơn hàng online lưu trực tiếp vào CSDL SQL Server thật (`dbo.HoaDon`, `dbo.ChiTietHoaDon`).
+- Phía Web Storefront và WinForms Admin cùng chia sẻ một nguồn chân lý dữ liệu (Single Source of Truth) từ SQL Server thông qua RESTful API và ADO.NET thuần.
+- Không sử dụng bất kỳ mảng dữ liệu giả lập (mock/sample) nào trong luồng thương mại thực tế của Web Storefront.
+- Mọi hình ảnh fallback đều trỏ về ảnh kim hoàn Haute Joaillerie thật, tuân thủ tuyệt đối quy định Anti-Slop Bans trong `GEMINI.md`.
 
-## 3. Hành động cụ thể tiếp theo cho phiên làm việc sau
-1. Merge nhánh `feature/catalog-inventory-refactor` vào `main`.
-2. Bắt đầu phân hệ Giao diện Web Khách Hàng (`BlinkBlink.Web`) mua sắm, giỏ hàng, tra cứu bảo hành kết nối Web API theo chuẩn Clean Architecture và Taste Skill.
+## 3. Hành động cụ thể tiếp theo
+1. Hoàn thiện tài liệu `PRD.md` và các sơ đồ phân tích nghiệp vụ nâng cao theo danh sách `TODO.md`.
+2. Đóng gói và phát hành tài liệu hướng dẫn vận hành hệ thống.
+3. Mở Pull Request đưa nhánh `feature/customer-web-ui` vào `main`.

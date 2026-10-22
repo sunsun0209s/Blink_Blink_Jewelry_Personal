@@ -91,7 +91,14 @@ public class QuanLyNhanVienUseCase
         }
 
         // Gọi phương thức nghiệp vụ của Domain Entity NguoiDung
-        nhanVien.KhoaTaiKhoan();
+        if (nhanVien.TrangThai)
+        {
+            nhanVien.KhoaTaiKhoan();
+        }
+        else
+        {
+            nhanVien.TrangThai = true;
+        }
         
         // Lưu lại thay đổi vào cơ sở dữ liệu
         _nhanVienRepo.LuuNhanVien(nhanVien);

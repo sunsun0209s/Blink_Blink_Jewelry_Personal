@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using BlinkBlink.Domain.Entities.Customers;
@@ -146,5 +147,49 @@ public class KhachHangRepository : IKhachHangRepository
         }
 
         return null;
+    }
+
+    public List<KhachHang> LayTatCa()
+    {
+        var list = new List<KhachHang>();
+        const string sql = @"
+            SELECT u.MaNguoiDung, u.HoTen, u.SoDienThoai, u.TenDangNhap, u.MatKhau, u.MaVaiTro, u.TrangThai,
+                   kh.MaKhachHang, kh.NgaySinh,
+                   v.TenVaiTro, v.MoTa AS MoTaVaiTro
+            FROM dbo.KhachHang kh
+            INNER JOIN dbo.NguoiDung u ON kh.MaNguoiDung = u.MaNguoiDung
+            LEFT JOIN dbo.VaiTro v ON u.MaVaiTro = v.MaVaiTro
+            ORDER BY kh.MaKhachHang ASC;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var kh = new KhachHang(
+                maNguoiDung: reader.GetString(reader.GetOrdinal("MaNguoiDung")),
+                hoTen: reader.GetString(reader.GetOrdinal("HoTen")),
+                soDienThoai: reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? string.Empty : reader.GetString(reader.GetOrdinal("SoDienThoai")),
+                tenDangNhap: reader.GetString(reader.GetOrdinal("TenDangNhap")),
+                matKhau: reader.GetString(reader.GetOrdinal("MatKhau")),
+                maVaiTro: reader.GetString(reader.GetOrdinal("MaVaiTro")),
+                maKhachHang: reader.GetString(reader.GetOrdinal("MaKhachHang")),
+                ngaySinh: reader.GetDateTime(reader.GetOrdinal("NgaySinh")),
+                trangThai: reader.GetBoolean(reader.GetOrdinal("TrangThai"))
+            );
+
+            if (!reader.IsDBNull(reader.GetOrdinal("TenVaiTro")))
+            {
+                kh.VaiTro = new VaiTro(
+                    maVaiTro: kh.MaVaiTro,
+                    tenVaiTro: reader.GetString(reader.GetOrdinal("TenVaiTro")),
+                    moTa: reader.IsDBNull(reader.GetOrdinal("MoTaVaiTro")) ? string.Empty : reader.GetString(reader.GetOrdinal("MoTaVaiTro"))
+                );
+            }
+
+            list.Add(kh);
+        }
+
+        return list;
     }
 }

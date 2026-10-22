@@ -47,7 +47,11 @@ public class HoaDonRepository : IHoaDonRepository
                 BEGIN
                     UPDATE dbo.HoaDon
                     SET NgayLap = @NgayLap,
-                        MaKhachHang = @MaKhachHang,
+                        MaKhachHang = CASE 
+                            WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaKhachHang) THEN @MaKhachHang
+                            WHEN EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang)
+                            ELSE @MaKhachHang
+                        END,
                         MaNhanVien = CASE 
                             WHEN @MaNhanVien IS NULL THEN NULL
                             WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaNhanVien) THEN @MaNhanVien
@@ -67,7 +71,12 @@ public class HoaDonRepository : IHoaDonRepository
                 ELSE
                 BEGIN
                     INSERT INTO dbo.HoaDon (MaHoaDon, NgayLap, MaKhachHang, MaNhanVien, DiaChiGiaoHang, SoDienThoaiNhan, PhuongThucThanhToan, TrangThaiDonHang, TongTienHang, TienGiamGia, TongThanhToan, GhiChu)
-                    VALUES (@MaHoaDon, @NgayLap, @MaKhachHang, 
+                    VALUES (@MaHoaDon, @NgayLap, 
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaKhachHang) THEN @MaKhachHang
+                            WHEN EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang)
+                            ELSE @MaKhachHang
+                        END, 
                         CASE 
                             WHEN @MaNhanVien IS NULL THEN NULL
                             WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaNhanVien) THEN @MaNhanVien
@@ -312,7 +321,7 @@ public class HoaDonRepository : IHoaDonRepository
         var list = new List<ChiTietHoaDon>();
         const string sql = @"
             SELECT c.SoHoaDon, c.MaSanPham, c.DonGia, c.SoLuong,
-                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai
+                   s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia
             FROM dbo.ChiTietHoaDon c
             LEFT JOIN dbo.SanPhamTrangSuc s ON c.MaSanPham = s.MaSanPham
             WHERE c.SoHoaDon = @SoHoaDon;";
@@ -341,7 +350,9 @@ public class HoaDonRepository : IHoaDonRepository
                     size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
                     giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
                     giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
-                    trangThai: reader.GetString(reader.GetOrdinal("TrangThai"))
+                    trangThai: reader.GetString(reader.GetOrdinal("TrangThai")),
+                    hinhAnh: reader.IsDBNull(reader.GetOrdinal("HinhAnh")) ? string.Empty : reader.GetString(reader.GetOrdinal("HinhAnh")),
+                    phanTramGiamGia: reader.IsDBNull(reader.GetOrdinal("PhanTramGiamGia")) ? 0 : reader.GetInt32(reader.GetOrdinal("PhanTramGiamGia"))
                 );
             }
 

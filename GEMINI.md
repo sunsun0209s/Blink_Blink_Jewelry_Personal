@@ -1,7 +1,8 @@
 ### Đây là nơi lưu lại những điều tối quan trọng để làm dự án không sai sót
 ## Hệ thống bao gồm kiến trúc clean architecture được viết bằng .Net, đối với trang dành cho admin sẽ được thiết kế bằng winform, còn trang dành cho người dùng mua sắm sẽ thiết kế bằng web (html, javascript, css, php nếu có). Web khách hàng sẽ giao tiếp với phần nghiệp vụ của clean architecture thông qua Restful API.
 chương trình không cần quan tâm đến giá vàng hay loại vàng dùng cho sản phẩm này là gì, thông tin về cái đó chỉ cần lưu trong chuỗi string chất liệu là được, không cần ghi nhận lại lịch sử giá của sản phẩm đó.
-
+3.1. Bắt buộc tham chiếu Taste Skill
+BẮT BUỘC đọc và tuân thủ các quy tắc trong .agent/skills/design-taste-frontend/SKILL.md (hoặc SKILL.md).
 ### Quy trình làm việc
 1. Kéo code mới nhất từ main
 Thành viên vào nhánh main, kéo nhánh mới nhất của nhóm về máy:
@@ -50,22 +51,7 @@ Khi nhận yêu cầu thiết kế, chỉnh sửa layout, giao diện
 3.1. Bắt buộc tham chiếu Taste Skill
 BẮT BUỘC đọc và tuân thủ các quy tắc trong .agent/skills/design-taste-frontend/SKILL.md (hoặc SKILL.md).
 
-Gu thẩm mỹ ngành trang sức (Blink Blink Jewelry): Hướng đến phong cách sang trọng, tinh tế (luxury, editorial, high-end minimalism). Sử dụng không gian thở (whitespace), typography thanh lịch, tương phản rõ ràng; tuyệt đối không tạo giao diện rẻ tiền, rực rỡ màu sắc sai mục đích.
-
-3.2. Ba khoá bất biến (The 3 Locks)
-Color Consistency Lock: Giữ bảng màu đồng nhất trên toàn bộ view/màn hình. Một màu nhấn chính (accent color) sang trọng, không tự ý đổi tone màu giữa các section.
-
-Shape Consistency Lock: Thống nhất hệ thống bo góc (radius) cho thẻ, nút, modal, input (hoặc toàn bộ góc vuông sắc nét rounded-none, hoặc bo nhẹ sang trọng rounded-sm / rounded-md). Không phối hợp lộn xộn các kiểu bo góc.
-
-Theme Lock: Giữ đồng bộ light/dark mode xuyên suốt một ngữ cảnh hiển thị.
-
-3.3. Các lệnh cấm tuyệt đối (Anti-Slop Bans)
-CẤM dùng gradient tím/hồng kiểu AI mặc định (AI-purple blob/mesh gradients).
-
-CẤM bố cục 3 card bằng nhau nằm cạnh nhau một cách rập khuôn (3 equal-card row) trên các landing/showcase page. Hãy dùng layout bất đối xứng, lưới tạp chí (editorial grid) hoặc danh sách so le (zig-zag).
-
-CẤM các dòng chữ trang trí vô nghĩa (như BRAND. MOTION. SPATIAL., 00 / INDEX, version badge giả lập trên web thương mại).
-
+3.2. Các lệnh cấm tuyệt đối (Anti-Slop Bans)
 CẤM dùng icon giả, placeholder méo mó, div giả product UI. Nếu cần hình ảnh trang sức minh họa, hãy dùng hình ảnh tư liệu thật (open-license) hoặc tài nguyên sẵn có của project.
 
 Đối với WinForms POS/Admin: Giữ panel tinh tế, số liệu căn gióng chính xác (tabular figures), màu sắc chỉ tập trung hiển thị trạng thái dữ liệu (badge, status, tồn kho).
@@ -109,4 +95,9 @@ Sau khi code đã được kiểm tra, review và người dùng xác nhận ho�
 - Những code bị comment KHÔNG được tự tiện xoá vì nó dùng để test.
 - Ngôn ngữ comment: Thống nhất dùng tiếng Việt chỉ dùng tiếng anh khi từ đó quá chuyên ngành.
 - Tuyệt đối KHÔNG nâng Target Framework lên .NET 9 hay .NET 10 (thống nhất duy nhất .NET 8 LTS cho toàn solution).
--CẤM chú giải song ngữ thừa thãi: Không tự ý mở ngoặc chèn cụm từ tiếng Anh sau từ tiếng Việt (ví dụ: cấm viết "phân quyền (Role-based Access Control)" hay "tồn kho (Inventory)") trừ khi đó là những thuật ngữ dễ bị sai lệch nghĩa.
+- CẤM chú giải song ngữ thừa thãi: Không tự ý mở ngoặc chèn cụm từ tiếng Anh sau từ tiếng Việt (ví dụ: cấm viết "phân quyền (Role-based Access Control)" hay "tồn kho (Inventory)") trừ khi đó là những thuật ngữ dễ bị sai lệch nghĩa.
+
+## 4. Quy Chuẩn Cơ Sở Dữ Liệu & Mã Hóa Tiếng Việt (Database Encoding & UTF-8 Rules)
+- **Quy tắc nạp SQL Script bằng lệnh CLI:** Khi thực thi file `.sql` chứa văn bản tiếng Việt qua `sqlcmd`, BẮT BUỘC phải kèm cờ `-f 65001` (Code Page UTF-8), ví dụ: `sqlcmd -S . -f 65001 -i "BlinkBlinkJewelry.sql"`. Tuyệt đối CẤM chạy `sqlcmd -i` trần vì Windows sẽ đọc theo Codepage ANSI/OEM gây lỗi font rác (Mojibake: `Ã¢`, `á»`, `áº`).
+- **Chuỗi ký tự trong SQL:** Mọi giá trị chuỗi tiếng Việt có dấu trong câu lệnh `INSERT`/`UPDATE` phải luôn có tiền tố `N'...'` (Unicode) và lưu vào cột kiểu `NVARCHAR`.
+- **Định dạng file mã nguồn & SQL:** Toàn bộ file `.sql`, `.cs`, `.json`, `.js`, `.md` phải luôn được lưu ở định dạng chuẩn `UTF-8` (hoặc `UTF-8 with BOM`).

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using BlinkBlink.Application.DTOs.Catalog;
 using BlinkBlink.Application.Services.Catalog;
 
+using BlinkBlink.Domain.Interfaces;
+
 namespace BlinkBlink.Web.Controllers;
 
 /// <summary>
@@ -16,10 +18,14 @@ namespace BlinkBlink.Web.Controllers;
 public class SanPhamController : ControllerBase
 {
     private readonly QuanLySanPhamUseCase _quanLySanPhamUseCase;
+    private readonly ISanPhamRepository _sanPhamRepository;
 
-    public SanPhamController(QuanLySanPhamUseCase quanLySanPhamUseCase)
+    public SanPhamController(
+        QuanLySanPhamUseCase quanLySanPhamUseCase,
+        ISanPhamRepository sanPhamRepository)
     {
         _quanLySanPhamUseCase = quanLySanPhamUseCase ?? throw new ArgumentNullException(nameof(quanLySanPhamUseCase));
+        _sanPhamRepository = sanPhamRepository ?? throw new ArgumentNullException(nameof(sanPhamRepository));
     }
 
     /// <summary>
@@ -93,5 +99,84 @@ public class SanPhamController : ControllerBase
         }
 
         return Ok(new { Success = true, Message = $"Cập nhật thông tin sản phẩm '{request.MaSanPham}' thành công." });
+    }
+
+    /// <summary>
+    /// Lấy toàn bộ danh sách sản phẩm trang sức từ CSDL kèm danh mục, % giảm giá, giá sau giảm và ảnh thực tế.
+    /// Phục vụ hiển thị động cho trang Web bán hàng của khách hàng.
+    /// </summary>
+    /// <param name="cancellationToken">Token hủy tác vụ</param>
+    /// <returns>Danh sách sản phẩm trang sức</returns>
+    [HttpGet]
+    public async Task<IActionResult> LayDanhSach(CancellationToken cancellationToken)
+    {
+        var items = await _sanPhamRepository.LayTatCaAsync(cancellationToken);
+        var response = items.Select(sp =>
+        {
+            decimal giaSauGiam = sp.PhanTramGiamGia > 0
+                ? Math.Round(sp.GiaBan * (100 - sp.PhanTramGiamGia) / 100m, 0)
+                : sp.GiaBan;
+
+            return new
+            {
+                MaSanPham = sp.MaSanPham,
+                TenSanPham = sp.TenSanPham,
+                MaDanhMuc = sp.MaDanhMuc,
+                TenDanhMuc = sp.DanhMuc?.TenDanhMuc ?? sp.MaDanhMuc,
+                ChatLieu = sp.ChatLieu,
+                Size = sp.Size,
+                GiaBan = sp.GiaBan,
+                PhanTramGiamGia = sp.PhanTramGiamGia,
+                GiaSauGiam = giaSauGiam,
+                TrangThai = sp.TrangThai,
+                HinhAnh = sp.HinhAnh
+            };
+        });
+
+        return Ok(new { Success = true, Data = response });
+    }
+
+    /// <summary>
+    /// Lấy chi tiết một sản phẩm trang sức theo mã sản phẩm.
+    /// </summary>
+    /// <param name="maSanPham">Mã sản phẩm trang sức</param>
+    /// <param name="cancellationToken">Token hủy tác vụ</param>
+    /// <returns>Dữ liệu chi tiết sản phẩm</returns>
+    [HttpGet("{maSanPham}")]
+    public async Task<IActionResult> LayChiTiet(string maSanPham, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(maSanPham))
+        {
+            return BadRequest(new { Message = "Mã sản phẩm không hợp lệ." });
+        }
+
+        var sp = await _sanPhamRepository.TimTheoIdAsync(maSanPham, cancellationToken);
+        if (sp == null)
+        {
+            return NotFound(new { Message = $"Không tìm thấy sản phẩm mã '{maSanPham}'." });
+        }
+
+        decimal giaSauGiam = sp.PhanTramGiamGia > 0
+            ? Math.Round(sp.GiaBan * (100 - sp.PhanTramGiamGia) / 100m, 0)
+            : sp.GiaBan;
+
+        return Ok(new
+        {
+            Success = true,
+            Data = new
+            {
+                MaSanPham = sp.MaSanPham,
+                TenSanPham = sp.TenSanPham,
+                MaDanhMuc = sp.MaDanhMuc,
+                TenDanhMuc = sp.DanhMuc?.TenDanhMuc ?? sp.MaDanhMuc,
+                ChatLieu = sp.ChatLieu,
+                Size = sp.Size,
+                GiaBan = sp.GiaBan,
+                PhanTramGiamGia = sp.PhanTramGiamGia,
+                GiaSauGiam = giaSauGiam,
+                TrangThai = sp.TrangThai,
+                HinhAnh = sp.HinhAnh
+            }
+        });
     }
 }

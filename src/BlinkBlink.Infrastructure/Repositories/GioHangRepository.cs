@@ -81,31 +81,40 @@ public class GioHangRepository : IGioHangRepository
         try
         {
             const string sqlGioHang = @"
-                IF EXISTS (SELECT 1 FROM dbo.GioHang WHERE MaGioHang = @MaGioHang)
+                DECLARE @ActualMaGioHang VARCHAR(50);
+                SELECT TOP 1 @ActualMaGioHang = MaGioHang FROM dbo.GioHang WHERE MaGioHang = @MaGioHang OR MaKhachHang = @MaKhachHang;
+
+                IF @ActualMaGioHang IS NOT NULL
                 BEGIN
                     UPDATE dbo.GioHang
-                    SET MaKhachHang = @MaKhachHang,
-                        SoLuong = @SoLuong
-                    WHERE MaGioHang = @MaGioHang;
+                    SET SoLuong = @SoLuong
+                    WHERE MaGioHang = @ActualMaGioHang;
+                    SELECT @ActualMaGioHang;
                 END
                 ELSE
                 BEGIN
                     INSERT INTO dbo.GioHang (MaGioHang, MaKhachHang, SoLuong)
                     VALUES (@MaGioHang, @MaKhachHang, @SoLuong);
+                    SELECT @MaGioHang;
                 END";
 
+            string resolvedMaGioHang = gh.MaGioHang;
             using (var cmdGh = new SqlCommand(sqlGioHang, conn, tx))
             {
                 cmdGh.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
                 cmdGh.Parameters.Add(new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = gh.MaKhachHang });
                 cmdGh.Parameters.Add(new SqlParameter("@SoLuong", SqlDbType.Int) { Value = gh.SoLuong });
-                cmdGh.ExecuteNonQuery();
+                var res = cmdGh.ExecuteScalar();
+                if (res != null && res != DBNull.Value)
+                {
+                    resolvedMaGioHang = res.ToString()!;
+                }
             }
 
             const string sqlDeleteCt = "DELETE FROM dbo.ChiTietGioHang WHERE MaGioHang = @MaGioHang;";
             using (var cmdDel = new SqlCommand(sqlDeleteCt, conn, tx))
             {
-                cmdDel.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
+                cmdDel.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = resolvedMaGioHang });
                 cmdDel.ExecuteNonQuery();
             }
 
@@ -118,7 +127,7 @@ public class GioHangRepository : IGioHangRepository
                 foreach (var ct in gh.DanhSachSanPham)
                 {
                     using var cmdCt = new SqlCommand(sqlInsertCt, conn, tx);
-                    cmdCt.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = gh.MaGioHang });
+                    cmdCt.Parameters.Add(new SqlParameter("@MaGioHang", SqlDbType.VarChar, 50) { Value = resolvedMaGioHang });
                     cmdCt.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = ct.MaSanPham });
                     cmdCt.Parameters.Add(new SqlParameter("@SoLuongSanPham", SqlDbType.Int) { Value = ct.SoLuongSanPham });
                     cmdCt.ExecuteNonQuery();
