@@ -168,25 +168,38 @@ public class OrdersView : UserControl
         {
             Dock = DockStyle.Fill,
             Orientation = Orientation.Horizontal,
-            SplitterDistance = 330,
             SplitterWidth = 8,
             BackColor = UITheme.CanvasBackground,
-            Padding = new Padding(20, 10, 20, 10),
-            Panel1MinSize = 220,
-            Panel2MinSize = 180
+            Padding = new Padding(20, 10, 20, 10)
         };
 
-        this.Resize += (s, e) =>
+        // Tự động căn chỉnh khoảng cách phân chia an toàn sau khi UserControl đã có kích thước thực tế
+        void AdjustSplitter()
         {
-            if (splitContainer.Height > 420)
+            if (splitContainer.Height > 300)
             {
-                var target = (int)(splitContainer.Height * 0.55);
-                if (target >= splitContainer.Panel1MinSize && splitContainer.Height - target >= splitContainer.Panel2MinSize)
+                try
                 {
-                    splitContainer.SplitterDistance = target;
+                    var min1 = Math.Min(160, splitContainer.Height / 3);
+                    var min2 = Math.Min(140, splitContainer.Height / 3);
+                    splitContainer.Panel1MinSize = min1;
+                    splitContainer.Panel2MinSize = min2;
+
+                    var target = (int)(splitContainer.Height * 0.55);
+                    if (target >= min1 && target <= splitContainer.Height - min2)
+                    {
+                        splitContainer.SplitterDistance = target;
+                    }
+                }
+                catch
+                {
+                    // Bỏ qua ngoại lệ kích thước tạm thời khi cửa sổ đang co giãn
                 }
             }
-        };
+        }
+
+        this.Load += (s, e) => AdjustSplitter();
+        this.Resize += (s, e) => AdjustSplitter();
 
         // Bảng danh sách đơn hàng
         _dgvOrders = new DataGridView();
