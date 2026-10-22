@@ -23,7 +23,13 @@ public interface ISanPhamRepository
     /// <returns>Thực thể sản phẩm hoặc null</returns>
     SanPhamTrangSuc? TimTheoId(string maSanPham);
 
+    /// <summary>
+    /// Lấy toàn bộ danh sách sản phẩm trang sức trong hệ thống.
+    /// </summary>
+    List<SanPhamTrangSuc> LayTatCa();
+
     // Mở rộng Task bất đồng bộ chuẩn Clean Architecture .NET 8
     Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken cancellationToken = default);
     Task<SanPhamTrangSuc?> TimTheoIdAsync(string maSanPham, CancellationToken cancellationToken = default);
+    Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken cancellationToken = default);
 }

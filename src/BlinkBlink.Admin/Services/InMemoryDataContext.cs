@@ -74,8 +74,10 @@ public class InMemoryDataContext
             _ctx.SanPhams.Add(sp);
         }
         public SanPhamTrangSuc? TimTheoId(string id) => _ctx.SanPhams.FirstOrDefault(s => s.MaSanPham == id);
+        public List<SanPhamTrangSuc> LayTatCa() => _ctx.SanPhams.ToList();
         public Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken ct = default) { LuuSanPham(sp); return Task.CompletedTask; }
         public Task<SanPhamTrangSuc?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
+        public Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
     }
 
     private class MemoryDanhMucRepository : IDanhMucRepository
@@ -86,6 +88,8 @@ public class InMemoryDataContext
         public Task LuuDanhMucAsync(DanhMuc dm, CancellationToken ct = default) { LuuDanhMuc(dm); return Task.CompletedTask; }
         public DanhMuc? TimTheoId(string id) => _ctx.DanhMucs.FirstOrDefault(d => d.MaDanhMuc == id);
         public Task<DanhMuc?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
+        public List<DanhMuc> LayTatCa() => _ctx.DanhMucs.ToList();
+        public Task<List<DanhMuc>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
     }
 
     private class MemoryHoaDonRepository : IHoaDonRepository
@@ -195,6 +199,8 @@ public class InMemoryDataContext
         public void LuuPhieuNhap(PhieuNhapKho phieu) => _ctx.PhieuNhapKhos.Add(phieu);
         public Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken ct = default) { LuuPhieuNhap(phieu); return Task.CompletedTask; }
         public Task<PhieuNhapKho?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(_ctx.PhieuNhapKhos.FirstOrDefault(p => p.MaPhieuNhap == id));
+        public List<PhieuNhapKho> LayTatCa() => _ctx.PhieuNhapKhos.ToList();
+        public Task<List<PhieuNhapKho>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
     }
 
     private class MemoryPhieuKiemKeRepository : IPhieuKiemKeRepository

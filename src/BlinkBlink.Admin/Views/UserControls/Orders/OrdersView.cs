@@ -57,13 +57,35 @@ public class OrdersView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
+        // Khối 3 thẻ chỉ số nhanh
+        var pnlKpis = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 520,
+            Height = 85,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
+        };
+
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Đơn", out _lblKpiTotal, UITheme.TextPrimary));
+        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt", out _lblKpiPending, UITheme.WarningColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao", out _lblKpiDelivered, UITheme.SuccessColor));
+
+        var pnlTitleContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 0, 15, 0)
+        };
+
         var lblTitle = new Label
         {
             Text = "QUẢN LÝ BÁN HÀNG & PHÊ DUYỆT ĐƠN HÀNG",
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
-            Location = new Point(20, 12),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 32,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
@@ -72,27 +94,18 @@ public class OrdersView : UserControl
             Text = "Theo dõi đơn hàng online, phê duyệt xử lý đóng gói và bàn giao vận chuyển trang sức",
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
-            Location = new Point(20, 38),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 40,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
-        // Khối 3 thẻ chỉ số nhanh
-        var pnlKpis = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Right,
-            Width = 520,
-            Height = 90,
-            FlowDirection = FlowDirection.LeftToRight
-        };
+        pnlTitleContainer.Controls.Add(lblSubTitle);
+        pnlTitleContainer.Controls.Add(lblTitle);
 
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Đơn", out _lblKpiTotal, UITheme.TextPrimary));
-        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt", out _lblKpiPending, UITheme.WarningColor));
-        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao", out _lblKpiDelivered, UITheme.SuccessColor));
-
-        topHeaderPanel.Controls.Add(lblTitle);
-        topHeaderPanel.Controls.Add(lblSubTitle);
+        topHeaderPanel.Controls.Add(pnlTitleContainer);
         topHeaderPanel.Controls.Add(pnlKpis);
+        pnlKpis.SendToBack();
 
         // Thanh công cụ tác vụ và tìm kiếm dạng Responsive chống tràn chữ
         var toolbarPanel = UITheme.CreateResponsiveToolbar();
@@ -287,6 +300,10 @@ public class OrdersView : UserControl
 
     private void ConfigureOrdersGrid()
     {
+        // 1. Tắt tự động co giãn để cho phép đặt chiều cao cố định
+        _dgvOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+        // 2. Chỉnh chiều cao mong muốn (ví dụ: 50, 56, 60...)
+        _dgvOrders.ColumnHeadersHeight = 100;
         _dgvOrders.Columns.Clear();
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaHoaDon", HeaderText = "MÃ ĐƠN", FillWeight = 75, MinimumWidth = 85 });
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayLap", HeaderText = "NGÀY LẬP", FillWeight = 90, MinimumWidth = 95 });
@@ -436,16 +453,23 @@ public class OrdersView : UserControl
             return;
         }
 
-        // Thực thi Use Case phê duyệt đơn
-        var success = _services.XuLyDonHang.DuyetDonHang(maHoaDon, "NV001");
-        if (success)
+        try
         {
-            MessageBox.Show($"Đã phê duyệt thành công đơn hàng #{maHoaDon}. Trạng thái đã chuyển sang: DangDongGoi.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            // Thực thi Use Case phê duyệt đơn (truyền mã người dùng của nhân viên duyệt đơn theo đúng khóa ngoại FK_HoaDon_NhanVien)
+            var success = _services.XuLyDonHang.DuyetDonHang(maHoaDon, "USER_NV001");
+            if (success)
+            {
+                MessageBox.Show($"Đã phê duyệt thành công đơn hàng #{maHoaDon}. Trạng thái đã chuyển sang: DangDongGoi.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể duyệt đơn hàng này do lỗi ràng buộc nghiệp vụ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể duyệt đơn hàng này do lỗi ràng buộc nghiệp vụ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi duyệt đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -460,15 +484,22 @@ public class OrdersView : UserControl
         var maHoaDon = _dgvOrders.SelectedRows[0].Cells["MaHoaDon"].Value?.ToString();
         if (string.IsNullOrEmpty(maHoaDon)) return;
 
-        var success = _services.XuLyDonHang.CapNhatTrangThai(maHoaDon, newStatus, "NV001");
-        if (success)
+        try
         {
-            MessageBox.Show($"Đã cập nhật trạng thái đơn #{maHoaDon} sang '{newStatus}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            var success = _services.XuLyDonHang.CapNhatTrangThai(maHoaDon, newStatus, "USER_NV001");
+            if (success)
+            {
+                MessageBox.Show($"Đã cập nhật trạng thái đơn #{maHoaDon} sang '{newStatus}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể cập nhật trạng thái đơn hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể cập nhật trạng thái đơn hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi cập nhật trạng thái đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -486,15 +517,22 @@ public class OrdersView : UserControl
         var confirm = MessageBox.Show($"Bạn có chắc chắn muốn hủy đơn hàng #{maHoaDon} không? Các sản phẩm đã bán sẽ được hoàn kho.", "Xác nhận hủy đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
         if (confirm != DialogResult.Yes) return;
 
-        var success = _services.XuLyDonHang.HuyDonHang(maHoaDon);
-        if (success)
+        try
         {
-            MessageBox.Show($"Đơn hàng #{maHoaDon} đã hủy thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            var success = _services.XuLyDonHang.HuyDonHang(maHoaDon);
+            if (success)
+            {
+                MessageBox.Show($"Đơn hàng #{maHoaDon} đã hủy thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể hủy đơn hàng này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể hủy đơn hàng này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi hủy đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

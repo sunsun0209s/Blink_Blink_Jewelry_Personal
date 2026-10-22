@@ -43,13 +43,15 @@ public class SanPhamRepository : ISanPhamRepository
                     Size = @Size,
                     GiaNhap = @GiaNhap,
                     GiaBan = @GiaBan,
-                    TrangThai = @TrangThai
+                    TrangThai = @TrangThai,
+                    HinhAnh = @HinhAnh,
+                    PhanTramGiamGia = @PhanTramGiamGia
                 WHERE MaSanPham = @MaSanPham;
             END
             ELSE
             BEGIN
-                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai)
-                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai);
+                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia)
+                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai, @HinhAnh, @PhanTramGiamGia);
             END";
 
         var parameters = new[]
@@ -61,7 +63,9 @@ public class SanPhamRepository : ISanPhamRepository
             new SqlParameter("@Size", SqlDbType.NVarChar, 20) { Value = (object?)sp.Size ?? DBNull.Value },
             new SqlParameter("@GiaNhap", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaNhap },
             new SqlParameter("@GiaBan", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = sp.GiaBan },
-            new SqlParameter("@TrangThai", SqlDbType.NVarChar, 50) { Value = sp.TrangThai }
+            new SqlParameter("@TrangThai", SqlDbType.NVarChar, 50) { Value = sp.TrangThai },
+            new SqlParameter("@HinhAnh", SqlDbType.NVarChar, 500) { Value = (object?)sp.HinhAnh ?? DBNull.Value },
+            new SqlParameter("@PhanTramGiamGia", SqlDbType.Int) { Value = sp.PhanTramGiamGia }
         };
 
         _dbHelper.ExecuteNonQuery(sql, parameters);
@@ -75,7 +79,7 @@ public class SanPhamRepository : ISanPhamRepository
         }
 
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -94,6 +98,28 @@ public class SanPhamRepository : ISanPhamRepository
         return null;
     }
 
+    public List<SanPhamTrangSuc> LayTatCa()
+    {
+        var list = new List<SanPhamTrangSuc>();
+        const string sql = @"
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
+                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
+            FROM dbo.SanPhamTrangSuc s
+            LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
+            ORDER BY s.MaSanPham ASC;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            list.Add(MapReaderToSanPham(reader));
+        }
+
+        return list;
+    }
+
     public Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken cancellationToken = default)
     {
         LuuSanPham(sp);
@@ -105,8 +131,41 @@ public class SanPhamRepository : ISanPhamRepository
         return Task.FromResult(TimTheoId(maSanPham));
     }
 
+    public Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LayTatCa());
+    }
+
     private static SanPhamTrangSuc MapReaderToSanPham(SqlDataReader reader)
     {
+        var hinhAnh = string.Empty;
+        try
+        {
+            var ordHinhAnh = reader.GetOrdinal("HinhAnh");
+            if (!reader.IsDBNull(ordHinhAnh))
+            {
+                hinhAnh = reader.GetString(ordHinhAnh);
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // Tránh lỗi nếu truy vấn không select cột HinhAnh
+        }
+
+        var phanTramGiamGia = 0;
+        try
+        {
+            var ordDiscount = reader.GetOrdinal("PhanTramGiamGia");
+            if (!reader.IsDBNull(ordDiscount))
+            {
+                phanTramGiamGia = reader.GetInt32(ordDiscount);
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // Tránh lỗi nếu truy vấn không select cột PhanTramGiamGia
+        }
+
         var sp = new SanPhamTrangSuc(
             maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
             tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
@@ -115,7 +174,9 @@ public class SanPhamRepository : ISanPhamRepository
             size: reader.IsDBNull(reader.GetOrdinal("Size")) ? string.Empty : reader.GetString(reader.GetOrdinal("Size")),
             giaNhap: reader.GetDecimal(reader.GetOrdinal("GiaNhap")),
             giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
-            trangThai: reader.GetString(reader.GetOrdinal("TrangThai"))
+            trangThai: reader.GetString(reader.GetOrdinal("TrangThai")),
+            hinhAnh: hinhAnh,
+            phanTramGiamGia: phanTramGiamGia
         );
 
         if (!reader.IsDBNull(reader.GetOrdinal("TenDanhMuc")))
