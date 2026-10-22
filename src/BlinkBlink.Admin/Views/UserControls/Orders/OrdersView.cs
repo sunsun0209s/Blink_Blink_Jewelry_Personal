@@ -436,16 +436,23 @@ public class OrdersView : UserControl
             return;
         }
 
-        // Thực thi Use Case phê duyệt đơn
-        var success = _services.XuLyDonHang.DuyetDonHang(maHoaDon, "NV001");
-        if (success)
+        try
         {
-            MessageBox.Show($"Đã phê duyệt thành công đơn hàng #{maHoaDon}. Trạng thái đã chuyển sang: DangDongGoi.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            // Thực thi Use Case phê duyệt đơn (truyền mã người dùng của nhân viên duyệt đơn theo đúng khóa ngoại FK_HoaDon_NhanVien)
+            var success = _services.XuLyDonHang.DuyetDonHang(maHoaDon, "USER_NV001");
+            if (success)
+            {
+                MessageBox.Show($"Đã phê duyệt thành công đơn hàng #{maHoaDon}. Trạng thái đã chuyển sang: DangDongGoi.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể duyệt đơn hàng này do lỗi ràng buộc nghiệp vụ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể duyệt đơn hàng này do lỗi ràng buộc nghiệp vụ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi duyệt đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -460,15 +467,22 @@ public class OrdersView : UserControl
         var maHoaDon = _dgvOrders.SelectedRows[0].Cells["MaHoaDon"].Value?.ToString();
         if (string.IsNullOrEmpty(maHoaDon)) return;
 
-        var success = _services.XuLyDonHang.CapNhatTrangThai(maHoaDon, newStatus, "NV001");
-        if (success)
+        try
         {
-            MessageBox.Show($"Đã cập nhật trạng thái đơn #{maHoaDon} sang '{newStatus}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            var success = _services.XuLyDonHang.CapNhatTrangThai(maHoaDon, newStatus, "USER_NV001");
+            if (success)
+            {
+                MessageBox.Show($"Đã cập nhật trạng thái đơn #{maHoaDon} sang '{newStatus}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể cập nhật trạng thái đơn hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể cập nhật trạng thái đơn hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi cập nhật trạng thái đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -486,15 +500,22 @@ public class OrdersView : UserControl
         var confirm = MessageBox.Show($"Bạn có chắc chắn muốn hủy đơn hàng #{maHoaDon} không? Các sản phẩm đã bán sẽ được hoàn kho.", "Xác nhận hủy đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
         if (confirm != DialogResult.Yes) return;
 
-        var success = _services.XuLyDonHang.HuyDonHang(maHoaDon);
-        if (success)
+        try
         {
-            MessageBox.Show($"Đơn hàng #{maHoaDon} đã hủy thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadOrderData();
+            var success = _services.XuLyDonHang.HuyDonHang(maHoaDon);
+            if (success)
+            {
+                MessageBox.Show($"Đơn hàng #{maHoaDon} đã hủy thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadOrderData();
+            }
+            else
+            {
+                MessageBox.Show("Không thể hủy đơn hàng này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            MessageBox.Show("Không thể hủy đơn hàng này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Xảy ra lỗi khi hủy đơn hàng #{maHoaDon}: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

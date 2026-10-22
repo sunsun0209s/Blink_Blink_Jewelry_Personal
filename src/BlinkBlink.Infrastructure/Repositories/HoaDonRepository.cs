@@ -48,7 +48,12 @@ public class HoaDonRepository : IHoaDonRepository
                     UPDATE dbo.HoaDon
                     SET NgayLap = @NgayLap,
                         MaKhachHang = @MaKhachHang,
-                        MaNhanVien = @MaNhanVien,
+                        MaNhanVien = CASE 
+                            WHEN @MaNhanVien IS NULL THEN NULL
+                            WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaNhanVien) THEN @MaNhanVien
+                            WHEN EXISTS (SELECT 1 FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien)
+                            ELSE @MaNhanVien
+                        END,
                         DiaChiGiaoHang = @DiaChiGiaoHang,
                         SoDienThoaiNhan = @SoDienThoaiNhan,
                         PhuongThucThanhToan = @PhuongThucThanhToan,
@@ -62,7 +67,14 @@ public class HoaDonRepository : IHoaDonRepository
                 ELSE
                 BEGIN
                     INSERT INTO dbo.HoaDon (MaHoaDon, NgayLap, MaKhachHang, MaNhanVien, DiaChiGiaoHang, SoDienThoaiNhan, PhuongThucThanhToan, TrangThaiDonHang, TongTienHang, TienGiamGia, TongThanhToan, GhiChu)
-                    VALUES (@MaHoaDon, @NgayLap, @MaKhachHang, @MaNhanVien, @DiaChiGiaoHang, @SoDienThoaiNhan, @PhuongThucThanhToan, @TrangThaiDonHang, @TongTienHang, @TienGiamGia, @TongThanhToan, @GhiChu);
+                    VALUES (@MaHoaDon, @NgayLap, @MaKhachHang, 
+                        CASE 
+                            WHEN @MaNhanVien IS NULL THEN NULL
+                            WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaNhanVien) THEN @MaNhanVien
+                            WHEN EXISTS (SELECT 1 FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien)
+                            ELSE @MaNhanVien
+                        END, 
+                        @DiaChiGiaoHang, @SoDienThoaiNhan, @PhuongThucThanhToan, @TrangThaiDonHang, @TongTienHang, @TienGiamGia, @TongThanhToan, @GhiChu);
                 END";
 
             using (var cmdHd = new SqlCommand(sqlHoaDon, conn, tx))
@@ -241,7 +253,12 @@ public class HoaDonRepository : IHoaDonRepository
 
         const string sql = @"
             UPDATE dbo.HoaDon
-            SET MaNhanVien = @MaNhanVien,
+            SET MaNhanVien = CASE 
+                    WHEN @MaNhanVien IS NULL THEN NULL
+                    WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaNhanVien) THEN @MaNhanVien
+                    WHEN EXISTS (SELECT 1 FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.NhanVien WHERE MaNhanVien = @MaNhanVien)
+                    ELSE @MaNhanVien
+                END,
                 TrangThaiDonHang = @TrangThaiDonHang,
                 GhiChu = @GhiChu,
                 TongTienHang = @TongTienHang,

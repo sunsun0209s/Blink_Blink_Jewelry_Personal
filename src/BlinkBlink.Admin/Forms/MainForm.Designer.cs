@@ -37,7 +37,7 @@ partial class MainForm
         // 
         this.panelSidebar.BackColor = Color.FromArgb(24, 28, 36);
         this.panelSidebar.Dock = DockStyle.Left;
-        this.panelSidebar.Width = 240;
+        this.panelSidebar.Width = 260;
         this.panelSidebar.Controls.Add(this.btnReports);
         this.panelSidebar.Controls.Add(this.btnWarranty);
         this.panelSidebar.Controls.Add(this.btnProducts);
@@ -59,11 +59,11 @@ partial class MainForm
         // 
         // Sidebar Buttons Helper Styling
         // 
-        ConfigureSidebarButton(this.btnSales, "🛒 Quản Lý Bán Hàng", 80);
-        ConfigureSidebarButton(this.btnProducts, "💎 Sản Phẩm & Kho", 130);
-        ConfigureSidebarButton(this.btnWarranty, "🛡️ Dịch Vụ & Bảo Hành", 180);
-        ConfigureSidebarButton(this.btnUsers, "👥 Khách Hàng & Nhân Sự", 230);
-        ConfigureSidebarButton(this.btnReports, "📊 Báo Cáo & Thống Kê", 280);
+        ConfigureSidebarButton(this.btnSales, "🛒 Quản Lý Bán Hàng", 85);
+        ConfigureSidebarButton(this.btnProducts, "💎 Sản Phẩm & Kho", 143);
+        ConfigureSidebarButton(this.btnWarranty, "🛡️ Dịch Vụ & Bảo Hành", 201);
+        ConfigureSidebarButton(this.btnUsers, "👥 Khách Hàng & Nhân Sự", 259);
+        ConfigureSidebarButton(this.btnReports, "📊 Báo Cáo & Thống Kê", 317);
 
         // 
         // panelHeader
@@ -131,15 +131,16 @@ partial class MainForm
         btn.Text = text;
         btn.Top = top;
         btn.Left = 0;
-        btn.Width = 240;
-        btn.Height = 48;
+        btn.Width = 260;
+        btn.Height = 54;
         btn.FlatStyle = FlatStyle.Flat;
         btn.FlatAppearance.BorderSize = 0;
         btn.ForeColor = Color.FromArgb(220, 225, 235);
         btn.BackColor = Color.FromArgb(24, 28, 36);
         btn.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
         btn.TextAlign = ContentAlignment.MiddleLeft;
-        btn.Padding = new Padding(20, 0, 0, 0);
+        btn.Padding = new Padding(16, 4, 10, 4);
+        btn.AutoEllipsis = false;
         btn.Cursor = Cursors.Hand;
         btn.UseMnemonic = false;
     }
