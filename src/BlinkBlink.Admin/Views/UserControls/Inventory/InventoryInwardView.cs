@@ -54,13 +54,34 @@ public class InventoryInwardView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
+        var pnlKpis = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 570,
+            Height = 85,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
+        };
+
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Phiếu Nhập", out _lblKpiTotalReceipts, UITheme.TextPrimary));
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Món Đã Nhập", out _lblKpiTotalQuantity, UITheme.SuccessColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Giá Trị Nhập (VND)", out _lblKpiTotalValue, UITheme.PrimaryGold));
+
+        var pnlTitleContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 0, 15, 0)
+        };
+
         var lblTitle = new Label
         {
             Text = "QUẢN LÝ NHẬP KHO & TIẾP NHẬN TRANG SỨC",
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
-            Location = new Point(20, 12),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 32,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
@@ -69,26 +90,18 @@ public class InventoryInwardView : UserControl
             Text = "Lập phiếu nhập kho từ nhà cung cấp, kiểm đếm số lượng và đưa sản phẩm vào trạng thái sẵn sàng giao dịch",
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
-            Location = new Point(20, 38),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 40,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
-        var pnlKpis = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Right,
-            Width = 570,
-            Height = 90,
-            FlowDirection = FlowDirection.LeftToRight
-        };
+        pnlTitleContainer.Controls.Add(lblSubTitle);
+        pnlTitleContainer.Controls.Add(lblTitle);
 
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Phiếu Nhập", out _lblKpiTotalReceipts, UITheme.TextPrimary));
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Món Đã Nhập", out _lblKpiTotalQuantity, UITheme.SuccessColor));
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Giá Trị Nhập (VND)", out _lblKpiTotalValue, UITheme.PrimaryGold));
-
-        topHeaderPanel.Controls.Add(lblTitle);
-        topHeaderPanel.Controls.Add(lblSubTitle);
+        topHeaderPanel.Controls.Add(pnlTitleContainer);
         topHeaderPanel.Controls.Add(pnlKpis);
+        pnlKpis.SendToBack();
 
         // Toolbar Panel Responsive chống tràn chữ
         var toolbarPanel = UITheme.CreateResponsiveToolbar();
@@ -391,37 +404,214 @@ public class InventoryInwardView : UserControl
 
         var pnlBody = new Panel { Dock = DockStyle.Fill, Padding = new Padding(24, 15, 24, 10) };
 
-        // Thông tin phiếu
-        var pnlInfo = new Panel { Dock = DockStyle.Top, Height = 115 };
-        var lblMaP = new Label { Text = "Mã Phiếu Nhập:", Location = new Point(0, 10), Width = 130, ForeColor = UITheme.TextSecondary };
-        var txtMaP = new TextBox { Text = $"PNK{DateTime.Now:yyyyMMdd}_{_allReceipts.Count + 1:D2}", Location = new Point(135, 6), Width = 220, Height = 30, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+        // Thông tin phiếu: Bố cục FlowLayoutPanel 2 hàng chống tràn và cắt cụt chữ
+        var pnlInfo = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            Height = 96,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            Margin = new Padding(0)
+        };
 
-        var lblNcc = new Label { Text = "Nhà Cung Cấp (*):", Location = new Point(395, 10), Width = 150, ForeColor = UITheme.TextSecondary };
-        var txtNcc = new TextBox { Text = "Tập đoàn Kim Hoàn Doji Atelier", Location = new Point(550, 6), Width = 380, Height = 30 };
+        var infoRow1 = new FlowLayoutPanel
+        {
+            Width = 940,
+            Height = 44,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Margin = new Padding(0)
+        };
 
-        var lblNv = new Label { Text = "Mã Nhân Viên:", Location = new Point(0, 58), Width = 130, ForeColor = UITheme.TextSecondary };
-        var txtNv = new TextBox { Text = "USER_NV002", Location = new Point(135, 54), Width = 220, Height = 30 };
+        var lblMaP = new Label
+        {
+            Text = "Mã Phiếu Nhập:",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+        var txtMaP = new TextBox
+        {
+            Text = $"PNK{DateTime.Now:yyyyMMdd}_{_allReceipts.Count + 1:D2}",
+            Width = 190,
+            Height = 30,
+            ReadOnly = true,
+            BackColor = Color.FromArgb(241, 245, 249),
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 2, 35, 0)
+        };
 
-        var lblChungTu = new Label { Text = "Số Chứng Từ / HĐ:", Location = new Point(395, 58), Width = 150, ForeColor = UITheme.TextSecondary };
-        var txtChungTu = new TextBox { Text = $"CT_{DateTime.Now:yyMMdd}_IN", Location = new Point(550, 54), Width = 380, Height = 30 };
+        var lblNcc = new Label
+        {
+            Text = "Nhà Cung Cấp (*):",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+        var txtNcc = new TextBox
+        {
+            Text = "Tập đoàn Kim Hoàn Doji Atelier",
+            Width = 360,
+            Height = 30,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 2, 0, 0)
+        };
 
-        pnlInfo.Controls.AddRange(new Control[] { lblMaP, txtMaP, lblNcc, txtNcc, lblNv, txtNv, lblChungTu, txtChungTu });
+        infoRow1.Controls.Add(lblMaP);
+        infoRow1.Controls.Add(txtMaP);
+        infoRow1.Controls.Add(lblNcc);
+        infoRow1.Controls.Add(txtNcc);
 
-        // Thêm mặt hàng nhập: Bố cục 2 hàng rộng rãi, chống tràn chữ 100% trên màn hình High DPI
-        var pnlAddItem = new Panel { Dock = DockStyle.Top, Height = 108, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(16, 12, 16, 12) };
-        var lblSp = new Label { Text = "Sản Phẩm Nhập (*):", Location = new Point(16, 16), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
-        var cboSp = new ComboBox { Location = new Point(160, 12), Width = 430, Height = 30, DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.RegularFont };
+        var infoRow2 = new FlowLayoutPanel
+        {
+            Width = 940,
+            Height = 44,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Margin = new Padding(0)
+        };
+
+        var lblNv = new Label
+        {
+            Text = "Mã Nhân Viên:",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+        var txtNv = new TextBox
+        {
+            Text = "USER_NV002",
+            Width = 190,
+            Height = 30,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 2, 35, 0)
+        };
+
+        var lblChungTu = new Label
+        {
+            Text = "Số Chứng Từ / HĐ:",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+        var txtChungTu = new TextBox
+        {
+            Text = $"CT_{DateTime.Now:yyMMdd}_IN",
+            Width = 360,
+            Height = 30,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 2, 0, 0)
+        };
+
+        infoRow2.Controls.Add(lblNv);
+        infoRow2.Controls.Add(txtNv);
+        infoRow2.Controls.Add(lblChungTu);
+        infoRow2.Controls.Add(txtChungTu);
+
+        pnlInfo.Controls.Add(infoRow1);
+        pnlInfo.Controls.Add(infoRow2);
+
+        // Thêm mặt hàng nhập: Cấu hình FlowLayoutPanel 2 hàng tuần tự, chống đè nhãn/ô nhập 100%
+        var pnlAddItem = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            Height = 115,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            BackColor = Color.FromArgb(248, 250, 252),
+            Padding = new Padding(16, 10, 16, 10),
+            Margin = new Padding(0, 0, 0, 10)
+        };
+
+        var itemRow1 = new FlowLayoutPanel
+        {
+            Width = 920,
+            Height = 44,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            BackColor = Color.Transparent,
+            Margin = new Padding(0)
+        };
+
+        var lblSp = new Label
+        {
+            Text = "Sản Phẩm Nhập (*):",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+
+        var cboSp = new ComboBox
+        {
+            Width = 430,
+            Height = 30,
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 2, 35, 0)
+        };
         foreach (var sp in allProducts)
         {
             cboSp.Items.Add(new ProductComboItem(sp.MaSanPham, sp.TenSanPham, sp.GiaNhap));
         }
         if (cboSp.Items.Count > 0) cboSp.SelectedIndex = 0;
 
-        var lblSl = new Label { Text = "Số Lượng (*):", Location = new Point(620, 16), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
-        var nudSl = new NumericUpDown { Location = new Point(720, 12), Width = 90, Height = 30, Minimum = 1, Maximum = 1000, Value = 5, Font = UITheme.TabularNumericFont };
+        var lblSl = new Label
+        {
+            Text = "Số Lượng (*):",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
 
-        var lblGiaVon = new Label { Text = "Đơn Giá Vốn (VND) (*):", Location = new Point(16, 60), AutoSize = true, ForeColor = UITheme.TextSecondary, Font = UITheme.RegularFont };
-        var txtGiaVon = new TextBox { Location = new Point(160, 56), Width = 240, Height = 30, Font = UITheme.TabularNumericFont, Text = "12000000" };
+        var nudSl = new NumericUpDown
+        {
+            Width = 100,
+            Height = 30,
+            Minimum = 1,
+            Maximum = 1000,
+            Value = 5,
+            Font = UITheme.TabularNumericFont,
+            Margin = new Padding(0, 2, 0, 0)
+        };
+
+        itemRow1.Controls.Add(lblSp);
+        itemRow1.Controls.Add(cboSp);
+        itemRow1.Controls.Add(lblSl);
+        itemRow1.Controls.Add(nudSl);
+
+        var itemRow2 = new FlowLayoutPanel
+        {
+            Width = 920,
+            Height = 44,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            BackColor = Color.Transparent,
+            Margin = new Padding(0)
+        };
+
+        var lblGiaVon = new Label
+        {
+            Text = "Đơn Giá Vốn (VND) (*):",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 8, 0)
+        };
+
+        var txtGiaVon = new TextBox
+        {
+            Width = 230,
+            Height = 30,
+            Font = UITheme.TabularNumericFont,
+            Text = "12000000",
+            Margin = new Padding(0, 2, 25, 0)
+        };
 
         cboSp.SelectedIndexChanged += (s, e) =>
         {
@@ -432,12 +622,17 @@ public class InventoryInwardView : UserControl
         };
 
         var btnAddRow = UITheme.CreateFlatButton("+ Thêm Vào Phiếu Nhập", UITheme.DarkHeader, Color.White);
-        btnAddRow.Location = new Point(420, 54);
-        btnAddRow.Height = 36;
+        btnAddRow.Height = 34;
         btnAddRow.AutoSize = true;
-        btnAddRow.Padding = new Padding(16, 4, 16, 4);
+        btnAddRow.Padding = new Padding(16, 2, 16, 2);
+        btnAddRow.Margin = new Padding(0, 0, 0, 0);
 
-        pnlAddItem.Controls.AddRange(new Control[] { lblSp, cboSp, lblSl, nudSl, lblGiaVon, txtGiaVon, btnAddRow });
+        itemRow2.Controls.Add(lblGiaVon);
+        itemRow2.Controls.Add(txtGiaVon);
+        itemRow2.Controls.Add(btnAddRow);
+
+        pnlAddItem.Controls.Add(itemRow1);
+        pnlAddItem.Controls.Add(itemRow2);
 
         // Bảng các dòng chi tiết tạm
         var dgvTemp = new DataGridView();

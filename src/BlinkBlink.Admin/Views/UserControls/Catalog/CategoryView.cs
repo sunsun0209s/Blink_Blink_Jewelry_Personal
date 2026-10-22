@@ -52,13 +52,33 @@ public class CategoryView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
+        var pnlKpis = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 400,
+            Height = 85,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
+        };
+
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Danh Mục", out _lblKpiTotalCats, UITheme.TextPrimary));
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Mẫu SP Liên Kết", out _lblKpiTotalItems, UITheme.PrimaryGold));
+
+        var pnlTitleContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 0, 15, 0)
+        };
+
         var lblTitle = new Label
         {
             Text = "QUẢN LÝ DANH MỤC TRANG SỨC",
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
-            Location = new Point(20, 12),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 32,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
@@ -67,25 +87,18 @@ public class CategoryView : UserControl
             Text = "Phân loại các dòng sản phẩm kim hoàn: Nhẫn kim cương, Dây chuyền, Bông tai, Lắc tay cao cấp",
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
-            Location = new Point(20, 38),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 40,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
-        var pnlKpis = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Right,
-            Width = 400,
-            Height = 90,
-            FlowDirection = FlowDirection.LeftToRight
-        };
+        pnlTitleContainer.Controls.Add(lblSubTitle);
+        pnlTitleContainer.Controls.Add(lblTitle);
 
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Danh Mục", out _lblKpiTotalCats, UITheme.TextPrimary));
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Mẫu SP Liên Kết", out _lblKpiTotalItems, UITheme.PrimaryGold));
-
-        topHeaderPanel.Controls.Add(lblTitle);
-        topHeaderPanel.Controls.Add(lblSubTitle);
+        topHeaderPanel.Controls.Add(pnlTitleContainer);
         topHeaderPanel.Controls.Add(pnlKpis);
+        pnlKpis.SendToBack();
 
         // Toolbar Panel Responsive chống tràn chữ
         var toolbarPanel = UITheme.CreateResponsiveToolbar();

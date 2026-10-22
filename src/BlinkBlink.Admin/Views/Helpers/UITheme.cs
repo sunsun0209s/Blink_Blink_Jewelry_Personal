@@ -80,7 +80,7 @@ public static class UITheme
         dgv.AlternatingRowsDefaultCellStyle.SelectionForeColor = PrimaryGold;
         dgv.AlternatingRowsDefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
         dgv.AlternatingRowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        dgv.AlternatingRowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        // Giữ Alignment là NotSet để các dòng xen kẽ kế thừa 100% căn lề (trái/phải/giữa) của từng cột tương ứng
     }
 
     /// <summary>

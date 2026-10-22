@@ -56,32 +56,13 @@ public class ProductsView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
-        var lblTitle = new Label
-        {
-            Text = "QUẢN LÝ SẢN PHẨM & TỒN KHO KIM HOÀN",
-            Font = UITheme.HeaderFont,
-            ForeColor = UITheme.TextPrimary,
-            Location = new Point(20, 12),
-            AutoSize = true,
-            UseMnemonic = false
-        };
-
-        var lblSubTitle = new Label
-        {
-            Text = "Quản lý danh mục trang sức cao cấp, chất liệu, size, kiểm soát trạng thái kho thực tế và cập nhật giá niêm yết",
-            Font = UITheme.RegularFont,
-            ForeColor = UITheme.TextSecondary,
-            Location = new Point(20, 38),
-            AutoSize = true,
-            UseMnemonic = false
-        };
-
         var pnlKpis = new FlowLayoutPanel
         {
             Dock = DockStyle.Right,
-            Width = 650,
-            Height = 90,
-            FlowDirection = FlowDirection.LeftToRight
+            Width = 585,
+            Height = 85,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
         };
 
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Mẫu (SKU)", out _lblKpiTotalSku, UITheme.TextPrimary));
@@ -89,9 +70,41 @@ public class ProductsView : UserControl
         pnlKpis.Controls.Add(CreateKpiCard("Chờ Nhập / Hết", out _lblKpiOutOfStock, UITheme.WarningColor));
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Giá Trị (VND)", out _lblKpiTotalValue, UITheme.PrimaryGold));
 
-        topHeaderPanel.Controls.Add(lblTitle);
-        topHeaderPanel.Controls.Add(lblSubTitle);
+        var pnlTitleContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 0, 15, 0)
+        };
+
+        var lblTitle = new Label
+        {
+            Text = "QUẢN LÝ SẢN PHẨM & TỒN KHO KIM HOÀN",
+            Font = UITheme.HeaderFont,
+            ForeColor = UITheme.TextPrimary,
+            Dock = DockStyle.Top,
+            Height = 32,
+            AutoEllipsis = true,
+            UseMnemonic = false
+        };
+
+        var lblSubTitle = new Label
+        {
+            Text = "Danh mục trang sức cao cấp, chất liệu, kích cỡ, kiểm soát tồn kho thực tế và cập nhật giá niêm yết",
+            Font = UITheme.RegularFont,
+            ForeColor = UITheme.TextSecondary,
+            Dock = DockStyle.Top,
+            Height = 40,
+            AutoEllipsis = true,
+            UseMnemonic = false
+        };
+
+        pnlTitleContainer.Controls.Add(lblSubTitle);
+        pnlTitleContainer.Controls.Add(lblTitle);
+
+        topHeaderPanel.Controls.Add(pnlTitleContainer);
         topHeaderPanel.Controls.Add(pnlKpis);
+        pnlKpis.SendToBack();
 
         // Toolbar Panel Responsive chống tràn chữ
         var toolbarPanel = UITheme.CreateResponsiveToolbar();
@@ -183,11 +196,11 @@ public class ProductsView : UserControl
     {
         var card = new Panel
         {
-            Width = 150,
+            Width = 140,
             Height = 75,
             BackColor = Color.White,
-            Margin = new Padding(4),
-            Padding = new Padding(10, 8, 10, 8)
+            Margin = new Padding(3),
+            Padding = new Padding(8, 8, 8, 8)
         };
 
         var lblT = new Label

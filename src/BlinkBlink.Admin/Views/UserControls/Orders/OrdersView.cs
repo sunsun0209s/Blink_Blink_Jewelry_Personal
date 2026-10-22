@@ -57,13 +57,35 @@ public class OrdersView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
+        // Khối 3 thẻ chỉ số nhanh
+        var pnlKpis = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 520,
+            Height = 85,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
+        };
+
+        pnlKpis.Controls.Add(CreateKpiCard("Tổng Đơn", out _lblKpiTotal, UITheme.TextPrimary));
+        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt", out _lblKpiPending, UITheme.WarningColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao", out _lblKpiDelivered, UITheme.SuccessColor));
+
+        var pnlTitleContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 0, 15, 0)
+        };
+
         var lblTitle = new Label
         {
             Text = "QUẢN LÝ BÁN HÀNG & PHÊ DUYỆT ĐƠN HÀNG",
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
-            Location = new Point(20, 12),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 32,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
@@ -72,27 +94,18 @@ public class OrdersView : UserControl
             Text = "Theo dõi đơn hàng online, phê duyệt xử lý đóng gói và bàn giao vận chuyển trang sức",
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
-            Location = new Point(20, 38),
-            AutoSize = true,
+            Dock = DockStyle.Top,
+            Height = 40,
+            AutoEllipsis = true,
             UseMnemonic = false
         };
 
-        // Khối 3 thẻ chỉ số nhanh
-        var pnlKpis = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Right,
-            Width = 520,
-            Height = 90,
-            FlowDirection = FlowDirection.LeftToRight
-        };
+        pnlTitleContainer.Controls.Add(lblSubTitle);
+        pnlTitleContainer.Controls.Add(lblTitle);
 
-        pnlKpis.Controls.Add(CreateKpiCard("Tổng Đơn", out _lblKpiTotal, UITheme.TextPrimary));
-        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt", out _lblKpiPending, UITheme.WarningColor));
-        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao", out _lblKpiDelivered, UITheme.SuccessColor));
-
-        topHeaderPanel.Controls.Add(lblTitle);
-        topHeaderPanel.Controls.Add(lblSubTitle);
+        topHeaderPanel.Controls.Add(pnlTitleContainer);
         topHeaderPanel.Controls.Add(pnlKpis);
+        pnlKpis.SendToBack();
 
         // Thanh công cụ tác vụ và tìm kiếm dạng Responsive chống tràn chữ
         var toolbarPanel = UITheme.CreateResponsiveToolbar();
