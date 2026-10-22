@@ -239,6 +239,8 @@ public class OrdersView : UserControl
 
         pnlDetailContainer.Controls.Add(_dgvOrderItems);
         pnlDetailContainer.Controls.Add(_lblDetailTitle);
+        _lblDetailTitle.SendToBack();
+        _dgvOrderItems.BringToFront();
         splitContainer.Panel2.Controls.Add(pnlDetailContainer);
 
         this.Controls.Add(splitContainer);

@@ -38,6 +38,7 @@ public static class UITheme
     {
         if (dgv == null) return;
 
+        dgv.Dock = DockStyle.Fill;
         dgv.BackgroundColor = CardBackground;
         dgv.BorderStyle = BorderStyle.None;
         dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;

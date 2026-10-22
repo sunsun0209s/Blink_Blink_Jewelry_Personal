@@ -73,20 +73,35 @@ public class AdminServiceScope
 
     private AdminServiceScope()
     {
-        // Khởi tạo DatabaseHelper kết nối SQL Server LocalDb / Express
-        var connStr = "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=4;";
-        var dbHelper = new DatabaseHelper(connStr);
-
-        try
+        // Danh sách các chuỗi kết nối máy chủ SQL Server theo thứ tự ưu tiên
+        var candidateConnections = new[]
         {
-            IsDatabaseConnected = dbHelper.TestConnection();
-        }
-        catch
+            "Server=.;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+            "Server=localhost;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+            "Server=.\\MSSQL;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;",
+            "Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;Connect Timeout=3;"
+        };
+
+        DatabaseHelper? dbHelper = null;
+        foreach (var connStr in candidateConnections)
         {
-            IsDatabaseConnected = false;
+            try
+            {
+                var helper = new DatabaseHelper(connStr);
+                if (helper.TestConnection())
+                {
+                    dbHelper = helper;
+                    IsDatabaseConnected = true;
+                    break;
+                }
+            }
+            catch
+            {
+                // Thử chuỗi kết nối kế tiếp
+            }
         }
 
-        if (IsDatabaseConnected)
+        if (IsDatabaseConnected && dbHelper != null)
         {
             SanPhamRepo = new SanPhamRepository(dbHelper);
             DanhMucRepo = new DanhMucRepository(dbHelper);

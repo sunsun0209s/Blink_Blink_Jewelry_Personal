@@ -188,6 +188,8 @@ public class ReportingView : UserControl
 
         pnlWhiteCard.Controls.Add(_dgvKetQua);
         pnlWhiteCard.Controls.Add(_lblReportMode);
+        _lblReportMode.SendToBack();
+        _dgvKetQua.BringToFront();
         pnlGridContainer.Controls.Add(pnlWhiteCard);
 
         this.Controls.Add(pnlGridContainer);
