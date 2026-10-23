@@ -1,5 +1,10 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Git Workflow: Hoàn Tất Hợp Nhất & Đẩy Nhánh `feature/tim-kiem-san-pham` Lên Nhánh Chính `main`]:
+  - Hợp nhất toàn diện nhánh `feature/tim-kiem-san-pham` vào `main` thông qua chiến lược `merge --no-ff`, bảo toàn 100% lịch sử 4 commit nguyên tử và toàn bộ tài liệu quy chuẩn.
+  - Toàn bộ tính năng tìm kiếm kiệt tác, thanh tìm kiếm co giãn trên Header, trang tìm kiếm chuyên biệt `/TimKiem`, cơ chế chống rung giật mép viền và gạch chân menu active tự chuyển động đã được tích hợp hoàn hảo vào nhánh chính.
+  - Đã đẩy đồng bộ thành công cả 2 nhánh lên GitHub repository từ xa (`origin/feature/tim-kiem-san-pham` và `origin/main`).
+
 - [x] [2026-10-23] [Web Storefront: Khắc Phục Triệt Để Hiện Tượng Giật Rung (Hover Flicker) Ở Mép Rìa Icon Tìm Kiếm & Hộp Nhập Header]:
   - **Vùng đệm cảm ứng an toàn (`.header-search-wrap`):** Bọc hộp tìm kiếm trong container với `padding: 6px; margin: -6px 0;`, mở rộng vùng nhận diện xúc giác chuột thêm 12px mà không làm xô lệch bất kỳ phần tử lân cận nào trên thanh Header; nâng kích thước nút tròn lên `40x40px` chuẩn công thái học.
   - **Cơ chế độ trễ chống rung (Hover Hysteresis & Debounce Delay trong `storefront.js`):** Khi chuột rê vào (`mouseenter`), kích hoạt mở rộng ngay tức thì và hủy mọi bộ đếm đóng; khi chuột rời mép (`mouseleave`), duy trì độ trễ êm ái `280ms` trước khi thu gọn; triệt tiêu 100% hiện tượng con trỏ chuột trượt nhẹ qua mép viền bo tròn gây co giật rung lắc.
