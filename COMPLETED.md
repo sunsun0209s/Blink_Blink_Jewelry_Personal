@@ -1,5 +1,9 @@
 ﻿### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Kế Hoạch & Quy Trình: Xây Dựng Tài Liệu Hướng Dẫn Commit Qua Antigravity Cho Thành Viên Nhóm (huongdanCommit.md)]:
+  - **Tài liệu huongdanCommit.md:** Khởi tạo cẩm nang hướng dẫn sử dụng Antigravity để đồng bộ code từ kho Personal sang kho dự án chính của nhóm (cùng cấp với BlinkBlinkJewelry.slnx).
+  - **Mẫu câu lệnh (Prompt Templates):** Cung cấp sẵn 2 mẫu prompt chuẩn xác (Tự động hóa hoàn toàn & Hướng dẫn từng bước) kèm bảng đối chiếu vai trò 4 thành viên (qhy, sun, anhthy, tlinh).
+  - **Quy chuẩn an toàn Git:** Nhấn mạnh nguyên tắc cấm commit file rác (bin/, obj/, .vs/), quy trình checkout nhánh feature/... và mở Pull Request (PR) chuẩn CI/CD.
 - [x] [2026-10-23] [Kế Hoạch & Quy Trình: Lập Lộ Trình Commit Mã Nguồn Cho Nhóm 4 Thành Viên Trong 3 Ngày]:
   - **Tài liệu scheduleCommit.md:** Khởi tạo tài liệu lộ trình cam kết mã nguồn tại thư mục gốc của dự án (cùng cấp với BlinkBlinkJewelry.slnx).
   - **Phân bổ toàn diện 4 thành viên (qhy, sun, anhthy, tlinh):** 100% thành viên đều có các lượt commit được phân bổ đều đặn và tự nhiên trên cả 3 thư mục cốt lõi Clean Architecture (src/BlinkBlink.Domain, src/BlinkBlink.Application, src/BlinkBlink.Infrastructure).
