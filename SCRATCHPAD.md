@@ -1,6 +1,12 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
+- **Khắc phục triệt để hiện tượng giật rung (hover flicker) ở mép rìa search bar Header:**
+  - Bọc `#header-search-container` trong `.header-search-wrap` (`padding: 6px; margin: -6px 0;`) tạo vùng đệm cảm ứng an toàn mở rộng 12px không lệch layout.
+  - Tối ưu kích thước nút tròn lên `40x40px`, ngắt `pointer-events: none` cho input khi thu nhỏ và kích hoạt lại khi mở rộng.
+  - Tích hợp cơ chế Hover Intent & Debounce Delay `280ms` trong `storefront.js`: Chuột vào mở ngay, chuột rời mép duy trì 280ms chống trượt viền gây giật.
+  - Kiểm thử tự động 6/6 tests PASS; 31/31 unit & integration tests pass 100%.
+
 - **Thanh tìm kiếm Header co giãn, Trang tìm kiếm riêng biệt & Sửa lỗi gạch chân menu active:**
   - Đã cập nhật [HomeController.cs](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Controllers/HomeController.cs): Bổ sung action `TimKiem` với route `/TimKiem` và `/tim-kiem`.
   - Đã tạo mới [Views/Home/TimKiem.cshtml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Views/Home/TimKiem.cshtml): Giao diện tìm kiếm kiệt tác chuyên biệt gồm Breadcrumb, Tiêu đề Editorial, Thanh công cụ lọc đa chiều (từ khóa, danh mục, giá, chất liệu, sort), lưới sản phẩm, empty state và gợi ý liên quan.

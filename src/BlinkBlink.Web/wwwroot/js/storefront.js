@@ -950,8 +950,51 @@ function initHeaderSearch() {
     const searchInput = document.getElementById('header-search-input');
     const searchTrigger = document.getElementById('btn-header-search-trigger');
     const searchClear = document.getElementById('btn-header-search-clear');
+    const searchWrap = document.getElementById('header-search-wrap') || searchContainer;
 
     if (!searchContainer || !searchInput || !searchTrigger) return;
+
+    let hoverTimeout = null;
+
+    // Khi chuột rê vào vùng tìm kiếm: Mở rộng ngay lập tức và hủy lệnh đóng dở dang
+    searchWrap.addEventListener('mouseenter', () => {
+        if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+        }
+        searchContainer.classList.add('is-hovered');
+        searchContainer.classList.add('expanded');
+    });
+
+    // Khi chuột rời khỏi vùng tìm kiếm: Trì hoãn 280ms trước khi thu gọn, triệt tiêu 100% hiện tượng rung lắc/giật ở mép viền
+    searchWrap.addEventListener('mouseleave', () => {
+        searchContainer.classList.remove('is-hovered');
+        // Nếu ô input đang được focus hoặc đang có nội dung tìm kiếm thì giữ nguyên không đóng
+        if (document.activeElement === searchInput || searchInput.value.trim().length > 0) {
+            return;
+        }
+        hoverTimeout = setTimeout(() => {
+            searchContainer.classList.remove('expanded');
+        }, 280);
+    });
+
+    // Khi focus vào input: Duy trì mở cố định
+    searchInput.addEventListener('focus', () => {
+        if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+        }
+        searchContainer.classList.add('expanded');
+    });
+
+    // Khi blur khỏi input: Nếu rỗng và chuột không hover thì thu gọn
+    searchInput.addEventListener('blur', () => {
+        if (!searchInput.value.trim() && !searchContainer.matches(':hover') && !searchWrap.matches(':hover')) {
+            hoverTimeout = setTimeout(() => {
+                searchContainer.classList.remove('expanded');
+            }, 200);
+        }
+    });
 
     // Hàm thực hiện điều hướng sang trang Tìm Kiếm
     const performSearch = () => {
@@ -970,7 +1013,7 @@ function initHeaderSearch() {
             searchContainer.classList.add('expanded');
             searchInput.focus();
         } else {
-            // Đã mở rộng: Nếu có từ khóa thì tìm kiếm, nếu không thì đóng hoặc focus
+            // Đã mở rộng: Nếu có từ khóa thì tìm kiếm, nếu không thì focus
             if (searchInput.value.trim()) {
                 performSearch();
             } else {
@@ -1010,7 +1053,7 @@ function initHeaderSearch() {
 
     // Khi click ra ngoài thanh tìm kiếm: Tự động thu gọn nếu ô nhập rỗng
     document.addEventListener('click', (e) => {
-        if (!searchContainer.contains(e.target)) {
+        if (!searchWrap.contains(e.target)) {
             if (!searchInput.value.trim()) {
                 searchContainer.classList.remove('expanded');
             }

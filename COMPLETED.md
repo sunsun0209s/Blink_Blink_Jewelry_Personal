@@ -1,5 +1,11 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Web Storefront: Khắc Phục Triệt Để Hiện Tượng Giật Rung (Hover Flicker) Ở Mép Rìa Icon Tìm Kiếm & Hộp Nhập Header]:
+  - **Vùng đệm cảm ứng an toàn (`.header-search-wrap`):** Bọc hộp tìm kiếm trong container với `padding: 6px; margin: -6px 0;`, mở rộng vùng nhận diện xúc giác chuột thêm 12px mà không làm xô lệch bất kỳ phần tử lân cận nào trên thanh Header; nâng kích thước nút tròn lên `40x40px` chuẩn công thái học.
+  - **Cơ chế độ trễ chống rung (Hover Hysteresis & Debounce Delay trong `storefront.js`):** Khi chuột rê vào (`mouseenter`), kích hoạt mở rộng ngay tức thì và hủy mọi bộ đếm đóng; khi chuột rời mép (`mouseleave`), duy trì độ trễ êm ái `280ms` trước khi thu gọn; triệt tiêu 100% hiện tượng con trỏ chuột trượt nhẹ qua mép viền bo tròn gây co giật rung lắc.
+  - **Quản lý con trỏ chuột an toàn:** Thiết lập `pointer-events: none` cho ô input khi đang thu gọn để không cản trở hit-test nút kính lúp, và tự động kích hoạt `pointer-events: auto` khi mở rộng.
+  - **Kiểm thử tự động:** Vượt qua 6/6 kịch bản kiểm thử (`verify_search_feature.ps1`) đạt 100% PASS; biên dịch giải pháp 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
 - [x] [2026-10-23] [Web Storefront: Thanh Tìm Kiếm Header Co Giãn Khi Hover, Trang Tìm Kiếm Riêng Biệt & Khắc Phục Gạch Chân Menu Tự Chuyển Active]:
   - **Thanh tìm kiếm co giãn trên Header (`_Layout.cshtml`, `storefront.css`, `storefront.js`):** Thiết kế nút tròn kim hoàn 38x38px chứa icon kính lúp SVG; khi hover/focus tự động kéo ngang mở rộng mượt mà (`width: 280px`, viền vàng hoàng gia) hiển thị ô nhập từ khóa và nút xóa nhanh; nhấn Enter hoặc click icon tự động chuyển hướng sang trang `/TimKiem?tuKhoa=...`.
   - **Tách trang Tìm Kiếm Riêng Biệt (`HomeController.cs` & `Views/Home/TimKiem.cshtml`):** Tạo route `/TimKiem` (và `/tim-kiem`) với giao diện chuyên biệt: Breadcrumb điều hướng sang trọng, tiêu đề Editorial, đầy đủ bộ lọc đa chiều (từ khóa, danh mục, khoảng giá, chất liệu, sắp xếp), lưới sản phẩm kết quả, thông báo rỗng *"Không tìm thấy sản phẩm phù hợp"* kèm khối gợi ý *"Kiệt Tác Kim Hoàn Được Yêu Thích Nhất"*; tự động đọc tham số URL `?tuKhoa=` để tìm kiếm tức thời 0ms.
