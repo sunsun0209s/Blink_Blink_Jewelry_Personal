@@ -188,9 +188,12 @@ function formatCurrency(amount) {
 // Khởi chạy khi tài liệu DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
+    initHeaderSearch();
+    initNavigationAndScrollSpy();
     await fetchCatalogFromApi();
     initProductGrid(catalogProducts);
     initCategoryFilters();
+    applyProductFilters();
     await loadCart();
     initEventListeners();
 });
@@ -435,6 +438,27 @@ function initCategoryFilters() {
     }
     if (sortSelect) {
         sortSelect.addEventListener('change', () => applyProductFilters());
+    }
+
+    // Tự động nhận diện từ khóa và danh mục từ URL (nếu có)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialKeyword = urlParams.get('tuKhoa') || urlParams.get('q');
+    const initialCategory = urlParams.get('danhMuc');
+
+    if (initialCategory) {
+        filterButtons.forEach(btn => {
+            if (btn.getAttribute('data-category') === initialCategory) {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    if (initialKeyword && searchInput) {
+        searchInput.value = initialKeyword;
+        if (searchClearBtn) {
+            searchClearBtn.style.display = 'flex';
+        }
     }
 
     // Cập nhật số lượng sản phẩm ban đầu
@@ -915,6 +939,165 @@ function initEventListeners() {
             toggleCartDrawer(false);
             openCheckoutDialog();
         });
+    }
+}
+
+/**
+ * Khởi tạo tương tác thanh tìm kiếm co giãn trên Header (Expandable Search Bar)
+ */
+function initHeaderSearch() {
+    const searchContainer = document.getElementById('header-search-container');
+    const searchInput = document.getElementById('header-search-input');
+    const searchTrigger = document.getElementById('btn-header-search-trigger');
+    const searchClear = document.getElementById('btn-header-search-clear');
+
+    if (!searchContainer || !searchInput || !searchTrigger) return;
+
+    // Hàm thực hiện điều hướng sang trang Tìm Kiếm
+    const performSearch = () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            window.location.href = `/TimKiem?tuKhoa=${encodeURIComponent(query)}`;
+        } else {
+            window.location.href = '/TimKiem';
+        }
+    };
+
+    // Khi click vào icon kính lúp
+    searchTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!searchContainer.classList.contains('expanded')) {
+            searchContainer.classList.add('expanded');
+            searchInput.focus();
+        } else {
+            // Đã mở rộng: Nếu có từ khóa thì tìm kiếm, nếu không thì đóng hoặc focus
+            if (searchInput.value.trim()) {
+                performSearch();
+            } else {
+                searchInput.focus();
+            }
+        }
+    });
+
+    // Khi người dùng bấm phím Enter trong ô tìm kiếm Header
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+        } else if (e.key === 'Escape') {
+            searchInput.value = '';
+            searchContainer.classList.remove('expanded');
+            if (searchClear) searchClear.style.display = 'none';
+        }
+    });
+
+    // Lắng nghe gõ phím để hiển thị nút xóa nhanh
+    searchInput.addEventListener('input', () => {
+        if (searchClear) {
+            searchClear.style.display = searchInput.value.length > 0 ? 'inline-block' : 'none';
+        }
+    });
+
+    // Nút xóa nhanh từ khóa trên Header
+    if (searchClear) {
+        searchClear.addEventListener('click', (e) => {
+            e.stopPropagation();
+            searchInput.value = '';
+            searchClear.style.display = 'none';
+            searchInput.focus();
+        });
+    }
+
+    // Khi click ra ngoài thanh tìm kiếm: Tự động thu gọn nếu ô nhập rỗng
+    document.addEventListener('click', (e) => {
+        if (!searchContainer.contains(e.target)) {
+            if (!searchInput.value.trim()) {
+                searchContainer.classList.remove('expanded');
+            }
+        }
+    });
+}
+
+/**
+ * Khởi tạo điều hướng menu và cập nhật gạch chân active (.nav-link-item a::after)
+ */
+function initNavigationAndScrollSpy() {
+    const navLinks = document.querySelectorAll('.nav-link-item a');
+    const isSearchPage = window.location.pathname.toLowerCase().includes('/timkiem') || 
+                         window.location.pathname.toLowerCase().includes('/tim-kiem');
+
+    // 1. Nếu đang ở trang Tìm Kiếm riêng biệt
+    if (isSearchPage) {
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = (link.getAttribute('href') || '').toLowerCase();
+            if (href.includes('timkiem') || href.includes('tim-kiem')) {
+                link.classList.add('active');
+            }
+        });
+        return; // Không chạy scroll spy của trang chủ trên trang tìm kiếm
+    }
+
+    // 2. Nếu đang ở Trang Chủ: Đặt mặc định Trang Chủ active nếu chưa có hash
+    if (!window.location.hash) {
+        const homeLink = document.querySelector('.nav-link-item a[href="/#top"], .nav-link-item a[href="#top"]');
+        if (homeLink) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            homeLink.classList.add('active');
+        }
+    }
+
+    // 3. Xử lý click chuyển tab mượt mà
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href') || '';
+            if (href.includes('#')) {
+                const hash = href.split('#')[1];
+                const targetElement = document.getElementById(hash);
+                if (targetElement) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    // Cập nhật URL hash mà không gây giật trang
+                    history.pushState(null, '', `#${hash}`);
+                }
+            } else if (!href.startsWith('http')) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // 4. ScrollSpy: Tự động chuyển gạch chân active khi người dùng cuộn trang
+    const sectionIds = ['top', 'collections', 'catalog', 'warranty'];
+    const sections = sectionIds
+        .map(id => document.getElementById(id))
+        .filter(el => el !== null);
+
+    if (sections.length > 0 && 'IntersectionObserver' in window) {
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -55% 0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const currentId = entry.target.id;
+                    navLinks.forEach(link => {
+                        const href = link.getAttribute('href') || '';
+                        if (href.endsWith(`#${currentId}`)) {
+                            navLinks.forEach(l => l.classList.remove('active'));
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
     }
 }
 

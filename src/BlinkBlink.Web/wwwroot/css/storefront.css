@@ -175,7 +175,86 @@ a {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+}
+
+/* Thanh Tìm Kiếm Co Giãn Sang Trọng (Expandable Search Bar on Header) */
+.header-search-expandable {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 38px;
+    width: 38px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    background: #FFFFFF;
+    transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.header-search-expandable:hover,
+.header-search-expandable:focus-within,
+.header-search-expandable.expanded {
+    width: 280px;
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 16px rgba(197, 168, 128, 0.22);
+}
+
+.btn-search-trigger {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--dark-obsidian);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.25s ease;
+}
+
+.header-search-expandable:hover .btn-search-trigger,
+.header-search-expandable.expanded .btn-search-trigger {
+    color: var(--gold-hover);
+}
+
+.header-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    padding: 0 6px 0 2px;
+    width: 0;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.header-search-expandable:hover .header-search-input,
+.header-search-expandable:focus-within .header-search-input,
+.header-search-expandable.expanded .header-search-input {
+    opacity: 1;
+    width: 100%;
+}
+
+.header-search-clear {
+    background: transparent;
+    border: none;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 12px 0 4px;
+    display: none;
+    transition: color 0.2s ease;
+}
+
+.header-search-clear:hover {
+    color: var(--dark-obsidian);
 }
 
 .btn-icon-action {
@@ -514,6 +593,108 @@ a {
 .collection-link-btn:hover {
     color: #FFFFFF;
     gap: 12px;
+}
+
+/* ====================================================================================
+   TRANG TÌM KIẾM CHUYÊN BIỆT (DEDICATED SEARCH PAGE STYLES)
+   ==================================================================================== */
+.search-page-container {
+    max-width: 1360px;
+    margin: 32px auto 80px;
+    padding: 0 32px;
+    min-height: 60vh;
+}
+
+.search-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+.search-breadcrumb a {
+    color: var(--text-secondary);
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.search-breadcrumb a:hover {
+    color: var(--gold-hover);
+}
+
+.breadcrumb-separator {
+    color: var(--border-subtle);
+}
+
+.breadcrumb-current {
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.search-page-header {
+    margin-bottom: 32px;
+}
+
+.search-page-title {
+    font-family: var(--font-heading);
+    font-size: 2.3rem;
+    font-weight: 500;
+    color: var(--dark-obsidian);
+    margin: 8px 0 12px;
+    letter-spacing: 0.02em;
+}
+
+.search-page-lead {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 720px;
+}
+
+.search-page-toolbar {
+    margin-bottom: 40px;
+}
+
+/* Nút chuyển sang trang Tìm Kiếm Nâng Cao trên Trang Chủ */
+.btn-goto-advanced-search {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-cream);
+    border: 1px solid var(--gold-border);
+    color: var(--dark-obsidian);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn-goto-advanced-search svg:first-child {
+    color: var(--gold-primary);
+}
+
+.btn-goto-advanced-search:hover {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(197, 168, 128, 0.28);
+    transform: translateY(-1px);
+}
+
+.btn-goto-advanced-search:hover svg {
+    color: #FFFFFF;
+}
+
+.catalog-home-toolbar {
+    padding: 16px 24px;
 }
 
 /* Danh mục sản phẩm & Bộ lọc tương tác (Catalog Section) */
