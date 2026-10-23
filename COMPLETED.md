@@ -1,5 +1,11 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Web Storefront: Tính Năng Tìm Kiếm & Bộ Lọc Nâng Cao Kèm Thông Báo Trống & Gợi Ý Kiệt Tác Liên Quan]:
+  - **Thanh công cụ tìm kiếm & bộ lọc đa chiều (Index.cshtml & storefront.css):** Bổ sung ô tìm kiếm từ khóa với icon kim hoàn và nút xóa nhanh (`#catalog-search-clear`); tích hợp bộ lọc mức giá (`< 20tr`, `20 - 40tr`, `> 40tr`), chất liệu (`Kim Cương`, `Vàng 18K / Vàng Ý`, `Bạch Kim`, `Ruby / Sapphire`, `Ngọc Trai`) và tùy chọn sắp xếp thứ tự hiển thị; hiển thị chỉ báo số lượng kết quả và nhãn filter đang kích hoạt.
+  - **Logic xử lý tìm kiếm thông minh (storefront.js):** Xây dựng hàm `normalizeSearchText` chuẩn hóa tiếng Việt không phân biệt hoa thường, có dấu hay không dấu trên tên sản phẩm, chất liệu, mã SP và danh mục; hàm `applyProductFilters` phản hồi tức thì 0ms latency; hàm `resetAllFilters` khôi phục bộ lọc về mặc định một chạm.
+  - **Thông báo trạng thái trống & Gợi ý sản phẩm liên quan:** Khi không tìm thấy kết quả phù hợp, hiển thị thông báo chuẩn xác *"Không tìm thấy sản phẩm phù hợp"* kèm nút đặt lại bộ lọc, đồng thời tự động đề xuất mục *"Kiệt Tác Kim Hoàn Được Yêu Thích Nhất"* với đầy đủ ảnh thật, nhãn ưu đãi, giá sau giảm và 2 nút tương tác *"Xem Nhanh"* và *"Chọn Mua"*.
+  - **Kiểm thử tự động:** Vượt qua 10/10 tiêu chí kiểm thử tự động (`test_search_feature.ps1`) đạt 100% PASS; toàn bộ 31/31 unit & integration tests đều PASSED.
+
 - [x] [2026-10-23] [Git Workflow: Hoàn Tất Hợp Nhất & Đẩy Nhánh `feature/customer-web-ui` Lên Nhánh Chính `main`]:
   - Hợp nhất toàn diện nhánh `feature/customer-web-ui` vào `main` thông qua chiến lược `merge --no-ff`, bảo toàn 100% lịch sử commit và tài liệu quy chuẩn.
   - Toàn bộ solution biên dịch thành công 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.

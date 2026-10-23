@@ -523,19 +523,35 @@ a {
     background-color: #FFFFFF;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 20px 24px;
+    padding: 22px 26px;
     margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.catalog-toolbar-categories {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    gap: 12px;
+}
+
+.catalog-toolbar-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    min-width: 75px;
 }
 
 .category-filter-group {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    flex: 1;
 }
 
 .filter-pill-btn {
@@ -562,14 +578,33 @@ a {
     color: #FFFFFF;
 }
 
+.catalog-toolbar-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+
 .catalog-search-box {
     display: flex;
     align-items: center;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 6px 14px;
+    padding: 8px 14px;
     background-color: var(--bg-cream);
-    width: 280px;
+    flex: 1 1 280px;
+    max-width: 400px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.catalog-search-box:focus-within {
+    border-color: var(--gold-primary);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
 }
 
 .catalog-search-box input {
@@ -579,6 +614,204 @@ a {
     font-size: 0.85rem;
     width: 100%;
     color: var(--text-primary);
+}
+
+.catalog-search-box input::placeholder {
+    color: #94A3B8;
+}
+
+.btn-search-clear {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    border-radius: 50%;
+}
+
+.btn-search-clear:hover {
+    color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.catalog-filter-dropdowns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.filter-select-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-select-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.catalog-select-control {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 30px 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background-color: #FFFFFF;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 140px;
+}
+
+.catalog-select-control:focus,
+.catalog-select-control:hover {
+    border-color: var(--gold-primary);
+    outline: none;
+}
+
+.btn-filter-reset {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    height: 35px;
+}
+
+.btn-filter-reset:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+    background-color: rgba(197, 168, 128, 0.08);
+}
+
+.catalog-filter-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding-top: 10px;
+    border-top: 1px dashed rgba(226, 232, 240, 0.8);
+}
+
+.catalog-filter-status .highlight-count {
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.active-filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-badge-tag {
+    background-color: rgba(197, 168, 128, 0.12);
+    border: 1px solid rgba(197, 168, 128, 0.3);
+    color: var(--dark-obsidian);
+    font-size: 0.74rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ====================================================================================
+   TRẠNG THÁI RỖNG & GỢI Ý SẢN PHẨM LIÊN QUAN (EMPTY STATE & RECOMMENDATIONS)
+   ==================================================================================== */
+.search-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 56px 24px 40px;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(248, 246, 240, 0.5) 100%);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+}
+
+.empty-state-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: rgba(197, 168, 128, 0.12);
+    color: var(--gold-primary);
+    margin-bottom: 18px;
+}
+
+.empty-state-title {
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--dark-obsidian);
+    margin-bottom: 12px;
+}
+
+.empty-state-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+}
+
+.empty-state-actions {
+    margin-bottom: 48px;
+}
+
+.related-recommendations-section {
+    text-align: left;
+    padding-top: 36px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.recommendations-header-block {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.recommendations-pretitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.recommendations-heading {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    color: var(--dark-obsidian);
+    font-weight: 600;
 }
 
 /* Lưới Sản Phẩm Kim Hoàn (Product Grid) */

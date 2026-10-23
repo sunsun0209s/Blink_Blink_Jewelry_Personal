@@ -1,16 +1,11 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
-- **Đồng bộ ảnh sản phẩm đơn hàng từ CSDL SQL Server thật & Triệt tiêu lỗi vỡ ảnh (Taste Skill):**
-  - Đã khắc phục [HoaDonRepository.cs](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/HoaDonRepository.cs): `LayChiTietHoaDon` nạp đầy đủ `s.HinhAnh` và `s.PhanTramGiamGia` vào đối tượng `SanPhamTrangSuc` của từng `ChiTietHoaDon`.
-  - Đã cập nhật [storefront.js](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/js/storefront.js): `renderCustomerOrders` và `renderCheckoutSummary` nhận diện an toàn cả camelCase lẫn PascalCase, fallback về ảnh kim hoàn chuẩn `/images/hero-jewelry.jpg` kèm `onerror=null` và `loading="lazy"`.
-  - Đã tạo tệp ảnh tĩnh dự phòng hợp lệ tại `src/BlinkBlink.Web/wwwroot/images/products/no-image.png`.
-  - Hoàn tất chuỗi 12 vòng kiểm thử thương mại (`run_12_image_order_tests.ps1`) đạt 12/12 PASS 100%. Xác nhận đơn hàng `HD20261022210438990` nạp chính xác ảnh thật 100% không còn vỡ ảnh.
-- **Quy trình Git & Đồng bộ kho mã nguồn:**
-  - Đã commit toàn bộ thay đổi vào nhánh `feature/customer-web-ui` và đẩy lên remote (`git push origin feature/customer-web-ui`).
-  - Đã merge thành công nhánh `feature/customer-web-ui` vào nhánh chính `main` (`merge --no-ff`), chạy kiểm thử 31/31 tests pass 100%.
-  - Đã đẩy hoàn tất lên `origin/main` (`git push origin main`), working tree sạch sẽ.
-  - Đã ghi nhận lịch sử vào [COMPLETED.md](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/COMPLETED.md) và cập nhật [TODO.md](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/TODO.md).
+- **Tính năng tìm kiếm & bộ lọc nâng cao kèm gợi ý kiệt tác liên quan cho khách hàng (Storefront Web):**
+  - Đã cập nhật [Index.cshtml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Views/Home/Index.cshtml): Mở rộng thanh công cụ Catalog Toolbar với ô tìm kiếm từ khóa, nút xóa nhanh (`catalog-search-clear`), bộ lọc mức giá, chất liệu, sắp xếp và chỉ báo số lượng kết quả.
+  - Đã cập nhật [storefront.js](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/js/storefront.js): Tách hàm `createProductCardHtml`, xây dựng hàm chuẩn hóa tiếng Việt `normalizeSearchText`, logic lọc đa tiêu chí thời gian thực `applyProductFilters` (từ khóa, danh mục, giá bán, chất liệu), giao diện rỗng `renderNoResults` hiển thị thông báo "Không tìm thấy sản phẩm phù hợp" kèm khối kiệt tác gợi ý liên quan và nút `resetAllFilters`.
+  - Đã cập nhật [storefront.css](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/css/storefront.css): Nâng cấp giao diện toolbar, dropdown phong cách Haute Joaillerie, định dạng empty state sang trọng với ánh kim và card kiệt tác gợi ý.
+  - Đã kiểm thử tự động đạt 10/10 checks PASS và toàn bộ 31/31 unit & integration tests đều PASSED 100%.
 
 ## 2. Những gì đang làm dở & Quyết định kỹ thuật đã chốt
 - **Trạng thái công việc dở dang:** Toàn bộ tính năng Storefront Web khách hàng, Đồng bộ 2 chiều CSDL SQL Server và Quản lý khách hàng trên Admin WinForms đã hoàn thành 100%, không còn task dở dang.
