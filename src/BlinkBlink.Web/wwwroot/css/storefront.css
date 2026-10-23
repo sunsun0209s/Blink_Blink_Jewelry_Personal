@@ -61,7 +61,11 @@ body {
 }
 
 /* Các lớp chữ tiêu đề */
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
     font-family: var(--font-heading);
     font-weight: 500;
     color: var(--text-primary);
@@ -171,7 +175,102 @@ a {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+}
+
+/* Bao bọc thanh tìm kiếm tạo vùng đệm cảm ứng chống trượt mép viền */
+.header-search-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 6px;
+    margin: -6px 0;
+    box-sizing: border-box;
+}
+
+/* Thanh Tìm Kiếm Co Giãn Sang Trọng (Expandable Search Bar on Header) */
+.header-search-expandable {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    background: #FFFFFF;
+    transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.header-search-wrap:hover .header-search-expandable,
+.header-search-expandable.is-hovered,
+.header-search-expandable:focus-within,
+.header-search-expandable.expanded {
+    width: 280px;
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 16px rgba(197, 168, 128, 0.22);
+}
+
+.btn-search-trigger {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--dark-obsidian);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.25s ease;
+    padding: 0;
+    z-index: 2;
+}
+
+.header-search-wrap:hover .btn-search-trigger,
+.header-search-expandable.expanded .btn-search-trigger {
+    color: var(--gold-hover);
+}
+
+.header-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    padding: 0 8px 0 2px;
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.header-search-wrap:hover .header-search-input,
+.header-search-expandable:focus-within .header-search-input,
+.header-search-expandable.expanded .header-search-input {
+    opacity: 1;
+    width: 100%;
+    pointer-events: auto;
+}
+
+.header-search-clear {
+    background: transparent;
+    border: none;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 12px 0 4px;
+    display: none;
+    transition: color 0.2s ease;
+}
+
+.header-search-clear:hover {
+    color: var(--dark-obsidian);
 }
 
 .btn-icon-action {
@@ -512,6 +611,108 @@ a {
     gap: 12px;
 }
 
+/* ====================================================================================
+   TRANG TÌM KIẾM CHUYÊN BIỆT (DEDICATED SEARCH PAGE STYLES)
+   ==================================================================================== */
+.search-page-container {
+    max-width: 1360px;
+    margin: 32px auto 80px;
+    padding: 0 32px;
+    min-height: 60vh;
+}
+
+.search-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+.search-breadcrumb a {
+    color: var(--text-secondary);
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.search-breadcrumb a:hover {
+    color: var(--gold-hover);
+}
+
+.breadcrumb-separator {
+    color: var(--border-subtle);
+}
+
+.breadcrumb-current {
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.search-page-header {
+    margin-bottom: 32px;
+}
+
+.search-page-title {
+    font-family: var(--font-heading);
+    font-size: 2.3rem;
+    font-weight: 500;
+    color: var(--dark-obsidian);
+    margin: 8px 0 12px;
+    letter-spacing: 0.02em;
+}
+
+.search-page-lead {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 720px;
+}
+
+.search-page-toolbar {
+    margin-bottom: 40px;
+}
+
+/* Nút chuyển sang trang Tìm Kiếm Nâng Cao trên Trang Chủ */
+.btn-goto-advanced-search {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-cream);
+    border: 1px solid var(--gold-border);
+    color: var(--dark-obsidian);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn-goto-advanced-search svg:first-child {
+    color: var(--gold-primary);
+}
+
+.btn-goto-advanced-search:hover {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(197, 168, 128, 0.28);
+    transform: translateY(-1px);
+}
+
+.btn-goto-advanced-search:hover svg {
+    color: #FFFFFF;
+}
+
+.catalog-home-toolbar {
+    padding: 16px 24px;
+}
+
 /* Danh mục sản phẩm & Bộ lọc tương tác (Catalog Section) */
 .catalog-section {
     max-width: 1360px;
@@ -523,19 +724,35 @@ a {
     background-color: #FFFFFF;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 20px 24px;
+    padding: 22px 26px;
     margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.catalog-toolbar-categories {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    gap: 12px;
+}
+
+.catalog-toolbar-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    min-width: 75px;
 }
 
 .category-filter-group {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    flex: 1;
 }
 
 .filter-pill-btn {
@@ -562,14 +779,33 @@ a {
     color: #FFFFFF;
 }
 
+.catalog-toolbar-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+
 .catalog-search-box {
     display: flex;
     align-items: center;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 6px 14px;
+    padding: 8px 14px;
     background-color: var(--bg-cream);
-    width: 280px;
+    flex: 1 1 280px;
+    max-width: 400px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.catalog-search-box:focus-within {
+    border-color: var(--gold-primary);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
 }
 
 .catalog-search-box input {
@@ -579,6 +815,204 @@ a {
     font-size: 0.85rem;
     width: 100%;
     color: var(--text-primary);
+}
+
+.catalog-search-box input::placeholder {
+    color: #94A3B8;
+}
+
+.btn-search-clear {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    border-radius: 50%;
+}
+
+.btn-search-clear:hover {
+    color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.catalog-filter-dropdowns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.filter-select-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-select-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.catalog-select-control {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 30px 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background-color: #FFFFFF;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 140px;
+}
+
+.catalog-select-control:focus,
+.catalog-select-control:hover {
+    border-color: var(--gold-primary);
+    outline: none;
+}
+
+.btn-filter-reset {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    height: 35px;
+}
+
+.btn-filter-reset:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+    background-color: rgba(197, 168, 128, 0.08);
+}
+
+.catalog-filter-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding-top: 10px;
+    border-top: 1px dashed rgba(226, 232, 240, 0.8);
+}
+
+.catalog-filter-status .highlight-count {
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.active-filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-badge-tag {
+    background-color: rgba(197, 168, 128, 0.12);
+    border: 1px solid rgba(197, 168, 128, 0.3);
+    color: var(--dark-obsidian);
+    font-size: 0.74rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ====================================================================================
+   TRẠNG THÁI RỖNG & GỢI Ý SẢN PHẨM LIÊN QUAN (EMPTY STATE & RECOMMENDATIONS)
+   ==================================================================================== */
+.search-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 56px 24px 40px;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(248, 246, 240, 0.5) 100%);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+}
+
+.empty-state-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: rgba(197, 168, 128, 0.12);
+    color: var(--gold-primary);
+    margin-bottom: 18px;
+}
+
+.empty-state-title {
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--dark-obsidian);
+    margin-bottom: 12px;
+}
+
+.empty-state-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+}
+
+.empty-state-actions {
+    margin-bottom: 48px;
+}
+
+.related-recommendations-section {
+    text-align: left;
+    padding-top: 36px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.recommendations-header-block {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.recommendations-pretitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.recommendations-heading {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    color: var(--dark-obsidian);
+    font-weight: 600;
 }
 
 /* Lưới Sản Phẩm Kim Hoàn (Product Grid) */
@@ -908,13 +1342,21 @@ a {
     border: 1px solid rgba(197, 168, 128, 0.3);
     border-radius: var(--radius-sm);
     padding: 32px;
-    display: none; /* Ẩn mặc định, hiển thị khi bấm tra cứu */
+    display: none;
+    /* Ẩn mặc định, hiển thị khi bấm tra cứu */
     animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .warranty-ticket-head {
@@ -1323,8 +1765,15 @@ a {
 }
 
 @keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Chân Trang Sang Trọng (Storefront Footer) */
@@ -1415,18 +1864,23 @@ a {
     .hero-editorial {
         grid-template-columns: 1fr;
     }
+
     .hero-heading {
         font-size: 2.8rem;
     }
+
     .pillars-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .collections-asymmetric-grid {
         grid-template-columns: 1fr;
     }
+
     .products-editorial-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .footer-top-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1434,20 +1888,26 @@ a {
 
 @media (max-width: 768px) {
     .nav-links {
-        display: none; /* Mobile menu toggled */
+        display: none;
+        /* Mobile menu toggled */
     }
+
     .products-editorial-grid {
         grid-template-columns: 1fr;
     }
+
     .pillars-grid {
         grid-template-columns: 1fr;
     }
+
     .quickview-card-dialog {
         grid-template-columns: 1fr;
     }
+
     .footer-top-grid {
         grid-template-columns: 1fr;
     }
+
     .ticket-grid-details {
         grid-template-columns: 1fr;
     }
@@ -1874,8 +2334,13 @@ a {
 }
 
 @keyframes spinOrders {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .orders-loading-state {
@@ -1993,9 +2458,21 @@ a {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-6px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(6px);
+    }
 }
 
 /* ====================================================================================
@@ -2022,6 +2499,7 @@ a {
 .luxury-toast-msg.toast-success {
     border-left: 4px solid #10b981;
 }
+
 .luxury-toast-msg.toast-success svg {
     stroke: #10b981;
 }
@@ -2029,6 +2507,7 @@ a {
 .luxury-toast-msg.toast-error {
     border-left: 4px solid #ef4444;
 }
+
 .luxury-toast-msg.toast-error svg {
     stroke: #ef4444;
 }
@@ -2036,6 +2515,7 @@ a {
 .luxury-toast-msg.toast-warning {
     border-left: 4px solid #f59e0b;
 }
+
 .luxury-toast-msg.toast-warning svg {
     stroke: #f59e0b;
 }
@@ -2043,6 +2523,7 @@ a {
 .luxury-toast-msg.toast-info {
     border-left: 4px solid var(--gold-primary);
 }
+
 .luxury-toast-msg.toast-info svg {
     stroke: var(--gold-primary);
 }
@@ -2060,19 +2541,27 @@ a {
 .luxury-toast-msg.toast-success .toast-progress-bar {
     background: #10b981;
 }
+
 .luxury-toast-msg.toast-error .toast-progress-bar {
     background: #ef4444;
 }
+
 .luxury-toast-msg.toast-warning .toast-progress-bar {
     background: #f59e0b;
 }
+
 .luxury-toast-msg.toast-info .toast-progress-bar {
     background: var(--gold-primary);
 }
 
 @keyframes toastProgress {
-    from { width: 100%; }
-    to { width: 0%; }
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
 }
 
 /* ====================================================================================
@@ -2461,8 +2950,17 @@ a {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+    }
 }
 
 .order-success-actions {
@@ -2498,6 +2996,7 @@ a {
     .checkout-body-grid {
         grid-template-columns: 1fr;
     }
+
     .order-success-actions {
         flex-direction: column;
     }
@@ -2640,15 +3139,17 @@ a {
     .profile-card-dialog {
         padding: 28px 20px 24px;
     }
+
     .form-row-2col {
         grid-template-columns: 1fr;
     }
+
     .profile-actions-row {
         flex-direction: column-reverse;
         gap: 10px;
     }
+
     .profile-actions-row button {
         width: 100%;
     }
 }
-

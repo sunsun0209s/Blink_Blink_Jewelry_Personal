@@ -1,5 +1,29 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Web Storefront: Khắc Phục Triệt Để Hiện Tượng Giật Rung (Hover Flicker) Ở Mép Rìa Icon Tìm Kiếm & Hộp Nhập Header]:
+  - **Vùng đệm cảm ứng an toàn (`.header-search-wrap`):** Bọc hộp tìm kiếm trong container với `padding: 6px; margin: -6px 0;`, mở rộng vùng nhận diện xúc giác chuột thêm 12px mà không làm xô lệch bất kỳ phần tử lân cận nào trên thanh Header; nâng kích thước nút tròn lên `40x40px` chuẩn công thái học.
+  - **Cơ chế độ trễ chống rung (Hover Hysteresis & Debounce Delay trong `storefront.js`):** Khi chuột rê vào (`mouseenter`), kích hoạt mở rộng ngay tức thì và hủy mọi bộ đếm đóng; khi chuột rời mép (`mouseleave`), duy trì độ trễ êm ái `280ms` trước khi thu gọn; triệt tiêu 100% hiện tượng con trỏ chuột trượt nhẹ qua mép viền bo tròn gây co giật rung lắc.
+  - **Quản lý con trỏ chuột an toàn:** Thiết lập `pointer-events: none` cho ô input khi đang thu gọn để không cản trở hit-test nút kính lúp, và tự động kích hoạt `pointer-events: auto` khi mở rộng.
+  - **Kiểm thử tự động:** Vượt qua 6/6 kịch bản kiểm thử (`verify_search_feature.ps1`) đạt 100% PASS; biên dịch giải pháp 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
+- [x] [2026-10-23] [Web Storefront: Thanh Tìm Kiếm Header Co Giãn Khi Hover, Trang Tìm Kiếm Riêng Biệt & Khắc Phục Gạch Chân Menu Tự Chuyển Active]:
+  - **Thanh tìm kiếm co giãn trên Header (`_Layout.cshtml`, `storefront.css`, `storefront.js`):** Thiết kế nút tròn kim hoàn 38x38px chứa icon kính lúp SVG; khi hover/focus tự động kéo ngang mở rộng mượt mà (`width: 280px`, viền vàng hoàng gia) hiển thị ô nhập từ khóa và nút xóa nhanh; nhấn Enter hoặc click icon tự động chuyển hướng sang trang `/TimKiem?tuKhoa=...`.
+  - **Tách trang Tìm Kiếm Riêng Biệt (`HomeController.cs` & `Views/Home/TimKiem.cshtml`):** Tạo route `/TimKiem` (và `/tim-kiem`) với giao diện chuyên biệt: Breadcrumb điều hướng sang trọng, tiêu đề Editorial, đầy đủ bộ lọc đa chiều (từ khóa, danh mục, khoảng giá, chất liệu, sắp xếp), lưới sản phẩm kết quả, thông báo rỗng *"Không tìm thấy sản phẩm phù hợp"* kèm khối gợi ý *"Kiệt Tác Kim Hoàn Được Yêu Thích Nhất"*; tự động đọc tham số URL `?tuKhoa=` để tìm kiếm tức thời 0ms.
+  - **Tinh gọn Trang Chủ (`Index.cshtml`):** Dọn sạch thanh tìm kiếm phức tạp khỏi section `#catalog`, giữ showroom kiệt tác trưng bày thanh lịch kèm nút liên kết *"Tìm Kiếm Nâng Cao & Bộ Lọc →"* dẫn sang `/TimKiem`.
+  - **Khắc phục triệt để lỗi gạch chân menu `.nav-link-item a::after`:** Gỡ bỏ class `active` dán cứng trên Trang Chủ; xây dựng hàm `initNavigationAndScrollSpy` trong `storefront.js` tự động chuyển class `active` khi click sang tab khác và tích hợp `IntersectionObserver` tự động lướt gạch chân vàng theo section đang cuộn (`#top`, `#collections`, `#catalog`, `#warranty`); tự động active tab *"Tìm Kiếm"* khi đứng tại trang `/TimKiem`.
+  - **Kiểm thử tự động:** Vượt qua 6/6 bài test tự động (`verify_search_feature.ps1`) đạt 100% PASS; biên dịch giải pháp 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
+- [x] [2026-10-23] [Web Storefront: Gỡ Bỏ Hoàn Toàn Liên Kết & Tệp Tĩnh Đặc Tả Use Case Khỏi Website Khách Hàng]:
+  - **Header & Footer Navigation (_Layout.cshtml):** Loại bỏ hoàn toàn mục `Đặc Tả Use Case` khỏi thanh menu điều hướng chính trên Header và cột *Đặc Quyền Khách Hàng* dưới chân trang Footer; giao diện web chuẩn hóa thuần túy phong cách thương mại trang sức cao cấp Haute Joaillerie.
+  - **Dọn dẹp tệp tĩnh trên Web Server:** Xóa bỏ hoàn toàn tệp `src/BlinkBlink.Web/wwwroot/docs/DacTaUseCase_KhachHang.html` và thư mục `wwwroot/docs/`, triệt tiêu toàn bộ đường dẫn công khai liên quan đến tài liệu học thuật trên website thương mại (bảo toàn tệp gốc tại thư mục dự án cho mục đích lưu trữ báo cáo).
+  - **Kiểm thử biên dịch:** Toàn bộ giải pháp biên dịch thành công 0 lỗi (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
+- [x] [2026-10-23] [Web Storefront: Tính Năng Tìm Kiếm & Bộ Lọc Nâng Cao Kèm Thông Báo Trống & Gợi Ý Kiệt Tác Liên Quan]:
+  - **Thanh công cụ tìm kiếm & bộ lọc đa chiều (Index.cshtml & storefront.css):** Bổ sung ô tìm kiếm từ khóa với icon kim hoàn và nút xóa nhanh (`#catalog-search-clear`); tích hợp bộ lọc mức giá (`< 20tr`, `20 - 40tr`, `> 40tr`), chất liệu (`Kim Cương`, `Vàng 18K / Vàng Ý`, `Bạch Kim`, `Ruby / Sapphire`, `Ngọc Trai`) và tùy chọn sắp xếp thứ tự hiển thị; hiển thị chỉ báo số lượng kết quả và nhãn filter đang kích hoạt.
+  - **Logic xử lý tìm kiếm thông minh (storefront.js):** Xây dựng hàm `normalizeSearchText` chuẩn hóa tiếng Việt không phân biệt hoa thường, có dấu hay không dấu trên tên sản phẩm, chất liệu, mã SP và danh mục; hàm `applyProductFilters` phản hồi tức thì 0ms latency; hàm `resetAllFilters` khôi phục bộ lọc về mặc định một chạm.
+  - **Thông báo trạng thái trống & Gợi ý sản phẩm liên quan:** Khi không tìm thấy kết quả phù hợp, hiển thị thông báo chuẩn xác *"Không tìm thấy sản phẩm phù hợp"* kèm nút đặt lại bộ lọc, đồng thời tự động đề xuất mục *"Kiệt Tác Kim Hoàn Được Yêu Thích Nhất"* với đầy đủ ảnh thật, nhãn ưu đãi, giá sau giảm và 2 nút tương tác *"Xem Nhanh"* và *"Chọn Mua"*.
+  - **Kiểm thử tự động:** Vượt qua 10/10 tiêu chí kiểm thử tự động (`test_search_feature.ps1`) đạt 100% PASS; toàn bộ 31/31 unit & integration tests đều PASSED.
+
 - [x] [2026-10-23] [Git Workflow: Hoàn Tất Hợp Nhất & Đẩy Nhánh `feature/customer-web-ui` Lên Nhánh Chính `main`]:
   - Hợp nhất toàn diện nhánh `feature/customer-web-ui` vào `main` thông qua chiến lược `merge --no-ff`, bảo toàn 100% lịch sử commit và tài liệu quy chuẩn.
   - Toàn bộ solution biên dịch thành công 0 warning, 0 error (.NET 8 LTS); 31/31 unit & integration tests pass 100%.

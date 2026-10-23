@@ -11,6 +11,17 @@ public class HomeController : Controller
         return View();
     }
 
+    /// <summary>
+    /// Điều hướng hiển thị trang tìm kiếm kiệt tác kim hoàn và bộ lọc nâng cao riêng biệt.
+    /// </summary>
+    /// <returns>Giao diện trang tìm kiếm sản phẩm TimKiem.cshtml</returns>
+    [HttpGet("tim-kiem")]
+    [HttpGet("TimKiem")]
+    public IActionResult TimKiem()
+    {
+        return View();
+    }
+
     public IActionResult Privacy()
     {
         return View();
