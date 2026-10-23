@@ -1,5 +1,10 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Web Storefront: Gỡ Bỏ Hoàn Toàn Liên Kết & Tệp Tĩnh Đặc Tả Use Case Khỏi Website Khách Hàng]:
+  - **Header & Footer Navigation (_Layout.cshtml):** Loại bỏ hoàn toàn mục `Đặc Tả Use Case` khỏi thanh menu điều hướng chính trên Header và cột *Đặc Quyền Khách Hàng* dưới chân trang Footer; giao diện web chuẩn hóa thuần túy phong cách thương mại trang sức cao cấp Haute Joaillerie.
+  - **Dọn dẹp tệp tĩnh trên Web Server:** Xóa bỏ hoàn toàn tệp `src/BlinkBlink.Web/wwwroot/docs/DacTaUseCase_KhachHang.html` và thư mục `wwwroot/docs/`, triệt tiêu toàn bộ đường dẫn công khai liên quan đến tài liệu học thuật trên website thương mại (bảo toàn tệp gốc tại thư mục dự án cho mục đích lưu trữ báo cáo).
+  - **Kiểm thử biên dịch:** Toàn bộ giải pháp biên dịch thành công 0 lỗi (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
 - [x] [2026-10-23] [Web Storefront: Tính Năng Tìm Kiếm & Bộ Lọc Nâng Cao Kèm Thông Báo Trống & Gợi Ý Kiệt Tác Liên Quan]:
   - **Thanh công cụ tìm kiếm & bộ lọc đa chiều (Index.cshtml & storefront.css):** Bổ sung ô tìm kiếm từ khóa với icon kim hoàn và nút xóa nhanh (`#catalog-search-clear`); tích hợp bộ lọc mức giá (`< 20tr`, `20 - 40tr`, `> 40tr`), chất liệu (`Kim Cương`, `Vàng 18K / Vàng Ý`, `Bạch Kim`, `Ruby / Sapphire`, `Ngọc Trai`) và tùy chọn sắp xếp thứ tự hiển thị; hiển thị chỉ báo số lượng kết quả và nhãn filter đang kích hoạt.
   - **Logic xử lý tìm kiếm thông minh (storefront.js):** Xây dựng hàm `normalizeSearchText` chuẩn hóa tiếng Việt không phân biệt hoa thường, có dấu hay không dấu trên tên sản phẩm, chất liệu, mã SP và danh mục; hàm `applyProductFilters` phản hồi tức thì 0ms latency; hàm `resetAllFilters` khôi phục bộ lọc về mặc định một chạm.

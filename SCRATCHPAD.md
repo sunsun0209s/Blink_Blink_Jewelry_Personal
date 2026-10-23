@@ -1,6 +1,12 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
+- **Gỡ bỏ hoàn toàn Đặc Tả Use Case ra khỏi trang Web Storefront:**
+  - Đã cập nhật [src/BlinkBlink.Web/Views/Shared/_Layout.cshtml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Views/Shared/_Layout.cshtml): Gỡ bỏ 2 liên kết `Đặc Tả Use Case` tại thanh điều hướng chính Header và chân trang Footer (cột Đặc Quyền Khách Hàng).
+  - Đã xóa tệp tĩnh `src/BlinkBlink.Web/wwwroot/docs/DacTaUseCase_KhachHang.html` và thư mục `wwwroot/docs/`.
+  - Giữ lại tệp tài liệu nghiên cứu gốc [DacTaUseCase_KhachHang.html](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/DacTaUseCase_KhachHang.html) tại thư mục gốc dự án phục vụ báo cáo học thuật.
+  - Toàn bộ solution biên dịch thành công 0 lỗi (.NET 8 LTS); 31/31 unit & integration tests pass 100%.
+
 - **Tính năng tìm kiếm & bộ lọc nâng cao kèm gợi ý kiệt tác liên quan cho khách hàng (Storefront Web):**
   - Đã cập nhật [Index.cshtml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Views/Home/Index.cshtml): Mở rộng thanh công cụ Catalog Toolbar với ô tìm kiếm từ khóa, nút xóa nhanh (`catalog-search-clear`), bộ lọc mức giá, chất liệu, sắp xếp và chỉ báo số lượng kết quả.
   - Đã cập nhật [storefront.js](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/wwwroot/js/storefront.js): Tách hàm `createProductCardHtml`, xây dựng hàm chuẩn hóa tiếng Việt `normalizeSearchText`, logic lọc đa tiêu chí thời gian thực `applyProductFilters` (từ khóa, danh mục, giá bán, chất liệu), giao diện rỗng `renderNoResults` hiển thị thông báo "Không tìm thấy sản phẩm phù hợp" kèm khối kiệt tác gợi ý liên quan và nút `resetAllFilters`.
