@@ -1,5 +1,9 @@
-### Đây là nơi lưu những thứ đã hoàn thành
+﻿### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-23] [Kế Hoạch & Quy Trình: Lập Lộ Trình Commit Mã Nguồn Cho Nhóm 4 Thành Viên Trong 3 Ngày]:
+  - **Tài liệu scheduleCommit.md:** Khởi tạo tài liệu lộ trình cam kết mã nguồn tại thư mục gốc của dự án (cùng cấp với BlinkBlinkJewelry.slnx).
+  - **Phân bổ toàn diện 4 thành viên (qhy, sun, anhthy, tlinh):** 100% thành viên đều có các lượt commit được phân bổ đều đặn và tự nhiên trên cả 3 thư mục cốt lõi Clean Architecture (src/BlinkBlink.Domain, src/BlinkBlink.Application, src/BlinkBlink.Infrastructure).
+  - **Quy tắc vàng Git:** Thiết lập hướng dẫn chi tiết loại trừ tuyệt đối Build Artifacts (bin/, obj/, .vs/, .user,...), chỉ commit mã nguồn người lập trình viết (.cs, .csproj). Bổ sung đầy đủ lệnh Git an toàn, cú pháp đặt tên nhánh feature/... và thông điệp commit chuẩn Convention.
 - [x] [2026-10-23] [Git Workflow: Hoàn Tất Hợp Nhất & Đẩy Nhánh `feature/tim-kiem-san-pham` Lên Nhánh Chính `main`]:
   - Hợp nhất toàn diện nhánh `feature/tim-kiem-san-pham` vào `main` thông qua chiến lược `merge --no-ff`, bảo toàn 100% lịch sử 4 commit nguyên tử và toàn bộ tài liệu quy chuẩn.
   - Toàn bộ tính năng tìm kiếm kiệt tác, thanh tìm kiếm co giãn trên Header, trang tìm kiếm chuyên biệt `/TimKiem`, cơ chế chống rung giật mép viền và gạch chân menu active tự chuyển động đã được tích hợp hoàn hảo vào nhánh chính.

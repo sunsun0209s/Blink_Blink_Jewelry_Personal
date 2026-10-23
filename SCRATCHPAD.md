@@ -1,4 +1,4 @@
-# BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
+﻿# BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
 - **Khắc phục triệt để hiện tượng giật rung (hover flicker) ở mép rìa search bar Header:**
