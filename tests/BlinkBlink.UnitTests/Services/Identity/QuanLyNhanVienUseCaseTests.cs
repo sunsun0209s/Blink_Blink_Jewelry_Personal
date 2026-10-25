@@ -27,6 +27,18 @@ public class QuanLyNhanVienUseCaseTests
         {
             return new List<NhanVien>(Data.Values);
         }
+
+        public void CapNhatNhanVien(NhanVien nv)
+        {
+            Data[nv.MaNhanVien] = nv;
+        }
+
+        public bool KiemTraCoTheXoa(string maNV) => true;
+
+        public bool XoaNhanVien(string maNV)
+        {
+            return Data.Remove(maNV);
+        }
     }
 
     private class FakeVaiTroRepository : IVaiTroRepository
@@ -76,7 +88,7 @@ public class QuanLyNhanVienUseCaseTests
         Assert.True(result);
         var updated = fakeNvRepo.TimTheoMa("NV_01");
         Assert.NotNull(updated);
-        Assert.Equal("123456", updated.MatKhau);
+        Assert.Equal("123456789", updated.MatKhau);
     }
 
     [Fact]
@@ -92,5 +104,28 @@ public class QuanLyNhanVienUseCaseTests
 
         // Assert
         Assert.False(result);
+    }
+
+    [Fact]
+    public void QuanLyNhanVien_DemSoLuongAdmin_ChinhXacChoCaAdminVaVT01()
+    {
+        // Arrange
+        var fakeNvRepo = new FakeNhanVienRepository();
+        fakeNvRepo.LuuNhanVien(new NhanVien("ND1", "Admin Chính", "0911", "admin", "pass", "ADMIN", "NV01"));
+        fakeNvRepo.LuuNhanVien(new NhanVien("ND2", "Admin Cũ", "0922", "admin_old", "pass", "VT01", "NV02"));
+        fakeNvRepo.LuuNhanVien(new NhanVien("ND3", "Nhân Viên Sale", "0933", "sale", "pass", "SALE", "NV03"));
+        fakeNvRepo.LuuNhanVien(new NhanVien("ND4", "Nhân Viên Kho", "0944", "warehouse", "pass", "WAREHOUSE", "NV04"));
+
+        var allStaff = fakeNvRepo.LayTatCa();
+
+        // Act
+        var adminCount = allStaff.Count(n => 
+            string.Equals(n.MaVaiTro, "ADMIN", StringComparison.OrdinalIgnoreCase) || 
+            string.Equals(n.MaVaiTro, "VT01", StringComparison.OrdinalIgnoreCase)
+        );
+
+        // Assert
+        Assert.Equal(2, adminCount);
+        Assert.Equal(4, allStaff.Count);
     }
 }

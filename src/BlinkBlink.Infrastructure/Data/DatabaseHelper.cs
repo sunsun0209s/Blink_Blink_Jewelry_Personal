@@ -103,4 +103,49 @@ public class DatabaseHelper
         adapter.Fill(table);
         return table;
     }
+
+    /// <summary>
+    /// Tự động kiểm tra và cập nhật các cột/dữ liệu cần thiết cho CSDL hiện có,
+    /// đảm bảo tương thích ngược và không gây lỗi khi chạy trên CSDL cũ chưa được nạp lại script mới.
+    /// </summary>
+    public void EnsureSchemaCompatibility()
+    {
+        try
+        {
+            const string migrationSql = @"
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.ChiTietHoaDon') AND name = 'PhanTramGiamGia')
+                BEGIN
+                    ALTER TABLE dbo.ChiTietHoaDon ADD PhanTramGiamGia INT NOT NULL CONSTRAINT DF_ChiTietHoaDon_PhanTramGiamGia DEFAULT 0;
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuBaoHanh') AND name = 'ChiPhiUocTinh')
+                BEGIN
+                    ALTER TABLE dbo.PhieuBaoHanh ADD ChiPhiUocTinh DECIMAL(18,2) NOT NULL CONSTRAINT DF_PhieuBaoHanh_ChiPhiUocTinh DEFAULT 0;
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuBaoHanh') AND name = 'ChiPhiThucTe')
+                BEGIN
+                    ALTER TABLE dbo.PhieuBaoHanh ADD ChiPhiThucTe DECIMAL(18,2) NOT NULL CONSTRAINT DF_PhieuBaoHanh_ChiPhiThucTe DEFAULT 0;
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = '0')
+                BEGIN
+                    INSERT INTO dbo.NguoiDung (MaNguoiDung, HoTen, SoDienThoai, TenDangNhap, MatKhau, MaVaiTro, TrangThai)
+                    VALUES ('0', N'Khách Hàng Vãng Lai (POS)', '', 'khach.pos', '123456789', 'KHACHHANG', 1);
+
+                    IF NOT EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = 'KH_GUEST_POS' OR MaNguoiDung = '0')
+                    BEGIN
+                        INSERT INTO dbo.KhachHang (MaNguoiDung, MaKhachHang, NgaySinh)
+                        VALUES ('0', 'KH_GUEST_POS', '2000-01-01');
+                    END
+                END";
+
+            ExecuteNonQuery(migrationSql);
+        }
+        catch
+        {
+            // Bỏ qua nếu không có quyền DDL hoặc database ngoại tuyến
+        }
+    }
 }
+

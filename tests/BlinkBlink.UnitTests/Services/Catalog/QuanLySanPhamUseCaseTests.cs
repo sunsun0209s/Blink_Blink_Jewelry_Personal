@@ -264,4 +264,20 @@ public class QuanLySanPhamUseCaseTests
         Assert.Equal(15, updated.PhanTramGiamGia);
         Assert.Equal(14000000, updated.GiaBan);
     }
+
+    [Fact]
+    public void SanPhamTrangSuc_KhoiTaoSoLuongTon_MacDinhBangKhongVaCapNhatThanhCong()
+    {
+        // Arrange
+        var sp = new SanPhamTrangSuc("SP_TON_01", "Nhẫn Kim Cương", "DM01", "Vàng trắng 18K", "Size 14", 10000000, 15000000);
+
+        // Assert ban đầu
+        Assert.Equal(0, sp.SoLuongTon);
+
+        // Act
+        sp.SoLuongTon = 5;
+
+        // Assert sau cập nhật
+        Assert.Equal(5, sp.SoLuongTon);
+    }
 }

@@ -21,6 +21,7 @@ public class SanPhamTrangSuc
     public decimal GiaBan { get; set; }
     public string HinhAnh { get; set; } = string.Empty; // Đường dẫn tệp ảnh hoặc URL ảnh
     public int PhanTramGiamGia { get; set; } = 0; // Tỉ lệ phần trăm giảm giá (0 - 100%)
+    public int SoLuongTon { get; set; } = 0; // Số lượng hiện tại có trong kho (khớp sơ đồ Class Diagram)
 
     public SanPhamTrangSuc() { }
 

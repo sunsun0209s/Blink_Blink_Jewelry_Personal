@@ -21,7 +21,7 @@
           <mxGeometry height="400" width="1160" x="780" y="1300" as="geometry" />
         </mxCell>
         <mxCell id="vf_Xz40I8HUTbAknQtJy-1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PhieuBaoHanh" vertex="1">
-          <mxGeometry height="268" width="250" x="940" y="3370" as="geometry" />
+          <mxGeometry height="320" width="250" x="940" y="3370" as="geometry" />
         </mxCell>
         <mxCell id="vf_Xz40I8HUTbAknQtJy-2" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _soPhieuBH: string" vertex="1">
           <mxGeometry height="26" width="250" y="26" as="geometry" />
@@ -35,23 +35,29 @@
         <mxCell id="vf_Xz40I8HUTbAknQtJy-7" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _lyDoBaoHanh: string" vertex="1">
           <mxGeometry height="26" width="250" y="104" as="geometry" />
         </mxCell>
-        <mxCell id="vf_Xz40I8HUTbAknQtJy-6" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _chiPhiBaoHanh: decimal" vertex="1">
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-6" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _chiPhiUocTinh: decimal" vertex="1">
           <mxGeometry height="26" width="250" y="130" as="geometry" />
         </mxCell>
-        <mxCell id="vf_Xz40I8HUTbAknQtJy-5" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _trangThaiXuLy: string" vertex="1">
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-6_2" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _chiPhiThucTe: decimal" vertex="1">
           <mxGeometry height="26" width="250" y="156" as="geometry" />
         </mxCell>
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-5" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _trangThaiXuLy: string" vertex="1">
+          <mxGeometry height="26" width="250" y="182" as="geometry" />
+        </mxCell>
         <mxCell id="vf_Xz40I8HUTbAknQtJy-3" parent="vf_Xz40I8HUTbAknQtJy-1" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
-          <mxGeometry height="8" width="250" y="182" as="geometry" />
+          <mxGeometry height="8" width="250" y="208" as="geometry" />
         </mxCell>
         <mxCell id="vf_Xz40I8HUTbAknQtJy-11" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ CapNhatTrangThai(tt: string): bool" vertex="1">
-          <mxGeometry height="26" width="250" y="190" as="geometry" />
-        </mxCell>
-        <mxCell id="vf_Xz40I8HUTbAknQtJy-10" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ HoanTatBaoHanh(): bool" vertex="1">
           <mxGeometry height="26" width="250" y="216" as="geometry" />
         </mxCell>
-        <mxCell id="vf_Xz40I8HUTbAknQtJy-4" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ TinhPhiBaoHanh(): decimal" vertex="1">
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-11_qt" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ QuyetToan(chiPhi: decimal): bool" vertex="1">
           <mxGeometry height="26" width="250" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-10" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ HoanTatBaoHanh(): bool" vertex="1">
+          <mxGeometry height="26" width="250" y="268" as="geometry" />
+        </mxCell>
+        <mxCell id="vf_Xz40I8HUTbAknQtJy-4" parent="vf_Xz40I8HUTbAknQtJy-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ TinhPhiBaoHanh(): decimal" vertex="1">
+          <mxGeometry height="26" width="250" y="294" as="geometry" />
         </mxCell>
         <mxCell id="6gXJqNkSuBCi1Y9OM3uC-1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="KhachHang" vertex="1">
           <mxGeometry height="112" width="180" x="880" y="3810" as="geometry" />

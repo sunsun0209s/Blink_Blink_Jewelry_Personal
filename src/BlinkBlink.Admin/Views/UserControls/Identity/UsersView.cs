@@ -127,9 +127,17 @@ public class UsersView : UserControl
         btnAdd.Margin = new Padding(0, 2, 8, 2);
         btnAdd.Click += BtnAddStaff_Click;
 
-        var btnLock = UITheme.CreateFlatButton("🔒 Khóa Tài Khoản", UITheme.DangerColor, Color.White);
+        var btnEdit = UITheme.CreateFlatButton("✏️ Sửa Nhân Viên", UITheme.PrimaryGold, Color.Black);
+        btnEdit.Margin = new Padding(0, 2, 8, 2);
+        btnEdit.Click += BtnEditStaff_Click;
+
+        var btnLock = UITheme.CreateFlatButton("🔒 Khóa / Mở Khóa", UITheme.DangerColor, Color.White);
         btnLock.Margin = new Padding(0, 2, 8, 2);
         btnLock.Click += BtnLockStaff_Click;
+
+        var btnDelete = UITheme.CreateFlatButton("🗑️ Xóa Nhân Viên", Color.FromArgb(220, 38, 38), Color.White);
+        btnDelete.Margin = new Padding(0, 2, 8, 2);
+        btnDelete.Click += BtnDeleteStaff_Click;
 
         var btnReset = UITheme.CreateFlatButton("🔑 Đặt Lại Mật Khẩu", UITheme.DarkHeader, Color.White);
         btnReset.Margin = new Padding(0, 2, 8, 2);
@@ -142,7 +150,9 @@ public class UsersView : UserControl
         toolbar.Controls.Add(lblS);
         toolbar.Controls.Add(_txtSearchStaff);
         toolbar.Controls.Add(btnAdd);
+        toolbar.Controls.Add(btnEdit);
         toolbar.Controls.Add(btnLock);
+        toolbar.Controls.Add(btnDelete);
         toolbar.Controls.Add(btnReset);
         toolbar.Controls.Add(btnRef);
 
@@ -197,6 +207,10 @@ public class UsersView : UserControl
         btnLockCust.Margin = new Padding(0, 2, 8, 2);
         btnLockCust.Click += BtnLockCustomer_Click;
 
+        var btnDeleteCust = UITheme.CreateFlatButton("🗑️ Xóa Khách Hàng", Color.FromArgb(220, 38, 38), Color.White);
+        btnDeleteCust.Margin = new Padding(0, 2, 8, 2);
+        btnDeleteCust.Click += BtnDeleteCustomer_Click;
+
         var btnRef = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
         btnRef.Margin = new Padding(0, 2, 0, 2);
         btnRef.Click += (s, e) => LoadCustomerData();
@@ -206,6 +220,7 @@ public class UsersView : UserControl
         toolbar.Controls.Add(btnEditCust);
         toolbar.Controls.Add(btnOrderHistory);
         toolbar.Controls.Add(btnLockCust);
+        toolbar.Controls.Add(btnDeleteCust);
         toolbar.Controls.Add(btnRef);
 
         var pnlGrid = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15, 10, 15, 15), BackColor = UITheme.CanvasBackground };
@@ -268,7 +283,10 @@ public class UsersView : UserControl
         _allStaff = _services.NhanVienRepo.LayTatCa();
         var viVn = new CultureInfo("vi-VN");
         _lblKpiStaffTotal.Text = _allStaff.Count.ToString("N0", viVn);
-        _lblKpiStaffAdmin.Text = _allStaff.Count(n => n.MaVaiTro == "VT01").ToString("N0", viVn);
+        _lblKpiStaffAdmin.Text = _allStaff.Count(n => 
+            string.Equals(n.MaVaiTro, "ADMIN", StringComparison.OrdinalIgnoreCase) || 
+            string.Equals(n.MaVaiTro, "VT01", StringComparison.OrdinalIgnoreCase)
+        ).ToString("N0", viVn);
         FilterStaff();
     }
 
@@ -345,8 +363,8 @@ public class UsersView : UserControl
         using var dialog = new Form
         {
             Text = "Thêm Nhân Viên Mới - Blink Blink Jewelry",
-            Width = 440,
-            Height = 380,
+            Width = 460,
+            Height = 440,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
@@ -354,14 +372,14 @@ public class UsersView : UserControl
             BackColor = Color.White
         };
 
-        var lblHead = new Label { Text = "HỒ SƠ NHÂN SỰ VÀ TÀI KHOẢN", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, Location = new Point(25, 18), AutoSize = true };
+        var lblHead = new Label { Text = "HỒ SƠ NHÂN SỰ VÀ PHÂN QUYỀN VAI TRÒ", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, Location = new Point(25, 18), AutoSize = true };
         dialog.Controls.Add(lblHead);
 
         int top = 55;
         TextBox AddField(string labelText, string defaultVal)
         {
             var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
-            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 230 };
+            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 250 };
             dialog.Controls.Add(l);
             dialog.Controls.Add(t);
             top += 40;
@@ -371,11 +389,23 @@ public class UsersView : UserControl
         var txtHoTen = AddField("Họ và Tên:", "Nguyễn Hoàng Nam");
         var txtPhone = AddField("Số Điện Thoại:", "0933445566");
         var txtUser = AddField("Tên Đăng Nhập:", "nam.nguyen");
-        var txtPass = AddField("Mật Khẩu Khởi Tạo:", "BlinkBlink@2026");
+        var txtPass = AddField("Mật Khẩu Khởi Tạo:", "123456789");
         var txtLuong = AddField("Lương Cơ Bản:", "12000000");
 
+        var lblRole = new Label { Text = "Vai Trò Nhân Sự:", Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var cboRole = new ComboBox { Location = new Point(160, top - 3), Width = 250, DropDownStyle = ComboBoxStyle.DropDownList };
+        cboRole.Items.Add(new KeyValuePair<string, string>("ADMIN", "👑 Quản trị viên (Toàn quyền)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("SALE", "💼 Nhân viên bán hàng (Đơn hàng & Khách)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("WAREHOUSE", "📦 Nhân viên kho (Sản phẩm & Kho hàng)"));
+        cboRole.DisplayMember = "Value";
+        cboRole.ValueMember = "Key";
+        cboRole.SelectedIndex = 1;
+        dialog.Controls.Add(lblRole);
+        dialog.Controls.Add(cboRole);
+        top += 45;
+
         var btnSave = UITheme.CreateFlatButton("Tạo Nhân Viên", UITheme.PrimaryGold, Color.Black);
-        btnSave.Location = new Point(170, top + 15);
+        btnSave.Location = new Point(160, top + 10);
         btnSave.Click += (s, ev) =>
         {
             if (string.IsNullOrWhiteSpace(txtHoTen.Text) || string.IsNullOrWhiteSpace(txtUser.Text))
@@ -385,6 +415,7 @@ public class UsersView : UserControl
             }
 
             decimal.TryParse(txtLuong.Text, out var luong);
+            var selectedRole = cboRole.SelectedItem is KeyValuePair<string, string> kvp ? kvp.Key : "SALE";
             var req = new TaoNhanVienDTO
             {
                 HoTen = txtHoTen.Text.Trim(),
@@ -392,7 +423,7 @@ public class UsersView : UserControl
                 TenDangNhap = txtUser.Text.Trim(),
                 MatKhau = txtPass.Text.Trim(),
                 LuongCoBan = luong,
-                MaVaiTro = "VT02"
+                MaVaiTro = selectedRole
             };
 
             var ok = _services.QuanLyNhanVien.TaoNhanVien(req);
@@ -416,11 +447,158 @@ public class UsersView : UserControl
         }
     }
 
+    private void BtnEditStaff_Click(object? sender, EventArgs e)
+    {
+        if (_dgvStaff.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn nhân viên cần chỉnh sửa thông tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maNv = _dgvStaff.SelectedRows[0].Cells["MaNV"].Value?.ToString();
+        if (string.IsNullOrEmpty(maNv)) return;
+
+        var staff = _allStaff.FirstOrDefault(s => s.MaNhanVien == maNv) ?? _services.NhanVienRepo.TimTheoMa(maNv);
+        if (staff == null)
+        {
+            MessageBox.Show("Không tìm thấy thông tin nhân viên.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        using var dialog = new Form
+        {
+            Text = $"Chỉnh Sửa Nhân Viên - [{staff.MaNhanVien}]",
+            Width = 460,
+            Height = 420,
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            BackColor = Color.White
+        };
+
+        var lblHead = new Label { Text = "CẬP NHẬT THÔNG TIN & VAI TRÒ NHÂN SỰ", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, Location = new Point(25, 18), AutoSize = true };
+        dialog.Controls.Add(lblHead);
+
+        int top = 55;
+        TextBox AddField(string labelText, string defaultVal)
+        {
+            var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 250 };
+            dialog.Controls.Add(l);
+            dialog.Controls.Add(t);
+            top += 40;
+            return t;
+        }
+
+        var txtMaNv = AddField("Mã Nhân Viên:", staff.MaNhanVien);
+        txtMaNv.ReadOnly = true;
+        txtMaNv.BackColor = Color.FromArgb(245, 245, 245);
+
+        var txtHoTen = AddField("Họ và Tên:", staff.HoTen);
+        var txtPhone = AddField("Số Điện Thoại:", staff.SoDienThoai);
+        var txtLuong = AddField("Lương Cơ Bản:", staff.LuongCoBan.ToString("F0"));
+
+        var lblRole = new Label { Text = "Vai Trò Phân Quyền:", Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var cboRole = new ComboBox { Location = new Point(160, top - 3), Width = 250, DropDownStyle = ComboBoxStyle.DropDownList };
+        cboRole.Items.Add(new KeyValuePair<string, string>("ADMIN", "👑 Quản trị viên (Toàn quyền)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("SALE", "💼 Nhân viên bán hàng (Đơn hàng & Khách)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("WAREHOUSE", "📦 Nhân viên kho (Sản phẩm & Kho hàng)"));
+        cboRole.DisplayMember = "Value";
+        cboRole.ValueMember = "Key";
+
+        // Chọn vai trò hiện tại
+        var currentRoleCode = staff.MaVaiTro?.ToUpperInvariant() ?? "SALE";
+        if (currentRoleCode == "VT01" || currentRoleCode == "ADMIN") cboRole.SelectedIndex = 0;
+        else if (currentRoleCode == "VT03" || currentRoleCode == "WAREHOUSE") cboRole.SelectedIndex = 2;
+        else cboRole.SelectedIndex = 1;
+
+        dialog.Controls.Add(lblRole);
+        dialog.Controls.Add(cboRole);
+        top += 45;
+
+        var btnSave = UITheme.CreateFlatButton("Lưu Thay Đổi", UITheme.PrimaryGold, Color.Black);
+        btnSave.Location = new Point(160, top + 10);
+        btnSave.Click += (s, ev) =>
+        {
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+            {
+                MessageBox.Show("Họ và tên nhân viên không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            decimal.TryParse(txtLuong.Text, out var luong);
+            var selectedRole = cboRole.SelectedItem is KeyValuePair<string, string> kvp ? kvp.Key : "SALE";
+
+            var ok = _services.QuanLyNhanVien.CapNhatThongTinNhanVien(staff.MaNhanVien, txtHoTen.Text.Trim(), txtPhone.Text.Trim(), luong, selectedRole);
+            if (ok)
+            {
+                MessageBox.Show("Cập nhật thông tin nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dialog.DialogResult = DialogResult.OK;
+                dialog.Close();
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật thông tin thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        };
+
+        dialog.Controls.Add(btnSave);
+
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+            LoadStaffData();
+        }
+    }
+
+    private void BtnDeleteStaff_Click(object? sender, EventArgs e)
+    {
+        if (_dgvStaff.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn nhân viên cần xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maNv = _dgvStaff.SelectedRows[0].Cells["MaNV"].Value?.ToString();
+        var hoTen = _dgvStaff.SelectedRows[0].Cells["HoTen"].Value?.ToString() ?? maNv;
+        if (string.IsNullOrEmpty(maNv)) return;
+
+        var confirm = MessageBox.Show(
+            $"Bạn có chắc chắn muốn xóa nhân viên [{hoTen}] ({maNv}) khỏi hệ thống?",
+            "Xác nhận xóa nhân sự",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirm != DialogResult.Yes) return;
+
+        var ok = _services.QuanLyNhanVien.XoaNhanVien(maNv, out var thongBao);
+        if (ok)
+        {
+            MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadStaffData();
+        }
+        else
+        {
+            var askLock = MessageBox.Show(
+                $"{thongBao}\n\nBạn có muốn chuyển sang KHÓA TÀI KHOẢN nhân viên này để ngừng quyền truy cập mà vẫn bảo toàn lịch sử hoạt động không?",
+                "Cảnh báo ràng buộc nghiệp vụ",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (askLock == DialogResult.Yes)
+            {
+                _services.QuanLyNhanVien.KhoaTaiKhoanNhanVien(maNv);
+                LoadStaffData();
+                MessageBox.Show($"Đã khóa tài khoản nhân viên [{maNv}] thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+    }
+
     private void BtnLockStaff_Click(object? sender, EventArgs e)
     {
         if (_dgvStaff.SelectedRows.Count == 0)
         {
-            MessageBox.Show("Vui lòng chọn nhân viên cần khóa tài khoản.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Vui lòng chọn nhân viên cần khóa/mở khóa tài khoản.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
@@ -430,7 +608,7 @@ public class UsersView : UserControl
         var ok = _services.QuanLyNhanVien.KhoaTaiKhoanNhanVien(maNv);
         if (ok)
         {
-            MessageBox.Show($"Đã thay đổi trạng thái khóa tài khoản nhân viên [{maNv}].", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Đã thay đổi trạng thái khóa/mở khóa tài khoản nhân viên [{maNv}].", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             LoadStaffData();
         }
         else
@@ -450,10 +628,61 @@ public class UsersView : UserControl
         var maNv = _dgvStaff.SelectedRows[0].Cells["MaNV"].Value?.ToString();
         if (string.IsNullOrEmpty(maNv)) return;
 
+        var confirm = MessageBox.Show(
+            $"Bạn có muốn đặt lại mật khẩu của nhân viên [{maNv}] về mật khẩu mặc định (123456789)?",
+            "Xác nhận đặt lại mật khẩu",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirm != DialogResult.Yes) return;
+
         var ok = _services.QuanLyNhanVien.ResetMatKhau(maNv);
         if (ok)
         {
-            MessageBox.Show($"Đã đặt lại mật khẩu mặc định cho nhân viên [{maNv}]: 123456", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Đã đặt lại mật khẩu mặc định cho nhân viên [{maNv}]: 123456789", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+    }
+
+    private void BtnDeleteCustomer_Click(object? sender, EventArgs e)
+    {
+        if (_dgvCustomers.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn khách hàng cần xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maKh = _dgvCustomers.SelectedRows[0].Cells["MaKH"].Value?.ToString();
+        var hoTen = _dgvCustomers.SelectedRows[0].Cells["HoTen"].Value?.ToString() ?? maKh;
+        if (string.IsNullOrEmpty(maKh)) return;
+
+        var confirm = MessageBox.Show(
+            $"Bạn có chắc chắn muốn xóa khách hàng [{hoTen}] ({maKh}) khỏi hệ thống?",
+            "Xác nhận xóa khách hàng",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirm != DialogResult.Yes) return;
+
+        var ok = _services.QuanLyKhachHang.XoaKhachHang(maKh, out var thongBao);
+        if (ok)
+        {
+            MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadCustomerData();
+        }
+        else
+        {
+            var askLock = MessageBox.Show(
+                $"{thongBao}\n\nBạn có muốn chuyển sang KHÓA TÀI KHOẢN khách hàng này để giữ trọn vẹn lịch sử giao dịch kế toán?",
+                "Cảnh báo ràng buộc dữ liệu",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (askLock == DialogResult.Yes)
+            {
+                _services.QuanLyKhachHang.KhoaTaiKhoanKhachHang(maKh);
+                LoadCustomerData();
+                MessageBox.Show($"Đã khóa tài khoản khách hàng [{maKh}] thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 

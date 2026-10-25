@@ -129,7 +129,7 @@ public class WarrantyView : UserControl
             Font = UITheme.RegularFont,
             Margin = new Padding(0, 4, 15, 4)
         };
-        _cboStatus.Items.AddRange(new object[] { "Tất Cả", "DangBaoHanh", "DaHoanTat", "DaHuy" });
+        _cboStatus.Items.AddRange(new object[] { "Tất Cả", "DangBaoHanh", "DaXuLy", "DaHoanTat", "DaHuy" });
         _cboStatus.SelectedIndex = 0;
         _cboStatus.SelectedIndexChanged += (s, e) => FilterWarranty();
 
@@ -141,9 +141,13 @@ public class WarrantyView : UserControl
         _btnProcessing.Margin = new Padding(0, 2, 8, 2);
         _btnProcessing.Click += (s, e) => UpdateTicketStatus("DangBaoHanh");
 
-        _btnComplete = UITheme.CreateFlatButton("✓ Quyết Toán", UITheme.SuccessColor, Color.White);
+        _btnComplete = UITheme.CreateFlatButton("💰 Quyết Toán", UITheme.PrimaryGold, Color.Black);
         _btnComplete.Margin = new Padding(0, 2, 8, 2);
         _btnComplete.Click += BtnComplete_Click;
+
+        var btnFinish = UITheme.CreateFlatButton("🎉 Hoàn Tất & Trả Khách", UITheme.SuccessColor, Color.White);
+        btnFinish.Margin = new Padding(0, 2, 8, 2);
+        btnFinish.Click += BtnFinish_Click;
 
         _btnCancelTicket = UITheme.CreateFlatButton("✕ Hủy Phiếu", UITheme.DangerColor, Color.White);
         _btnCancelTicket.Margin = new Padding(0, 2, 8, 2);
@@ -160,6 +164,7 @@ public class WarrantyView : UserControl
         toolbarPanel.Controls.Add(_btnNew);
         toolbarPanel.Controls.Add(_btnProcessing);
         toolbarPanel.Controls.Add(_btnComplete);
+        toolbarPanel.Controls.Add(btnFinish);
         toolbarPanel.Controls.Add(_btnCancelTicket);
         toolbarPanel.Controls.Add(_btnRefresh);
 
@@ -180,6 +185,7 @@ public class WarrantyView : UserControl
 
         _dgvWarranty = new DataGridView();
         UITheme.ApplyGridViewStyle(_dgvWarranty);
+        _dgvWarranty.ScrollBars = ScrollBars.Both;
         ConfigureGridColumns();
 
         pnlWhiteCard.Controls.Add(_dgvWarranty);
@@ -232,8 +238,9 @@ public class WarrantyView : UserControl
         _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", HeaderText = "KHÁCH HÀNG", FillWeight = 80, MinimumWidth = 95 });
         _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayTiepNhan", HeaderText = "TIẾP NHẬN", FillWeight = 85, MinimumWidth = 100 });
         _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayHenTra", HeaderText = "HẸN TRẢ", FillWeight = 85, MinimumWidth = 100 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "LyDoBaoHanh", HeaderText = "LÝ DO TIẾP NHẬN", FillWeight = 190, MinimumWidth = 180 });
-        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiBaoHanh", HeaderText = "CHI PHÍ (VND)", FillWeight = 105, MinimumWidth = 125, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "LyDoBaoHanh", HeaderText = "LÝ DO TIẾP NHẬN", FillWeight = 160, MinimumWidth = 160 });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiUocTinh", HeaderText = "CP ƯỚC TÍNH (VND)", FillWeight = 100, MinimumWidth = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
+        _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "ChiPhiThucTe", HeaderText = "CP THỰC TẾ (VND)", FillWeight = 105, MinimumWidth = 125, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
         _dgvWarranty.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThaiXuLy", HeaderText = "TRẠNG THÁI", FillWeight = 90, MinimumWidth = 110 });
     }
 
@@ -248,7 +255,7 @@ public class WarrantyView : UserControl
     {
         var viVn = new CultureInfo("vi-VN");
         _lblKpiTotal.Text = _allTickets.Count.ToString("N0", viVn);
-        _lblKpiProcessing.Text = _allTickets.Count(t => string.Equals(t.TrangThaiXuLy, "DangBaoHanh", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
+        _lblKpiProcessing.Text = _allTickets.Count(t => string.Equals(t.TrangThaiXuLy, "DangBaoHanh", StringComparison.OrdinalIgnoreCase) || string.Equals(t.TrangThaiXuLy, "DaXuLy", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
         _lblKpiCompleted.Text = _allTickets.Count(t => string.Equals(t.TrangThaiXuLy, "DaHoanTat", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
     }
 
@@ -283,13 +290,16 @@ public class WarrantyView : UserControl
                 t.NgayTiepNhan.ToString("dd/MM/yyyy"),
                 t.NgayHenTra?.ToString("dd/MM/yyyy") ?? "-",
                 t.LyDoBaoHanh,
-                t.ChiPhiBaoHanh.ToString("N0", viVn),
+                t.ChiPhiUocTinh.ToString("N0", viVn),
+                t.ChiPhiThucTe.ToString("N0", viVn),
                 t.TrangThaiXuLy
             );
 
             var cellStatus = _dgvWarranty.Rows[rowIdx].Cells["TrangThaiXuLy"];
             if (string.Equals(t.TrangThaiXuLy, "DangBaoHanh", StringComparison.OrdinalIgnoreCase))
                 cellStatus.Style.ForeColor = UITheme.WarningColor;
+            else if (string.Equals(t.TrangThaiXuLy, "DaXuLy", StringComparison.OrdinalIgnoreCase))
+                cellStatus.Style.ForeColor = UITheme.PrimaryGold;
             else if (string.Equals(t.TrangThaiXuLy, "DaHoanTat", StringComparison.OrdinalIgnoreCase))
                 cellStatus.Style.ForeColor = UITheme.SuccessColor;
             else if (string.Equals(t.TrangThaiXuLy, "DaHuy", StringComparison.OrdinalIgnoreCase))
@@ -324,18 +334,21 @@ public class WarrantyView : UserControl
     {
         if (_dgvWarranty.SelectedRows.Count == 0)
         {
-            MessageBox.Show("Vui lòng chọn phiếu bảo hành muốn quyết toán.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Vui lòng chọn phiếu bảo hành muốn quyết toán chi phí thực tế.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
         var soPhieu = _dgvWarranty.SelectedRows[0].Cells["SoPhieuBH"].Value?.ToString();
         if (string.IsNullOrEmpty(soPhieu)) return;
 
+        var ticket = _allTickets.FirstOrDefault(t => t.SoPhieuBH == soPhieu);
+        var uocTinh = ticket?.ChiPhiUocTinh ?? 0m;
+
         using var prompt = new Form
         {
-            Text = $"Quyết Toán Phiếu Bảo Hành #{soPhieu}",
-            Width = 400,
-            Height = 220,
+            Text = $"Quyết Toán Chi Phí Thực Tế - Phiếu #{soPhieu}",
+            Width = 420,
+            Height = 250,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
@@ -343,22 +356,26 @@ public class WarrantyView : UserControl
             BackColor = Color.White
         };
 
-        var lbl = new Label { Text = "Chi phí sửa chữa/xi mạ phát sinh (VND):", Location = new Point(25, 25), AutoSize = true, ForeColor = UITheme.TextPrimary };
-        var txtCost = new TextBox { Text = "0", Location = new Point(25, 55), Width = 330, Font = UITheme.TabularNumericFont };
-        var btnOk = UITheme.CreateFlatButton("Xác Nhận Quyết Toán", UITheme.SuccessColor, Color.White);
-        btnOk.Location = new Point(100, 105);
+        var lblUocTinh = new Label { Text = $"Chi phí ước tính ban đầu: {uocTinh:N0} VND", Location = new Point(25, 20), AutoSize = true, ForeColor = UITheme.TextSecondary };
+        var lbl = new Label { Text = "Chi phí thực tế sau khi gia công/sửa chữa (VND):", Location = new Point(25, 50), AutoSize = true, ForeColor = UITheme.TextPrimary, Font = new Font("Segoe UI", 9.5F, FontStyle.Bold) };
+        var txtCost = new TextBox { Text = uocTinh > 0 ? uocTinh.ToString("F0") : "0", Location = new Point(25, 80), Width = 350, Font = UITheme.TabularNumericFont };
+        var btnOk = UITheme.CreateFlatButton("XÁC NHẬN QUYẾT TOÁN (CHUYỂN ĐÃ XỬ LÝ)", UITheme.PrimaryGold, Color.Black);
+        btnOk.Location = new Point(25, 130);
+        btnOk.Size = new Size(350, 40);
+        btnOk.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+
         btnOk.Click += (s, ev) =>
         {
             if (!decimal.TryParse(txtCost.Text.Trim(), out var cost) || cost < 0)
             {
-                MessageBox.Show("Vui lòng nhập chi phí hợp lệ (lớn hơn hoặc bằng 0).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập chi phí thực tế hợp lệ (lớn hơn hoặc bằng 0).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var ok = _services.XuLyBaoHanh.HoanTatBaoHanh(soPhieu, cost);
+            var ok = _services.XuLyBaoHanh.QuyetToanBaoHanh(soPhieu, cost);
             if (ok)
             {
-                MessageBox.Show($"Phiếu bảo hành #{soPhieu} đã hoàn tất và quyết toán {cost:N0} VND.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Phiếu bảo hành #{soPhieu} đã quyết toán chi phí thực tế: {cost:N0} VND.\nTrạng thái đã chuyển sang: DaXuLy (chờ khách đến nhận).", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 prompt.DialogResult = DialogResult.OK;
                 prompt.Close();
             }
@@ -368,6 +385,7 @@ public class WarrantyView : UserControl
             }
         };
 
+        prompt.Controls.Add(lblUocTinh);
         prompt.Controls.Add(lbl);
         prompt.Controls.Add(txtCost);
         prompt.Controls.Add(btnOk);
@@ -378,13 +396,53 @@ public class WarrantyView : UserControl
         }
     }
 
+    private void BtnFinish_Click(object? sender, EventArgs e)
+    {
+        if (_dgvWarranty.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn phiếu bảo hành khách đến nhận đồ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var soPhieu = _dgvWarranty.SelectedRows[0].Cells["SoPhieuBH"].Value?.ToString();
+        if (string.IsNullOrEmpty(soPhieu)) return;
+
+        var ticket = _allTickets.FirstOrDefault(t => t.SoPhieuBH == soPhieu);
+        if (ticket == null) return;
+
+        if (string.Equals(ticket.TrangThaiXuLy, "DaHoanTat", StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show($"Phiếu #{soPhieu} đã hoàn tất trước đó.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            $"Xác nhận khách hàng đã nhận lại trang sức và thanh toán chi phí thực tế ({ticket.ChiPhiThucTe:N0} VND)?\nTrạng thái phiếu sẽ chuyển sang: DaHoanTat.",
+            "Hoàn tất dịch vụ bảo hành",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirm != DialogResult.Yes) return;
+
+        var ok = _services.XuLyBaoHanh.HoanTatBaoHanh(soPhieu);
+        if (ok)
+        {
+            MessageBox.Show($"Phiếu bảo hành #{soPhieu} đã hoàn tất và bàn giao cho khách thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadWarrantyData();
+        }
+        else
+        {
+            MessageBox.Show("Không thể hoàn tất phiếu bảo hành này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
     private void BtnNew_Click(object? sender, EventArgs e)
     {
         using var dialog = new Form
         {
             Text = "Tiếp Nhận Bảo Hành Trang Sức Mới - Blink Blink Jewelry",
-            Width = 460,
-            Height = 380,
+            Width = 470,
+            Height = 430,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
@@ -399,7 +457,7 @@ public class WarrantyView : UserControl
         TextBox AddField(string labelText, string defaultVal)
         {
             var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
-            var t = new TextBox { Text = defaultVal, Location = new Point(160, top - 3), Width = 250 };
+            var t = new TextBox { Text = defaultVal, Location = new Point(170, top - 3), Width = 250 };
             dialog.Controls.Add(l);
             dialog.Controls.Add(t);
             top += 40;
@@ -408,11 +466,12 @@ public class WarrantyView : UserControl
 
         var txtMaKH = AddField("Mã Khách Hàng:", "KH001");
         var txtMaSP = AddField("Mã Sản Phẩm:", "SP001");
-        var txtLyDo = AddField("Lỗi Tiếp Nhận:", "Đánh bóng, xi mạ làm mới");
+        var txtLyDo = AddField("Lỗi / Yêu Cầu:", "Đánh bóng, xi mạ làm mới");
+        var txtCostEst = AddField("Chi Phí Ước Tính (VND):", "0");
         var txtHenTra = AddField("Ngày Hẹn Trả:", DateTime.Now.AddDays(3).ToString("dd/MM/yyyy"));
 
         var btnSave = UITheme.CreateFlatButton("Tạo Phiếu Tiếp Nhận", UITheme.PrimaryGold, Color.Black);
-        btnSave.Location = new Point(180, top + 15);
+        btnSave.Location = new Point(170, top + 15);
         btnSave.Click += (s, ev) =>
         {
             if (string.IsNullOrWhiteSpace(txtMaKH.Text) || string.IsNullOrWhiteSpace(txtMaSP.Text) || string.IsNullOrWhiteSpace(txtLyDo.Text))
@@ -422,13 +481,14 @@ public class WarrantyView : UserControl
             }
 
             DateTime.TryParseExact(txtHenTra.Text.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var henTraDate);
+            decimal.TryParse(txtCostEst.Text.Trim(), out var costEst);
 
             var req = new TaoBaoHanhDTO
             {
                 MaKhachHang = txtMaKH.Text.Trim(),
                 MaSanPham = txtMaSP.Text.Trim(),
                 LyDoBaoHanh = txtLyDo.Text.Trim(),
-                ChiPhiBaoHanh = 0m,
+                ChiPhiBaoHanh = costEst >= 0 ? costEst : 0m,
                 NgayHenTra = henTraDate != default ? henTraDate : DateTime.Now.AddDays(3)
             };
 

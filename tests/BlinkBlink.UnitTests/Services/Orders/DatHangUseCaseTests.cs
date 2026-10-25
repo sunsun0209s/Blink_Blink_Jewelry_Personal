@@ -71,6 +71,8 @@ public class DatHangUseCaseTests
             Data[hd.MaHoaDon] = hd;
             return Task.CompletedTask;
         }
+
+        public void CapNhatKhachHangTheoSoDienThoai(string soDienThoai, string maKhachHangMoi) { }
     }
 
     private class FakeGioHangRepository : IGioHangRepository

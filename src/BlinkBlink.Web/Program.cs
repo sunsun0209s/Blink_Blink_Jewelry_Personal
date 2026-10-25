@@ -41,6 +41,7 @@ foreach (var connStr in candidateConnections)
 }
 
 dbHelper ??= new DatabaseHelper("Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
+dbHelper.EnsureSchemaCompatibility();
 builder.Services.AddSingleton(dbHelper);
 
 // Đăng ký các Kho dữ liệu (Repositories) sử dụng ADO.NET thuần

@@ -24,9 +24,21 @@ public class QuanLyKhachHangUseCaseTests
             return Data.TryGetValue(maKH, out var kh) ? kh : null;
         }
 
+        public KhachHang? TimTheoSoDienThoai(string soDienThoai)
+        {
+            return Data.Values.FirstOrDefault(k => k.SoDienThoai == soDienThoai);
+        }
+
         public List<KhachHang> LayTatCa()
         {
             return new List<KhachHang>(Data.Values);
+        }
+
+        public bool KiemTraCoTheXoa(string maKH) => true;
+
+        public bool XoaKhachHang(string maKH)
+        {
+            return Data.Remove(maKH);
         }
     }
 

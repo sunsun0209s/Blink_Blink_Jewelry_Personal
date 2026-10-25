@@ -43,6 +43,8 @@ public class BaoHanhRepository : IBaoHanhRepository
                 SET MaKhachHang = @MaKhachHang,
                     MaSanPham = @MaSanPham,
                     LyDoBaoHanh = @LyDoBaoHanh,
+                    ChiPhiUocTinh = @ChiPhiUocTinh,
+                    ChiPhiThucTe = @ChiPhiThucTe,
                     ChiPhiBaoHanh = @ChiPhiBaoHanh,
                     TrangThaiXuLy = @TrangThaiXuLy,
                     NgayTiepNhan = @NgayTiepNhan,
@@ -51,8 +53,8 @@ public class BaoHanhRepository : IBaoHanhRepository
             END
             ELSE
             BEGIN
-                INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra)
-                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra);
+                INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, ChiPhiUocTinh, ChiPhiThucTe, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra)
+                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @ChiPhiUocTinh, @ChiPhiThucTe, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra);
             END";
 
         var parameters = new[]
@@ -61,6 +63,8 @@ public class BaoHanhRepository : IBaoHanhRepository
             new SqlParameter("@MaKhachHang", SqlDbType.VarChar, 50) { Value = pbh.MaKhachHang },
             new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = pbh.MaSanPham },
             new SqlParameter("@LyDoBaoHanh", SqlDbType.NVarChar, 500) { Value = pbh.LyDoBaoHanh },
+            new SqlParameter("@ChiPhiUocTinh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiUocTinh },
+            new SqlParameter("@ChiPhiThucTe", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiThucTe },
             new SqlParameter("@ChiPhiBaoHanh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiBaoHanh },
             new SqlParameter("@TrangThaiXuLy", SqlDbType.NVarChar, 50) { Value = pbh.TrangThaiXuLy },
             new SqlParameter("@NgayTiepNhan", SqlDbType.DateTime2) { Value = pbh.NgayTiepNhan },
@@ -167,7 +171,9 @@ public class BaoHanhRepository : IBaoHanhRepository
 
         const string sql = @"
             UPDATE dbo.PhieuBaoHanh
-            SET ChiPhiBaoHanh = @ChiPhiBaoHanh,
+            SET ChiPhiUocTinh = @ChiPhiUocTinh,
+                ChiPhiThucTe = @ChiPhiThucTe,
+                ChiPhiBaoHanh = @ChiPhiBaoHanh,
                 TrangThaiXuLy = @TrangThaiXuLy,
                 NgayHenTra = @NgayHenTra
             WHERE SoPhieuBH = @SoPhieuBH;";
@@ -175,6 +181,8 @@ public class BaoHanhRepository : IBaoHanhRepository
         var parameters = new[]
         {
             new SqlParameter("@SoPhieuBH", SqlDbType.VarChar, 50) { Value = pbh.SoPhieuBH },
+            new SqlParameter("@ChiPhiUocTinh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiUocTinh },
+            new SqlParameter("@ChiPhiThucTe", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiThucTe },
             new SqlParameter("@ChiPhiBaoHanh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiBaoHanh },
             new SqlParameter("@TrangThaiXuLy", SqlDbType.NVarChar, 50) { Value = pbh.TrangThaiXuLy },
             new SqlParameter("@NgayHenTra", SqlDbType.DateTime2) { Value = (object?)pbh.NgayHenTra ?? DBNull.Value }
@@ -212,15 +220,42 @@ public class BaoHanhRepository : IBaoHanhRepository
 
     private static PhieuBaoHanh MapReaderToPhieuBaoHanh(SqlDataReader reader)
     {
+        decimal chiPhiUocTinh = 0m;
+        decimal chiPhiThucTe = 0m;
+
+        try
+        {
+            var ordUocTinh = reader.GetOrdinal("ChiPhiUocTinh");
+            if (!reader.IsDBNull(ordUocTinh)) chiPhiUocTinh = reader.GetDecimal(ordUocTinh);
+        }
+        catch { }
+
+        try
+        {
+            var ordThucTe = reader.GetOrdinal("ChiPhiThucTe");
+            if (!reader.IsDBNull(ordThucTe)) chiPhiThucTe = reader.GetDecimal(ordThucTe);
+        }
+        catch { }
+
+        decimal chiPhiBaoHanh = 0m;
+        try
+        {
+            chiPhiBaoHanh = reader.GetDecimal(reader.GetOrdinal("ChiPhiBaoHanh"));
+        }
+        catch { }
+
+        if (chiPhiUocTinh == 0 && chiPhiBaoHanh > 0) chiPhiUocTinh = chiPhiBaoHanh;
+
         var pbh = new PhieuBaoHanh(
             soPhieuBH: reader.GetString(reader.GetOrdinal("SoPhieuBH")),
             maKhachHang: reader.GetString(reader.GetOrdinal("MaKhachHang")),
             maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
             lyDoBaoHanh: reader.GetString(reader.GetOrdinal("LyDoBaoHanh")),
-            chiPhiBaoHanh: reader.GetDecimal(reader.GetOrdinal("ChiPhiBaoHanh")),
+            chiPhiUocTinh: chiPhiUocTinh,
             trangThaiXuLy: reader.GetString(reader.GetOrdinal("TrangThaiXuLy")),
             ngayTiepNhan: reader.GetDateTime(reader.GetOrdinal("NgayTiepNhan")),
-            ngayHenTra: reader.IsDBNull(reader.GetOrdinal("NgayHenTra")) ? null : reader.GetDateTime(reader.GetOrdinal("NgayHenTra"))
+            ngayHenTra: reader.IsDBNull(reader.GetOrdinal("NgayHenTra")) ? null : reader.GetDateTime(reader.GetOrdinal("NgayHenTra")),
+            chiPhiThucTe: chiPhiThucTe
         );
 
         if (!reader.IsDBNull(reader.GetOrdinal("TenSanPham")))

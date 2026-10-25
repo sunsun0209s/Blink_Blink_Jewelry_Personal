@@ -314,6 +314,15 @@ public class ProductsView : UserControl
         colTrangThai.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
+        var colTonKho = new DataGridViewTextBoxColumn 
+        { 
+            Name = "SoLuongTon", 
+            HeaderText = "TỒN KHO", 
+            Width = 95, 
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } 
+        };
+        colTonKho.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
         var colHinhAnh = new DataGridViewTextBoxColumn 
         { 
             Name = "HinhAnh", 
@@ -323,7 +332,7 @@ public class ProductsView : UserControl
         };
         colHinhAnh.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-        _dgvProducts.Columns.AddRange(colMa, colTen, colDm, colChatLieu, colSize, colGiaNhap, colGiaBan, colGiamGia, colTrangThai, colHinhAnh);
+        _dgvProducts.Columns.AddRange(colMa, colTen, colDm, colChatLieu, colSize, colGiaNhap, colGiaBan, colGiamGia, colTonKho, colTrangThai, colHinhAnh);
     }
 
     public void LoadProductsData()
@@ -419,6 +428,7 @@ public class ProductsView : UserControl
                 p.GiaNhap.ToString("N0", viVn),
                 p.GiaBan.ToString("N0", viVn),
                 discountText,
+                p.SoLuongTon.ToString("N0", viVn),
                 FormatStatusText(p.TrangThai),
                 hasImage
             );
@@ -428,6 +438,18 @@ public class ProductsView : UserControl
             {
                 cellDiscount.Style.ForeColor = UITheme.DangerColor;
                 cellDiscount.Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            }
+
+            var cellTonKho = _dgvProducts.Rows[rowIdx].Cells["SoLuongTon"];
+            if (p.SoLuongTon > 0)
+            {
+                cellTonKho.Style.ForeColor = Color.FromArgb(16, 185, 129); // Xanh lục ngọc
+                cellTonKho.Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            }
+            else
+            {
+                cellTonKho.Style.ForeColor = UITheme.DangerColor;
+                cellTonKho.Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             }
 
             var cellStatus = _dgvProducts.Rows[rowIdx].Cells["TrangThai"];

@@ -191,4 +191,74 @@ public class NhanVienRepository : INhanVienRepository
 
         return list;
     }
+
+    public void CapNhatNhanVien(NhanVien nv)
+    {
+        LuuNhanVien(nv);
+    }
+
+    public bool KiemTraCoTheXoa(string maNV)
+    {
+        if (string.IsNullOrWhiteSpace(maNV)) return false;
+
+        const string sqlCheck = @"
+            DECLARE @MaND VARCHAR(50);
+            SELECT @MaND = MaNguoiDung FROM dbo.NhanVien WHERE MaNhanVien = @MaNV OR MaNguoiDung = @MaNV;
+            IF @MaND IS NULL SET @MaND = @MaNV;
+
+            DECLARE @CountPN INT = 0;
+            DECLARE @CountHD INT = 0;
+            DECLARE @CountKK INT = 0;
+
+            SELECT @CountPN = COUNT(1) FROM dbo.PhieuNhapKho WHERE MaNhanVien = @MaND OR MaNhanVien = @MaNV;
+            SELECT @CountHD = COUNT(1) FROM dbo.HoaDon WHERE MaNhanVien = @MaND OR MaNhanVien = @MaNV;
+            SELECT @CountKK = COUNT(1) FROM dbo.PhieuKiemKe WHERE MaNhanVienKho = @MaND OR MaNhanVienKho = @MaNV;
+
+            SELECT (@CountPN + @CountHD + @CountKK) AS TongPhatSinh;";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sqlCheck, conn);
+        cmd.Parameters.Add(new SqlParameter("@MaNV", SqlDbType.VarChar, 50) { Value = maNV.Trim() });
+
+        var result = cmd.ExecuteScalar();
+        if (result != null && int.TryParse(result.ToString(), out var count))
+        {
+            return count == 0;
+        }
+
+        return false;
+    }
+
+    public bool XoaNhanVien(string maNV)
+    {
+        if (string.IsNullOrWhiteSpace(maNV) || !KiemTraCoTheXoa(maNV))
+        {
+            return false;
+        }
+
+        using var conn = _dbHelper.GetConnection();
+        using var tx = conn.BeginTransaction();
+        try
+        {
+            const string sqlDelete = @"
+                DECLARE @MaND VARCHAR(50);
+                SELECT @MaND = MaNguoiDung FROM dbo.NhanVien WHERE MaNhanVien = @MaNV OR MaNguoiDung = @MaNV;
+                IF @MaND IS NULL SET @MaND = @MaNV;
+
+                DELETE FROM dbo.NhanVien WHERE MaNguoiDung = @MaND OR MaNhanVien = @MaNV;
+                DELETE FROM dbo.NguoiDung WHERE MaNguoiDung = @MaND;";
+
+            using var cmd = new SqlCommand(sqlDelete, conn, tx);
+            cmd.Parameters.Add(new SqlParameter("@MaNV", SqlDbType.VarChar, 50) { Value = maNV.Trim() });
+            cmd.ExecuteNonQuery();
+
+            tx.Commit();
+            return true;
+        }
+        catch
+        {
+            tx.Rollback();
+            return false;
+        }
+    }
 }

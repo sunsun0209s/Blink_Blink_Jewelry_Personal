@@ -72,7 +72,7 @@ public class TiepNhanBaoHanhUseCase
             maKhachHang: request.MaKhachHang.Trim(),
             maSanPham: request.MaSanPham.Trim(),
             lyDoBaoHanh: request.LyDoBaoHanh.Trim(),
-            chiPhiBaoHanh: Math.Max(0m, request.ChiPhiBaoHanh),
+            chiPhiUocTinh: Math.Max(0m, request.ChiPhiBaoHanh),
             trangThaiXuLy: "DangBaoHanh",
             ngayTiepNhan: DateTime.UtcNow,
             ngayHenTra: request.NgayHenTra

@@ -57,17 +57,25 @@ public class AdminServiceScope
     public IThongKeRepository ThongKeRepo { get; }
     public IPhieuNhapKhoRepository PhieuNhapKhoRepo { get; }
     public IPhieuKiemKeRepository PhieuKiemKeRepo { get; }
+    public INguoiDungRepository NguoiDungRepo { get; }
 
     public QuanLySanPhamUseCase QuanLySanPham { get; }
     public XacNhanNhapKhoUseCase XacNhanNhapKho { get; }
     public XuLyDonHangUseCase XuLyDonHang { get; }
     public DatHangUseCase DatHang { get; }
+    public BanHangOfflineUseCase BanHangOffline { get; }
     public TiepNhanBaoHanhUseCase TiepNhanBaoHanh { get; }
     public XuLyBaoHanhUseCase XuLyBaoHanh { get; }
     public QuanLyNhanVienUseCase QuanLyNhanVien { get; }
     public QuanLyKhachHangUseCase QuanLyKhachHang { get; }
     public ThongKeDoanhThuUseCase ThongKeDoanhThu { get; }
     public ThongKeKhoHangUseCase ThongKeKhoHang { get; }
+
+    /// <summary>
+    /// Người dùng / Nhân viên đang đăng nhập vào phần mềm Admin WinForms phục vụ phân quyền.
+    /// </summary>
+    public NguoiDung? CurrentUser { get; set; }
+    public NhanVien? CurrentStaff { get; set; }
 
     public bool IsDatabaseConnected { get; private set; }
 
@@ -103,6 +111,9 @@ public class AdminServiceScope
 
         if (IsDatabaseConnected && dbHelper != null)
         {
+            // Tự động kiểm tra và nâng cấp schema nếu database hiện tại thiếu cột
+            dbHelper.EnsureSchemaCompatibility();
+
             SanPhamRepo = new SanPhamRepository(dbHelper);
             DanhMucRepo = new DanhMucRepository(dbHelper);
             HoaDonRepo = new HoaDonRepository(dbHelper);
@@ -114,6 +125,7 @@ public class AdminServiceScope
             ThongKeRepo = new ThongKeRepository(dbHelper);
             PhieuNhapKhoRepo = new PhieuNhapKhoRepositoryImpl(dbHelper);
             PhieuKiemKeRepo = new PhieuKiemKeRepository(dbHelper);
+            NguoiDungRepo = new NguoiDungRepository(dbHelper);
         }
         else
         {
@@ -132,6 +144,7 @@ public class AdminServiceScope
             ThongKeRepo = mock.ThongKeRepo;
             PhieuNhapKhoRepo = mock.PhieuNhapKhoRepo;
             PhieuKiemKeRepo = mock.PhieuKiemKeRepo;
+            NguoiDungRepo = mock.NguoiDungRepo;
         }
 
         // Khởi tạo tất cả Use Cases theo Clean Architecture
@@ -139,6 +152,7 @@ public class AdminServiceScope
         XacNhanNhapKho = new XacNhanNhapKhoUseCase(PhieuNhapKhoRepo, SanPhamRepo);
         XuLyDonHang = new XuLyDonHangUseCase(HoaDonRepo, SanPhamRepo);
         DatHang = new DatHangUseCase(HoaDonRepo, GioHangRepo, SanPhamRepo);
+        BanHangOffline = new BanHangOfflineUseCase(HoaDonRepo, SanPhamRepo, KhachHangRepo);
         TiepNhanBaoHanh = new TiepNhanBaoHanhUseCase(BaoHanhRepo, SanPhamRepo);
         XuLyBaoHanh = new XuLyBaoHanhUseCase(BaoHanhRepo, SanPhamRepo);
         QuanLyNhanVien = new QuanLyNhanVienUseCase(NhanVienRepo, VaiTroRepo);

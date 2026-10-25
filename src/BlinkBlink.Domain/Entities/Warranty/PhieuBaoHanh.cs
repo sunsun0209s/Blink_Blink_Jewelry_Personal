@@ -35,13 +35,32 @@ public class PhieuBaoHanh
     public string LyDoBaoHanh { get; set; } = string.Empty;
 
     /// <summary>
-    /// Chi phí bảo hành thực tế (bằng 0 nếu miễn phí trọn đời)
-    /// Khớp thuộc tính: - _chiPhiBaoHanh: decimal trong Diagram
+    /// Chi phí bảo hành ước tính ban đầu khi tiếp nhận
+    /// Khớp thuộc tính: - _chiPhiUocTinh: decimal trong Diagram
     /// </summary>
-    public decimal ChiPhiBaoHanh { get; set; }
+    public decimal ChiPhiUocTinh { get; set; }
 
     /// <summary>
-    /// Trạng thái xử lý: DangBaoHanh, DaHoanTat, DaHuy
+    /// Chi phí sửa chữa/xi mạ thực tế sau khi quyết toán kỹ thuật
+    /// Khớp thuộc tính: - _chiPhiThucTe: decimal trong Diagram
+    /// </summary>
+    public decimal ChiPhiThucTe { get; set; }
+
+    /// <summary>
+    /// Chi phí bảo hành chung (tương thích ngược với hệ thống cũ)
+    /// </summary>
+    public decimal ChiPhiBaoHanh
+    {
+        get => ChiPhiThucTe > 0 ? ChiPhiThucTe : ChiPhiUocTinh;
+        set
+        {
+            ChiPhiThucTe = value;
+            if (ChiPhiUocTinh == 0) ChiPhiUocTinh = value;
+        }
+    }
+
+    /// <summary>
+    /// Trạng thái xử lý: DangBaoHanh, DaXuLy, DaHoanTat, DaHuy
     /// Khớp thuộc tính: - _trangThaiXuLy: string trong Diagram
     /// </summary>
     public string TrangThaiXuLy { get; set; } = "DangBaoHanh";
@@ -67,16 +86,18 @@ public class PhieuBaoHanh
         string maKhachHang,
         string maSanPham,
         string lyDoBaoHanh,
-        decimal chiPhiBaoHanh = 0m,
+        decimal chiPhiUocTinh = 0m,
         string trangThaiXuLy = "DangBaoHanh",
         DateTime? ngayTiepNhan = null,
-        DateTime? ngayHenTra = null)
+        DateTime? ngayHenTra = null,
+        decimal chiPhiThucTe = 0m)
     {
         SoPhieuBH = soPhieuBH;
         MaKhachHang = maKhachHang;
         MaSanPham = maSanPham;
         LyDoBaoHanh = lyDoBaoHanh;
-        ChiPhiBaoHanh = chiPhiBaoHanh;
+        ChiPhiUocTinh = chiPhiUocTinh;
+        ChiPhiThucTe = chiPhiThucTe;
         TrangThaiXuLy = trangThaiXuLy;
         NgayTiepNhan = ngayTiepNhan ?? DateTime.UtcNow;
         NgayHenTra = ngayHenTra;
@@ -100,7 +121,21 @@ public class PhieuBaoHanh
     }
 
     /// <summary>
-    /// Hoàn tất công tác bảo hành trang sức, chuyển trạng thái sang DaHoanTat.
+    /// Quyết toán chi phí thực tế cho phiếu bảo hành, chuyển trạng thái sang DaXuLy (chờ khách đến nhận).
+    /// Khớp phương thức: + QuyetToan(chiPhi: decimal): bool trong Diagram.
+    /// </summary>
+    /// <param name="chiPhiThucTe">Chi phí thực tế phát sinh</param>
+    /// <returns>True nếu quyết toán hợp lệ</returns>
+    public bool QuyetToan(decimal chiPhiThucTe)
+    {
+        if (chiPhiThucTe < 0) return false;
+        ChiPhiThucTe = chiPhiThucTe;
+        TrangThaiXuLy = "DaXuLy";
+        return true;
+    }
+
+    /// <summary>
+    /// Hoàn tất công tác bảo hành trang sức khi khách hàng đến nhận đồ, chuyển trạng thái sang DaHoanTat.
     /// Khớp phương thức: + HoanTatBaoHanh(): bool trong Diagram.
     /// </summary>
     /// <returns>True nếu cập nhật thành công</returns>
@@ -114,7 +149,7 @@ public class PhieuBaoHanh
     /// Tính toán hoặc kết xuất số tiền cần thanh toán cho dịch vụ bảo hành này.
     /// Khớp phương thức: + TinhPhiBaoHanh(): decimal trong Diagram.
     /// </summary>
-    /// <returns>Số tiền chi phí bảo hành</returns>
+    /// <returns>Số tiền chi phí bảo hành thực tế</returns>
     public decimal TinhPhiBaoHanh()
     {
         return Math.Max(0m, ChiPhiBaoHanh);

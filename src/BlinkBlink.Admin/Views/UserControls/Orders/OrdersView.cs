@@ -20,6 +20,7 @@ public class OrdersView : UserControl
     private List<HoaDon> _allOrders = new();
 
     private TextBox _txtSearch = null!;
+    private ComboBox _cboOrderSource = null!;
     private ComboBox _cboStatus = null!;
     private Button _btnApprove = null!;
     private Button _btnShipping = null!;
@@ -52,7 +53,7 @@ public class OrdersView : UserControl
         var topHeaderPanel = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 110,
+            Height = 100,
             Padding = new Padding(20, 15, 20, 10),
             BackColor = UITheme.CanvasBackground
         };
@@ -62,14 +63,14 @@ public class OrdersView : UserControl
         {
             Dock = DockStyle.Right,
             Width = 520,
-            Height = 85,
+            Height = 80,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false
         };
 
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Đơn", out _lblKpiTotal, UITheme.TextPrimary));
-        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt", out _lblKpiPending, UITheme.WarningColor));
-        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao", out _lblKpiDelivered, UITheme.SuccessColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Chờ Duyệt Online", out _lblKpiPending, UITheme.WarningColor));
+        pnlKpis.Controls.Add(CreateKpiCard("Đã Giao / Hoàn Tất", out _lblKpiDelivered, UITheme.SuccessColor));
 
         var pnlTitleContainer = new Panel
         {
@@ -80,7 +81,7 @@ public class OrdersView : UserControl
 
         var lblTitle = new Label
         {
-            Text = "QUẢN LÝ BÁN HÀNG & PHÊ DUYỆT ĐƠN HÀNG",
+            Text = "QUẢN LÝ ĐƠN HÀNG",
             Font = UITheme.HeaderFont,
             ForeColor = UITheme.TextPrimary,
             Dock = DockStyle.Top,
@@ -91,7 +92,7 @@ public class OrdersView : UserControl
 
         var lblSubTitle = new Label
         {
-            Text = "Theo dõi đơn hàng online, phê duyệt xử lý đóng gói và bàn giao vận chuyển trang sức",
+            Text = "Quản lý tập trung toàn bộ đơn hàng Online và Offline tại quầy, theo dõi trạng thái và kiểm soát luồng giao nhận",
             Font = UITheme.RegularFont,
             ForeColor = UITheme.TextSecondary,
             Dock = DockStyle.Top,
@@ -115,53 +116,72 @@ public class OrdersView : UserControl
             Text = "Tìm kiếm:",
             AutoSize = true,
             ForeColor = UITheme.TextSecondary,
-            Margin = new Padding(0, 8, 6, 0)
+            Margin = new Padding(0, 8, 4, 0)
         };
 
         _txtSearch = new TextBox
         {
-            Width = 180,
+            Width = 150,
             Height = 28,
             Font = UITheme.RegularFont,
             PlaceholderText = "Mã đơn, SĐT, Khách...",
-            Margin = new Padding(0, 4, 15, 4)
+            Margin = new Padding(0, 4, 10, 4)
         };
         _txtSearch.TextChanged += (s, e) => FilterOrders();
+
+        var lblSource = new Label
+        {
+            Text = "Nguồn đơn:",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Margin = new Padding(0, 8, 4, 0)
+        };
+
+        _cboOrderSource = new ComboBox
+        {
+            Width = 145,
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 4, 10, 4)
+        };
+        _cboOrderSource.Items.AddRange(new object[] { "Tất Cả Nguồn Đơn", "🌐 Đơn Online", "🏬 Đơn Offline (Quầy)" });
+        _cboOrderSource.SelectedIndex = 0;
+        _cboOrderSource.SelectedIndexChanged += (s, e) => FilterOrders();
 
         var lblStatusFilter = new Label
         {
             Text = "Trạng thái:",
             AutoSize = true,
             ForeColor = UITheme.TextSecondary,
-            Margin = new Padding(0, 8, 6, 0)
+            Margin = new Padding(0, 8, 4, 0)
         };
 
         _cboStatus = new ComboBox
         {
-            Width = 140,
+            Width = 135,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Font = UITheme.RegularFont,
-            Margin = new Padding(0, 4, 15, 4)
+            Margin = new Padding(0, 4, 10, 4)
         };
-        _cboStatus.Items.AddRange(new object[] { "Tất Cả", "ChoDuyet", "DangDongGoi", "DangGiao", "DaGiao", "DaHuy" });
+        _cboStatus.Items.AddRange(new object[] { "Tất Cả Trạng Thái", "ChoDuyet", "DangDongGoi", "DangGiao", "DaGiao", "DaThanhToan", "DaHuy" });
         _cboStatus.SelectedIndex = 0;
         _cboStatus.SelectedIndexChanged += (s, e) => FilterOrders();
 
         // Nút hành động
         _btnApprove = UITheme.CreateFlatButton("✓ Duyệt Đơn", UITheme.PrimaryGold, Color.Black);
-        _btnApprove.Margin = new Padding(0, 2, 8, 2);
+        _btnApprove.Margin = new Padding(0, 2, 6, 2);
         _btnApprove.Click += BtnApprove_Click;
 
         _btnShipping = UITheme.CreateFlatButton("🚚 Đang Giao", UITheme.DarkHeader, Color.White);
-        _btnShipping.Margin = new Padding(0, 2, 8, 2);
+        _btnShipping.Margin = new Padding(0, 2, 6, 2);
         _btnShipping.Click += (s, e) => UpdateOrderStatus("DangGiao");
 
         _btnDelivered = UITheme.CreateFlatButton("★ Đã Giao", UITheme.SuccessColor, Color.White);
-        _btnDelivered.Margin = new Padding(0, 2, 8, 2);
+        _btnDelivered.Margin = new Padding(0, 2, 6, 2);
         _btnDelivered.Click += (s, e) => UpdateOrderStatus("DaGiao");
 
         _btnCancel = UITheme.CreateFlatButton("✕ Hủy Đơn", UITheme.DangerColor, Color.White);
-        _btnCancel.Margin = new Padding(0, 2, 8, 2);
+        _btnCancel.Margin = new Padding(0, 2, 6, 2);
         _btnCancel.Click += BtnCancel_Click;
 
         _btnRefresh = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
@@ -170,6 +190,8 @@ public class OrdersView : UserControl
 
         toolbarPanel.Controls.Add(lblSearch);
         toolbarPanel.Controls.Add(_txtSearch);
+        toolbarPanel.Controls.Add(lblSource);
+        toolbarPanel.Controls.Add(_cboOrderSource);
         toolbarPanel.Controls.Add(lblStatusFilter);
         toolbarPanel.Controls.Add(_cboStatus);
         toolbarPanel.Controls.Add(_btnApprove);
@@ -302,10 +324,11 @@ public class OrdersView : UserControl
     {
         // 1. Tắt tự động co giãn để cho phép đặt chiều cao cố định
         _dgvOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        // 2. Chỉnh chiều cao mong muốn (ví dụ: 50, 56, 60...)
-        _dgvOrders.ColumnHeadersHeight = 100;
+        // 2. Chỉnh chiều cao mong muốn
+        _dgvOrders.ColumnHeadersHeight = 38;
+        _dgvOrders.ScrollBars = ScrollBars.Both; // Kích hoạt thanh cuộn khi > 4 dòng
         _dgvOrders.Columns.Clear();
-        _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaHoaDon", HeaderText = "MÃ ĐƠN", FillWeight = 75, MinimumWidth = 85 });
+        _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaHoaDon", HeaderText = "MÃ ĐƠN HÀNG", FillWeight = 95, MinimumWidth = 110 });
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgayLap", HeaderText = "NGÀY LẬP", FillWeight = 90, MinimumWidth = 95 });
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", HeaderText = "KHÁCH HÀNG", FillWeight = 80, MinimumWidth = 90 });
         _dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoDienThoai", HeaderText = "SỐ ĐT NHẬN", FillWeight = 90, MinimumWidth = 105 });
@@ -319,10 +342,12 @@ public class OrdersView : UserControl
 
     private void ConfigureOrderItemsGrid()
     {
+        _dgvOrderItems.ScrollBars = ScrollBars.Both; // Kích hoạt thanh cuộn khi > 4 mặt hàng
         _dgvOrderItems.Columns.Clear();
-        _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 85, MinimumWidth = 120 });
+        _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 90, MinimumWidth = 120 });
         _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 60, MinimumWidth = 85, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
         _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonGia", HeaderText = "ĐƠN GIÁ (VND)", FillWeight = 100, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } });
+        _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiamGia", HeaderText = "% GIẢM", FillWeight = 60, MinimumWidth = 75, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = UITheme.TabularNumericFont } });
         _dgvOrderItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 110, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } });
     }
 
@@ -338,13 +363,14 @@ public class OrdersView : UserControl
         var viVn = new CultureInfo("vi-VN");
         _lblKpiTotal.Text = _allOrders.Count.ToString("N0", viVn);
         _lblKpiPending.Text = _allOrders.Count(o => string.Equals(o.TrangThaiDonHang, "ChoDuyet", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
-        _lblKpiDelivered.Text = _allOrders.Count(o => string.Equals(o.TrangThaiDonHang, "DaGiao", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
+        _lblKpiDelivered.Text = _allOrders.Count(o => string.Equals(o.TrangThaiDonHang, "DaGiao", StringComparison.OrdinalIgnoreCase) || string.Equals(o.TrangThaiDonHang, "DaThanhToan", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
     }
 
     private void FilterOrders()
     {
         var query = _txtSearch.Text.Trim().ToLowerInvariant();
-        var selectedStatus = _cboStatus.SelectedItem?.ToString() ?? "Tất Cả";
+        var selectedSource = _cboOrderSource.SelectedIndex; // 0: Tất cả, 1: Online, 2: Offline
+        var selectedStatus = _cboStatus.SelectedItem?.ToString() ?? "Tất Cả Trạng Thái";
 
         var filtered = _allOrders.Where(o =>
         {
@@ -354,10 +380,20 @@ public class OrdersView : UserControl
                               o.MaKhachHang.ToLowerInvariant().Contains(query) ||
                               o.DiaChiGiaoHang.ToLowerInvariant().Contains(query);
 
-            var matchStatus = selectedStatus == "Tất Cả" ||
+            var matchSource = true;
+            if (selectedSource == 1) // Online
+            {
+                matchSource = o.MaHoaDon.StartsWith("HD_ONLINE_", StringComparison.OrdinalIgnoreCase);
+            }
+            else if (selectedSource == 2) // Offline
+            {
+                matchSource = o.MaHoaDon.StartsWith("HD_OFFLINE_", StringComparison.OrdinalIgnoreCase);
+            }
+
+            var matchStatus = selectedStatus == "Tất Cả Trạng Thái" ||
                               string.Equals(o.TrangThaiDonHang, selectedStatus, StringComparison.OrdinalIgnoreCase);
 
-            return matchSearch && matchStatus;
+            return matchSearch && matchSource && matchStatus;
         }).ToList();
 
         _dgvOrders.Rows.Clear();
@@ -382,7 +418,7 @@ public class OrdersView : UserControl
             var cellStatus = _dgvOrders.Rows[rowIdx].Cells["TrangThai"];
             if (string.Equals(hd.TrangThaiDonHang, "ChoDuyet", StringComparison.OrdinalIgnoreCase))
                 cellStatus.Style.ForeColor = UITheme.WarningColor;
-            else if (string.Equals(hd.TrangThaiDonHang, "DaGiao", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(hd.TrangThaiDonHang, "DaGiao", StringComparison.OrdinalIgnoreCase) || string.Equals(hd.TrangThaiDonHang, "DaThanhToan", StringComparison.OrdinalIgnoreCase))
                 cellStatus.Style.ForeColor = UITheme.SuccessColor;
             else if (string.Equals(hd.TrangThaiDonHang, "DaHuy", StringComparison.OrdinalIgnoreCase))
                 cellStatus.Style.ForeColor = UITheme.DangerColor;
@@ -397,6 +433,10 @@ public class OrdersView : UserControl
         {
             _dgvOrderItems.Rows.Clear();
             _lblDetailTitle.Text = "DANH SÁCH MẶT HÀNG TRANG SỨC (Chưa chọn đơn)";
+            _btnApprove.Enabled = false;
+            _btnShipping.Enabled = false;
+            _btnDelivered.Enabled = false;
+            _btnCancel.Enabled = false;
         }
     }
 
@@ -415,9 +455,27 @@ public class OrdersView : UserControl
         var hd = _allOrders.FirstOrDefault(h => h.MaHoaDon == maHoaDon);
         if (hd == null) return;
 
-        _lblDetailTitle.Text = $"DANH SÁCH MẶT HÀNG TRANG SỨC - ĐƠN HÀNG #{hd.MaHoaDon} ({hd.TrangThaiDonHang})";
-        _dgvOrderItems.Rows.Clear();
+        bool isOffline = hd.MaHoaDon.StartsWith("HD_OFFLINE_", StringComparison.OrdinalIgnoreCase);
 
+        // Với đơn Offline: Vô hiệu hóa các nút Duyệt đơn, Đang giao, Đã giao, Hủy đơn
+        if (isOffline)
+        {
+            _btnApprove.Enabled = false;
+            _btnShipping.Enabled = false;
+            _btnDelivered.Enabled = false;
+            _btnCancel.Enabled = false;
+            _lblDetailTitle.Text = $"DANH SÁCH MẶT HÀNG TRANG SỨC - ĐƠN QUẦY #{hd.MaHoaDon} (Đã thanh toán tại quầy)";
+        }
+        else
+        {
+            _btnApprove.Enabled = string.Equals(hd.TrangThaiDonHang, "ChoDuyet", StringComparison.OrdinalIgnoreCase);
+            _btnShipping.Enabled = string.Equals(hd.TrangThaiDonHang, "DangDongGoi", StringComparison.OrdinalIgnoreCase);
+            _btnDelivered.Enabled = string.Equals(hd.TrangThaiDonHang, "DangGiao", StringComparison.OrdinalIgnoreCase);
+            _btnCancel.Enabled = !string.Equals(hd.TrangThaiDonHang, "DaGiao", StringComparison.OrdinalIgnoreCase) && !string.Equals(hd.TrangThaiDonHang, "DaHuy", StringComparison.OrdinalIgnoreCase);
+            _lblDetailTitle.Text = $"DANH SÁCH MẶT HÀNG TRANG SỨC - ĐƠN ONLINE #{hd.MaHoaDon} ({hd.TrangThaiDonHang})";
+        }
+
+        _dgvOrderItems.Rows.Clear();
         var viVn = new CultureInfo("vi-VN");
         if (hd.ChiTietHoaDons != null)
         {
@@ -427,6 +485,7 @@ public class OrdersView : UserControl
                     item.MaSanPham,
                     item.SoLuong.ToString("N0", viVn),
                     item.DonGia.ToString("N0", viVn),
+                    item.PhanTramGiamGia + "%",
                     item.TinhThanhTien().ToString("N0", viVn)
                 );
             }
@@ -444,6 +503,12 @@ public class OrdersView : UserControl
         var maHoaDon = _dgvOrders.SelectedRows[0].Cells["MaHoaDon"].Value?.ToString();
         if (string.IsNullOrEmpty(maHoaDon)) return;
 
+        if (maHoaDon.StartsWith("HD_OFFLINE_", StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show("Đơn hàng offline được lập và thanh toán trực tiếp tại quầy, không thể thực hiện phê duyệt.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
         var hd = _allOrders.FirstOrDefault(h => h.MaHoaDon == maHoaDon);
         if (hd == null) return;
 
@@ -455,7 +520,7 @@ public class OrdersView : UserControl
 
         try
         {
-            // Thực thi Use Case phê duyệt đơn (truyền mã người dùng của nhân viên duyệt đơn theo đúng khóa ngoại FK_HoaDon_NhanVien)
+            // Thực thi Use Case phê duyệt đơn
             var success = _services.XuLyDonHang.DuyetDonHang(maHoaDon, "USER_NV001");
             if (success)
             {
@@ -483,6 +548,12 @@ public class OrdersView : UserControl
 
         var maHoaDon = _dgvOrders.SelectedRows[0].Cells["MaHoaDon"].Value?.ToString();
         if (string.IsNullOrEmpty(maHoaDon)) return;
+
+        if (maHoaDon.StartsWith("HD_OFFLINE_", StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show("Đơn hàng offline không hỗ trợ chuyển đổi trạng thái giao nhận trực tuyến.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
 
         try
         {
@@ -513,6 +584,12 @@ public class OrdersView : UserControl
 
         var maHoaDon = _dgvOrders.SelectedRows[0].Cells["MaHoaDon"].Value?.ToString();
         if (string.IsNullOrEmpty(maHoaDon)) return;
+
+        if (maHoaDon.StartsWith("HD_OFFLINE_", StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show("Đơn hàng offline đã thanh toán tại quầy không thể hủy qua màn hình này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
 
         var confirm = MessageBox.Show($"Bạn có chắc chắn muốn hủy đơn hàng #{maHoaDon} không? Các sản phẩm đã bán sẽ được hoàn kho.", "Xác nhận hủy đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
         if (confirm != DialogResult.Yes) return;

@@ -41,6 +41,7 @@ public class InMemoryDataContext
     public IThongKeRepository ThongKeRepo { get; }
     public IPhieuNhapKhoRepository PhieuNhapKhoRepo { get; }
     public IPhieuKiemKeRepository PhieuKiemKeRepo { get; }
+    public INguoiDungRepository NguoiDungRepo { get; }
 
     public InMemoryDataContext()
     {
@@ -55,6 +56,7 @@ public class InMemoryDataContext
         ThongKeRepo = new MemoryThongKeRepository(this);
         PhieuNhapKhoRepo = new MemoryPhieuNhapKhoRepository(this);
         PhieuKiemKeRepo = new MemoryPhieuKiemKeRepository(this);
+        NguoiDungRepo = new MemoryNguoiDungRepository(this);
     }
 
     public void SeedInitialLuxuryData()
@@ -111,6 +113,15 @@ public class InMemoryDataContext
             if (idx >= 0) _ctx.HoaDons[idx] = hd;
         }
         public Task CapNhatHoaDonAsync(HoaDon hd, CancellationToken ct = default) { CapNhatHoaDon(hd); return Task.CompletedTask; }
+
+        public void CapNhatKhachHangTheoSoDienThoai(string soDienThoai, string maKhachHangMoi)
+        {
+            if (string.IsNullOrWhiteSpace(soDienThoai) || string.IsNullOrWhiteSpace(maKhachHangMoi)) return;
+            foreach (var hd in _ctx.HoaDons.Where(h => h.SoDienThoaiNhan == soDienThoai && (h.MaKhachHang == "0" || h.MaKhachHang == "KH_0")))
+            {
+                hd.MaKhachHang = maKhachHangMoi;
+            }
+        }
     }
 
     private class MemoryGioHangRepository : IGioHangRepository
@@ -148,18 +159,57 @@ public class InMemoryDataContext
     {
         private readonly InMemoryDataContext _ctx;
         public MemoryNhanVienRepository(InMemoryDataContext ctx) => _ctx = ctx;
-        public void LuuNhanVien(NhanVien nv) { _ctx.NhanViens.Add(nv); }
+        public void LuuNhanVien(NhanVien nv)
+        {
+            var existing = _ctx.NhanViens.FirstOrDefault(n => n.MaNhanVien == nv.MaNhanVien || n.MaNguoiDung == nv.MaNguoiDung);
+            if (existing != null) _ctx.NhanViens.Remove(existing);
+            _ctx.NhanViens.Add(nv);
+        }
+        public void CapNhatNhanVien(NhanVien nv) => LuuNhanVien(nv);
         public NhanVien? TimTheoMa(string maNV) => _ctx.NhanViens.FirstOrDefault(n => n.MaNhanVien == maNV || n.MaNguoiDung == maNV);
         public List<NhanVien> LayTatCa() => _ctx.NhanViens.ToList();
+        public bool KiemTraCoTheXoa(string maNV)
+        {
+            var hasNhapKho = _ctx.PhieuNhapKhos.Any(p => p.MaNhanVien == maNV);
+            var hasHoaDon = _ctx.HoaDons.Any(h => h.MaNhanVien == maNV);
+            var hasKiemKe = _ctx.PhieuKiemKes.Any(k => k.MaNhanVienKho == maNV);
+            return !hasNhapKho && !hasHoaDon && !hasKiemKe;
+        }
+        public bool XoaNhanVien(string maNV)
+        {
+            if (!KiemTraCoTheXoa(maNV)) return false;
+            var item = TimTheoMa(maNV);
+            if (item != null) return _ctx.NhanViens.Remove(item);
+            return false;
+        }
     }
 
     private class MemoryKhachHangRepository : IKhachHangRepository
     {
         private readonly InMemoryDataContext _ctx;
         public MemoryKhachHangRepository(InMemoryDataContext ctx) => _ctx = ctx;
-        public void LuuKhachHang(KhachHang kh) { _ctx.KhachHangs.Add(kh); }
+        public void LuuKhachHang(KhachHang kh)
+        {
+            var existing = _ctx.KhachHangs.FirstOrDefault(k => k.MaKhachHang == kh.MaKhachHang || k.MaNguoiDung == kh.MaNguoiDung);
+            if (existing != null) _ctx.KhachHangs.Remove(existing);
+            _ctx.KhachHangs.Add(kh);
+        }
         public KhachHang? TimTheoMa(string maKH) => _ctx.KhachHangs.FirstOrDefault(k => k.MaKhachHang == maKH || k.MaNguoiDung == maKH);
+        public KhachHang? TimTheoSoDienThoai(string soDienThoai) => _ctx.KhachHangs.FirstOrDefault(k => k.SoDienThoai == soDienThoai);
         public List<KhachHang> LayTatCa() => _ctx.KhachHangs.ToList();
+        public bool KiemTraCoTheXoa(string maKH)
+        {
+            var hasDon = _ctx.HoaDons.Any(h => h.MaKhachHang == maKH);
+            var hasBaoHanh = _ctx.PhieuBaoHanhs.Any(b => b.MaKhachHang == maKH);
+            return !hasDon && !hasBaoHanh;
+        }
+        public bool XoaKhachHang(string maKH)
+        {
+            if (!KiemTraCoTheXoa(maKH)) return false;
+            var item = TimTheoMa(maKH);
+            if (item != null) return _ctx.KhachHangs.Remove(item);
+            return false;
+        }
     }
 
     private class MemoryVaiTroRepository : IVaiTroRepository
@@ -213,5 +263,30 @@ public class InMemoryDataContext
         public Task LuuPhieuKiemKeAsync(PhieuKiemKe phieu, CancellationToken ct = default) { LuuPhieuKiemKe(phieu); return Task.CompletedTask; }
         public PhieuKiemKe? TimTheoId(string id) => _ctx.PhieuKiemKes.FirstOrDefault(p => p.MaPhieuKiemKe == id);
         public Task<PhieuKiemKe?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
+    }
+
+    private class MemoryNguoiDungRepository : INguoiDungRepository
+    {
+        private readonly InMemoryDataContext _ctx;
+        public MemoryNguoiDungRepository(InMemoryDataContext ctx) => _ctx = ctx;
+        public NguoiDung? TimTheoTenDangNhap(string tenDN)
+        {
+            var nv = _ctx.NhanViens.FirstOrDefault(n => string.Equals(n.TenDangNhap, tenDN, StringComparison.OrdinalIgnoreCase));
+            if (nv != null) return nv;
+            return _ctx.KhachHangs.FirstOrDefault(k => string.Equals(k.TenDangNhap, tenDN, StringComparison.OrdinalIgnoreCase));
+        }
+        public void CapNhat(NguoiDung nd)
+        {
+            if (nd is NhanVien nv)
+            {
+                var idx = _ctx.NhanViens.FindIndex(n => n.MaNguoiDung == nd.MaNguoiDung);
+                if (idx >= 0) _ctx.NhanViens[idx] = nv;
+            }
+            else if (nd is KhachHang kh)
+            {
+                var idx = _ctx.KhachHangs.FindIndex(k => k.MaNguoiDung == nd.MaNguoiDung);
+                if (idx >= 0) _ctx.KhachHangs[idx] = kh;
+            }
+        }
     }
 }

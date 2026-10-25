@@ -130,6 +130,7 @@ CREATE TABLE dbo.ChiTietHoaDon (
     MaSanPham VARCHAR(50) NOT NULL,
     DonGia DECIMAL(18, 2) NOT NULL,
     SoLuong INT NOT NULL DEFAULT 1,
+    PhanTramGiamGia INT NOT NULL DEFAULT 0,
     PRIMARY KEY (SoHoaDon, MaSanPham),
     CONSTRAINT FK_ChiTietHoaDon_HoaDon FOREIGN KEY (SoHoaDon) REFERENCES dbo.HoaDon(MaHoaDon) ON DELETE CASCADE,
     CONSTRAINT FK_ChiTietHoaDon_SanPham FOREIGN KEY (MaSanPham) REFERENCES dbo.SanPhamTrangSuc(MaSanPham)
@@ -212,8 +213,10 @@ CREATE TABLE dbo.PhieuBaoHanh (
     MaKhachHang VARCHAR(50) NOT NULL,
     MaSanPham VARCHAR(50) NOT NULL,
     LyDoBaoHanh NVARCHAR(500) NOT NULL,
+    ChiPhiUocTinh DECIMAL(18, 2) NOT NULL DEFAULT 0,
+    ChiPhiThucTe DECIMAL(18, 2) NOT NULL DEFAULT 0,
     ChiPhiBaoHanh DECIMAL(18, 2) NOT NULL DEFAULT 0,
-    TrangThaiXuLy NVARCHAR(50) NOT NULL DEFAULT 'DangBaoHanh', -- DangBaoHanh, DaHoanTat, DaHuy
+    TrangThaiXuLy NVARCHAR(50) NOT NULL DEFAULT 'DangBaoHanh', -- DangBaoHanh, DaXuLy, DaHoanTat, DaHuy
     NgayTiepNhan DATETIME2 NOT NULL DEFAULT GETDATE(),
     NgayHenTra DATETIME2 NULL,
     CONSTRAINT FK_PhieuBaoHanh_KhachHang FOREIGN KEY (MaKhachHang) REFERENCES dbo.NguoiDung(MaNguoiDung),
@@ -235,6 +238,7 @@ GO
 
 -- 2. Nạp người dùng (Bảng cha NguoiDung)
 INSERT INTO dbo.NguoiDung (MaNguoiDung, HoTen, SoDienThoai, TenDangNhap, MatKhau, MaVaiTro, TrangThai) VALUES
+('0', N'Khách Hàng Vãng Lai (POS)', '', 'khach.pos', '123456789', 'KHACHHANG', 1),
 ('USER_ADMIN01', N'Trần Minh Hoàng', '0901234567', 'admin', 'admin123', 'ADMIN', 1),
 ('USER_NV001', N'Lê Phương Thảo', '0912345678', 'thao.le', 'pass123', 'SALE', 1),
 ('USER_NV002', N'Nguyễn Quốc Huy', '0933445566', 'huy.nguyen', 'pass123', 'WAREHOUSE', 1),
@@ -251,6 +255,7 @@ GO
 
 -- 4. Nạp thông tin khách hàng (Bảng con KhachHang)
 INSERT INTO dbo.KhachHang (MaNguoiDung, MaKhachHang, NgaySinh) VALUES
+('0', 'KH_GUEST_POS', '2000-01-01'),
 ('USER_KH001', 'KH001', '1995-08-15'),
 ('USER_KH002', 'KH002', '1992-03-20');
 GO

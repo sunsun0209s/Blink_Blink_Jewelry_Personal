@@ -66,25 +66,52 @@ public class XuLyBaoHanhUseCase
     }
 
     /// <summary>
-    /// Hoàn tất dịch vụ bảo hành và ghi nhận chi phí thực tế cần thanh toán (đồng bộ).
-    /// Khớp phương thức: + HoanTatBaoHanh(soPhieu: string, chiPhiBaoHanh: decimal): bool trong Diagram.
+    /// Quyết toán chi phí sửa chữa thực tế, chuyển trạng thái sang DaXuLy (bảo hành xong chờ khách nhận).
     /// </summary>
     /// <param name="soPhieu">Số phiếu bảo hành</param>
-    /// <param name="chiPhiBaoHanh">Số tiền thực tế khách cần trả (bằng 0 nếu miễn phí)</param>
+    /// <param name="chiPhiThucTe">Chi phí thực tế phát sinh</param>
+    /// <returns>True nếu quyết toán thành công</returns>
+    public bool QuyetToanBaoHanh(string soPhieu, decimal chiPhiThucTe)
+    {
+        return QuyetToanBaoHanhAsync(soPhieu, chiPhiThucTe).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Quyết toán chi phí sửa chữa thực tế (bất đồng bộ).
+    /// </summary>
+    public async Task<bool> QuyetToanBaoHanhAsync(string soPhieu, decimal chiPhiThucTe, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(soPhieu) || chiPhiThucTe < 0)
+        {
+            return false;
+        }
+
+        var phieu = await _baoHanhRepo.TimTheoSoPhieuAsync(soPhieu, cancellationToken);
+        if (phieu == null)
+        {
+            return false;
+        }
+
+        phieu.QuyetToan(chiPhiThucTe);
+        await _baoHanhRepo.CapNhatPhieuAsync(phieu, cancellationToken);
+        return true;
+    }
+
+    /// <summary>
+    /// Hoàn tất dịch vụ bảo hành khi khách hàng đến nhận lại trang sức (đồng bộ).
+    /// </summary>
+    /// <param name="soPhieu">Số phiếu bảo hành</param>
+    /// <param name="chiPhiBaoHanh">Chi phí thực tế (nếu chưa quyết toán trước đó)</param>
     /// <returns>True nếu hoàn tất thành công, False nếu phiếu không tồn tại</returns>
-    public bool HoanTatBaoHanh(string soPhieu, decimal chiPhiBaoHanh)
+    public bool HoanTatBaoHanh(string soPhieu, decimal chiPhiBaoHanh = 0m)
     {
         return HoanTatBaoHanhAsync(soPhieu, chiPhiBaoHanh).GetAwaiter().GetResult();
     }
 
     /// <summary>
-    /// Hoàn tất dịch vụ bảo hành và ghi nhận chi phí thực tế cần thanh toán (bất đồng bộ).
+    /// Hoàn tất dịch vụ bảo hành khi khách hàng đến nhận lại trang sức (bất đồng bộ).
     /// </summary>
-    /// <param name="soPhieu">Số phiếu bảo hành</param>
-    /// <param name="chiPhiBaoHanh">Số tiền thực tế khách cần trả</param>
-    /// <param name="cancellationToken">Mã token theo dõi hủy tác vụ</param>
-    /// <returns>True nếu hoàn tất thành công, False nếu phiếu không tồn tại</returns>
-    public async Task<bool> HoanTatBaoHanhAsync(string soPhieu, decimal chiPhiBaoHanh, CancellationToken cancellationToken = default)
+    public async Task<bool> HoanTatBaoHanhAsync(string soPhieu, decimal chiPhiBaoHanh = 0m, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(soPhieu))
         {
@@ -97,8 +124,11 @@ public class XuLyBaoHanhUseCase
             return false;
         }
 
-        // Cập nhật số tiền thanh toán thực tế khi hoàn tất (có thể = 0 nếu chính sách bảo hành miễn phí)
-        phieu.ChiPhiBaoHanh = Math.Max(0m, chiPhiBaoHanh);
+        if (chiPhiBaoHanh > 0 && phieu.ChiPhiThucTe == 0)
+        {
+            phieu.ChiPhiThucTe = chiPhiBaoHanh;
+        }
+
         phieu.HoanTatBaoHanh();
 
         // Hoàn trả trạng thái của món trang sức từ DangBaoHanh về DaBan

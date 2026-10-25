@@ -80,7 +80,9 @@ public class SanPhamRepository : ISanPhamRepository
 
         const string sql = @"
             SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
-                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
+                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc,
+                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk WHERE nk.MaSanPham = s.MaSanPham), 0)
+                    - ISNULL((SELECT SUM(chd.SoLuong) FROM dbo.ChiTietHoaDon chd INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon WHERE chd.MaSanPham = s.MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'), 0)) AS SoLuongTonKho
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
             WHERE s.MaSanPham = @MaSanPham;";
@@ -103,7 +105,9 @@ public class SanPhamRepository : ISanPhamRepository
         var list = new List<SanPhamTrangSuc>();
         const string sql = @"
             SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia,
-                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc
+                   d.TenDanhMuc, d.MoTa AS MoTaDanhMuc,
+                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk WHERE nk.MaSanPham = s.MaSanPham), 0)
+                    - ISNULL((SELECT SUM(chd.SoLuong) FROM dbo.ChiTietHoaDon chd INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon WHERE chd.MaSanPham = s.MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'), 0)) AS SoLuongTonKho
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
             ORDER BY s.MaSanPham ASC;";
@@ -178,6 +182,31 @@ public class SanPhamRepository : ISanPhamRepository
             hinhAnh: hinhAnh,
             phanTramGiamGia: phanTramGiamGia
         );
+
+        var soLuongTon = 0;
+        try
+        {
+            var ordTon = reader.GetOrdinal("SoLuongTonKho");
+            if (!reader.IsDBNull(ordTon))
+            {
+                soLuongTon = Convert.ToInt32(reader.GetValue(ordTon));
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // Tránh lỗi nếu truy vấn không select cột SoLuongTonKho
+        }
+
+        // Nếu sản phẩm chưa có phiếu nhập nhưng đang ở trạng thái sẵn sàng bán, ghi nhận tồn 1 chiếc trưng bày
+        if (soLuongTon <= 0 && string.Equals(sp.TrangThai, "SanSang", StringComparison.OrdinalIgnoreCase))
+        {
+            soLuongTon = Math.Max(1, soLuongTon);
+        }
+        else
+        {
+            soLuongTon = Math.Max(0, soLuongTon);
+        }
+        sp.SoLuongTon = soLuongTon;
 
         if (!reader.IsDBNull(reader.GetOrdinal("TenDanhMuc")))
         {

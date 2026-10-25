@@ -1,4 +1,48 @@
-﻿### Đây là nơi lưu những thứ đã hoàn thành
+### Đây là nơi lưu những thứ đã hoàn thành
+
+- [x] [2026-10-25] [Quản Trị & Kho: Thêm Cột Tồn Kho, Sửa KPI Quản Trị Viên, Tích Hợp Đăng Nhập Khởi Động, Đăng Xuất, Đổi Mật Khẩu & Format Tài Khoản (ProductsView, UsersView, LoginForm, MainForm)]:
+  - **Thêm cột "TỒN KHO" vào Quản lý sản phẩm ([ProductsView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs)):**
+    - Bổ sung thuộc tính `SoLuongTon` vào thực thể [SanPhamTrangSuc.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs) (khớp 100% Class Diagram).
+    - Tích hợp subquery tính tồn kho trong [SanPhamRepository.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs): $\text{Tồn kho} = \sum(\text{Tổng nhập}) - \sum(\text{Tổng xuất đơn hàng hợp lệ})$.
+    - Bổ sung cột `TỒN KHO` trên DataGridView căn giữa với font số tabular; định dạng nổi bật màu xanh ngọc khi còn hàng và màu đỏ khi hết hàng.
+  - **Khắc phục lỗi KPI Quản trị viên = 0 ([UsersView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Identity/UsersView.cs)):**
+    - Sửa điều kiện đếm từ `n.MaVaiTro == "VT01"` sang hỗ trợ cả mã vai trò `ADMIN` và `VT01`. Thẻ KPI Quản trị viên hiển thị chính xác số lượng quản trị viên hiện có.
+  - **Màn hình Đăng Nhập khởi động ([LoginForm.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/LoginForm.cs)):**
+    - Tạo mới `LoginForm` theo chuẩn Taste Skill ánh kim Champagne sang trọng, xác thực người dùng nội bộ qua `INguoiDungRepository`.
+    - Giao diện đăng nhập chuẩn phong cách kim hoàn, đã loại bỏ hoàn toàn khối tài khoản mẫu, tinh gọn chiều cao form 440px cân đối và bảo mật.
+    - Cập nhật [Program.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Program.cs) với vòng lặp `while (true)`: mở `LoginForm`, sau khi xác thực thành công chuyển vào `MainForm(user)`.
+  - **Tái cấu trúc Header [MainForm.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/MainForm.cs):**
+    - Thay thế nút "🔄 Đổi vai trò" bằng 2 nút: `"🔑 Đổi Mật Khẩu"` (mở [ChangePasswordDialog.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/ChangePasswordDialog.cs)) và `"🚪 Đăng Xuất"` (hỏi xác nhận, đóng phiên làm việc và trở lại `LoginForm`).
+    - Chuẩn hóa chuỗi hiển thị theo đúng cú pháp yêu cầu: `Tài khoản: tên đăng nhập [vai trò]` (ví dụ: `Tài khoản: admin [admin]`, `Tài khoản: thao.le [sale]`, `Tài khoản: huy.nguyen [warehouse]`).
+  - **Kiểm thử tự động:** Biên dịch giải pháp 0 warning, 0 error (.NET 8 LTS); 35/35 test cases (Unit Tests & Integration Tests) PASSED 100%.
+
+- [x] [2026-10-25] [POS Bán Hàng Offline: Tái Cấu Trúc Popup Thanh Toán (2 Radio Tiền Mặt/QR, Bỏ Tiền Thối) & Tìm Kiếm Đề Xuất SP Nhanh (OfflineSalesView.cs)]:
+  - **Tái cấu trúc Popup Thanh toán:** Bố trí 2 RadioButton độc lập theo hàng dọc (`💵 Thanh toán Tiền Mặt tại quầy` mặc định chọn `true`, `📲 Chuyển Khoản Ngân Hàng (Quét mã QR)`), giải quyết triệt để lỗi 2 nút đè chữ lên nhau.
+  - **Đơn giản hóa Tiền mặt:** Bỏ hoàn toàn ô nhập tiền khách đưa và tiền thối lại theo đúng yêu cầu; hiển thị thẻ thông báo xác nhận thu tiền mặt tinh tế màu xanh ngọc. Khi chọn Chuyển khoản, hiển thị ảnh mã QR [QRChuyenKhoan.jpg](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/QRChuyenKhoan.jpg).
+  - **Nút thanh toán chống đè:** Đổi text nút thành `✓ XÁC NHẬN THANH TOÁN` (ngắn gọn, mạnh mẽ, không bao giờ bị cắt chữ như bản cũ).
+  - **Tìm kiếm & Đề xuất nhanh sản phẩm (`_txtSearchProduct`):** Thêm ô tìm kiếm trên nhóm chọn sản phẩm; khi nhân viên gõ tên/mã/chất liệu sản phẩm, danh sách ComboBox bên dưới lọc tức thì 0ms, tự động chọn món phù hợp nhất và cập nhật mức % giảm giá.
+  - **Kiểm thử & Biên dịch:** Giải pháp biên dịch thành công 0 warning, 0 error (.NET 8 LTS); toàn bộ 33/33 tests PASSED 100%.
+
+- [x] [2026-10-25] [POS Bán Hàng Offline: Tinh Chỉnh Súc Tích Nhãn Giảm Giá, Mở Rộng 490px Panel Nhập Liệu & Sửa Lỗi ComboBox Lặp Mã (OfflineSalesView.cs)]:
+  - **Mở rộng chiều ngang Panel Trái lên 490px:** Tăng diện tích nhập liệu thêm 50px, giúp ô ComboBox và các trường nhập liệu cực kỳ rộng rãi, hiển thị trọn vẹn thông số.
+  - **Khắc phục triệt để lỗi nuốt chữ:** Rút gọn nhãn `"Chọn Sản Phẩm:"` thành `"Sản Phẩm:"`, cột nhãn 115px hiển thị hoàn hảo không bị cắt cụt chữ *"Phẩm:"*.
+  - **Chuẩn hóa nhãn giảm giá súc tích theo yêu cầu:** Loại bỏ hoàn toàn cụm từ thừa thãi `(Theo CSDL)`. Nếu có giảm giá thì hiển thị `🏷️ Giảm {sp.PhanTramGiamGia}%` (màu xanh lá), nếu không giảm giá thì hiển thị `🏷️ Không giảm giá` (màu xám dịu).
+  - **Xóa bỏ lỗi lặp mã sản phẩm trong ComboBox:** Triển khai lớp trợ giúp `ProductComboItem` ghi đè phương thức `.ToString()` trả về định dạng chuẩn duy nhất: `[SP001] Nhẫn Solita - 15.000.000 VND...`, cấu hình `DropDownWidth = 520` xem rõ trọn vẹn thông tin khi click menu xổ xuống.
+  - **Kiểm thử & Biên dịch:** Giải pháp biên dịch thành công 0 warning, 0 error (.NET 8 LTS); 33/33 tests PASSED 100%.
+
+- [x] [2026-10-25] [POS Bán Hàng Offline: Tối Ưu Triệt Để Layout Chống Đè Chữ/Nút & Tự Động Lấy % Giảm Giá Từ CSDL (OfflineSalesView.cs)]:
+  - **Tái cấu trúc Layout chống đè 100% DPI:** Chuyển đổi khối Thông tin khách hàng (`pnlCustomer`), Thêm sản phẩm (`pnlAddProduct`) và Tóm tắt thanh toán (`pnlSummary`) sang `TableLayoutPanel` kết hợp `FlowLayoutPanel` với độ rộng cột chuẩn 135px/180px và co giãn tự động theo tỷ lệ. Ngăn chặn triệt để hiện tượng nhãn đè ô nhập liệu và cụm nút `HỦY ĐƠN` / `THANH TOÁN NGAY` đè lên dòng `TỔNG THANH TOÁN:` trên mọi màn hình scale 125% - 150%.
+  - **Tự động áp dụng % Giảm giá từ CSDL:** Đọc trực tiếp thuộc tính `SanPhamTrangSuc.PhanTramGiamGia` từ CSDL khi chọn sản phẩm trong ComboBox; hiển thị nhãn ưu đãi trực quan; khóa cứng cột `% GIẢM` trên DataGridView (`ReadOnly = true`) và loại bỏ hoàn toàn ô chọn mức giảm giá của nhân viên, bảo đảm tính minh bạch tài chính.
+  - **Tự động nhận diện khách hàng qua SĐT:** Loại bỏ nút kính lúp thủ công rườm rà; tích hợp sự kiện `TextChanged` và `Leave` tự động truy vấn CSDL theo SĐT, tự động điền họ tên khách hàng và cập nhật huy hiệu liên kết.
+  - **Kiểm thử & Biên dịch:** Solution biên dịch thành công 0 warning, 0 error (.NET 8 LTS); toàn bộ 33/33 test cases (Unit Tests & Integration Tests) đều PASSED 100%.
+
+- [x] [2026-10-25] [Nâng Cấp Toàn Diện Hệ Thống Quản Trị, Bán Hàng Offline (POS) & Phân Quyền Theo CONGVIECTIEPTHEO.md]:
+  - **Đồng bộ Sơ đồ Kiến trúc XML & CSDL (Diagram-First):** Cập nhật `XML/Class Diagram.xml`, `XML/Phân hệ quản lý bán hàng.xml`, `XML/Phân hệ quản lý dịch vụ và bảo hành.xml`, `XML/3 Layers.xml` thêm `_phanTramGiamGia` cho `ChiTietHoaDon`, `_chiPhiUocTinh`, `_chiPhiThucTe` cho `PhieuBaoHanh`. Cập nhật `database/BlinkBlinkJewelry.sql` và `BlinkBlinkJewelry.sql` thêm cột chiết khấu, chi phí ước tính/thực tế và nạp tài khoản khách mặc định `'0'` (Khách vãng lai).
+  - **Phân quyền 3 vai trò nhân sự & Quản lý người dùng (`UsersView`, `MainForm`):** Phân chia 3 vai trò: `ADMIN` (Quản trị viên - toàn quyền), `SALE` (Nhân viên bán hàng - chỉ quản lý đơn hàng & khách hàng), `WAREHOUSE` (Nhân viên kho - chỉ quản lý sản phẩm & kho hàng). Thêm chức năng sửa nhân viên kèm ComboBox chọn 3 vai trò; sửa khách hàng không chọn vai trò; Reset mật khẩu chuẩn `123456789`; Ràng buộc xóa tài khoản: Khách hàng chưa mua hàng và Nhân viên chưa tạo phiếu/đơn thì cho xóa khỏi CSDL, nếu có phát sinh giao dịch thì chặn xóa và hướng dẫn khóa tài khoản.
+  - **Bán hàng Offline tại quầy (`OfflineSalesView` / POS):** Dành riêng cho Admin và Nhân viên bán hàng. Sinh mã tự động `HD_OFFLINE_{timestamp}{rand}` (phân biệt với `HD_ONLINE_`). Tự động liên kết khách hàng theo SĐT (nếu không có lưu mã `0`, khách đăng ký sau tự động khớp lịch sử mua hàng). Bảng tạm chọn sản phẩm, tính tiền và % giảm giá tức thời. Popup thanh toán Tiền mặt (tính tiền thối lại) hoặc Chuyển khoản quét mã QR thật `QRChuyenKhoan.jpg`. Thanh toán thành công chuyển trạng thái `DaThanhToan` và cập nhật tồn kho.
+  - **Quản lý đơn hàng (`OrdersView`):** Đổi tên thành "Quản lý đơn hàng", bổ sung bộ lọc nguồn đơn (Tất cả, Đơn Online `HD_ONLINE_`, Đơn Offline `HD_OFFLINE_`). Kích hoạt thanh cuộn `ScrollBars = ScrollBars.Both` khi > 4 dòng cho cả bảng đơn hàng và bảng chi tiết mặt hàng. Tự động vô hiệu hóa các nút duyệt, đang giao, đã giao, hủy đơn đối với đơn offline.
+  - **Dịch vụ & Bảo hành kim hoàn (`WarrantyView`):** Tách 2 phần giá: Chi phí ước tính (`ChiPhiUocTinh`) và Chi phí thực tế (`ChiPhiThucTe`). Nút "Quyết toán" nhập chi phí thực tế chuyển trạng thái sang `DaXuLy` (chờ khách nhận). Nút "Hoàn tất & Trả khách" chuyển trạng thái sang `DaHoanTat`.
+  - **Kiểm thử tự động:** Toàn bộ giải pháp .NET 8 LTS biên dịch thành công 0 warning, 0 error. Bộ kiểm thử tự động 33/33 test cases (bao gồm cả Unit Tests và Integration Tests) đều PASSED 100%.
 
 - [x] [2026-10-23] [Kế Hoạch & Quy Trình: Xây Dựng Tài Liệu Hướng Dẫn Commit Qua Antigravity Cho Thành Viên Nhóm (huongdanCommit.md)]:
   - **Tài liệu huongdanCommit.md:** Khởi tạo cẩm nang hướng dẫn sử dụng Antigravity để đồng bộ code từ kho Personal sang kho dự án chính của nhóm (cùng cấp với BlinkBlinkJewelry.slnx).
