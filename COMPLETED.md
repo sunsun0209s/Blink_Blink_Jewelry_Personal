@@ -1,5 +1,15 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-26] [Tài Liệu Hướng Dẫn: Tinh Giản huongdanCommit.md Thành Quy Trình Đồng Bộ 1 Lần Hoàn Tất Duy Nhất]:
+  - **Tái cấu trúc huongdanCommit.md theo Phương án 1:** Loại bỏ hoàn toàn lộ trình phân mảnh 3 ngày (Sáng/Chiều); chuyển đổi thành quy trình "1 lần hoàn thành luôn".
+  - **Nhánh tính năng duy nhất cho mỗi thành viên:**
+    - `qhy`: `feature/identity-management-module` (22 tệp Domain, Application, Infrastructure).
+    - `sun`: `feature/catalog-reporting-module` (17 tệp Domain, Application, Infrastructure).
+    - `anhthy`: `feature/cart-orders-foundation-module` (14 tệp Domain, Application, Infrastructure).
+    - `tlinh`: `feature/inventory-warranty-module` (18 tệp Domain, Application, Infrastructure).
+  - **Cập nhật Prompt cho Antigravity:** Cung cấp mẫu prompt 1 chạm tự động copy toàn bộ file phân hệ của thành viên từ kho `Personal` (theo mốc baseline `7993495`), tạo nhánh, commit chuẩn và hướng dẫn mở Pull Request.
+  - **Cập nhật quy trình Git & Trạng thái tiến độ:** Cung cấp bộ lệnh Git thủ công cho ai muốn tự chạy và hướng dẫn cập nhật mốc `thành viên đã thực hiện` vào `scheduleCommit.md`.
+
 - [x] [2026-10-25] [Quản Trị & Kho: Thêm Cột Tồn Kho, Sửa KPI Quản Trị Viên, Tích Hợp Đăng Nhập Khởi Động, Đăng Xuất, Đổi Mật Khẩu & Format Tài Khoản (ProductsView, UsersView, LoginForm, MainForm)]:
   - **Thêm cột "TỒN KHO" vào Quản lý sản phẩm ([ProductsView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs)):**
     - Bổ sung thuộc tính `SoLuongTon` vào thực thể [SanPhamTrangSuc.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs) (khớp 100% Class Diagram).

@@ -1,6 +1,10 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
+- **Tài liệu Hướng dẫn Đồng bộ Mã nguồn ([huongdanCommit.md](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/huongdanCommit.md)):**
+  - Chuyển đổi toàn diện từ lộ trình phân mảnh 3 ngày sang quy trình 1 lần duy nhất hoàn thành 100%.
+  - Tích hợp 1 nhánh duy nhất cho từng thành viên: `qhy` (`feature/identity-management-module` - 22 tệp), `sun` (`feature/catalog-reporting-module` - 17 tệp), `anhthy` (`feature/cart-orders-foundation-module` - 14 tệp), `tlinh` (`feature/inventory-warranty-module` - 18 tệp).
+  - Tối ưu Prompt 1 chạm cho Antigravity và cung cấp quy trình dòng lệnh Git hoàn chỉnh.
 - **Quản lý sản phẩm & Kho hàng ([ProductsView.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs), [SanPhamTrangSuc.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs), [SanPhamRepository.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs)):**
   - Thêm thuộc tính `SoLuongTon` vào thực thể `SanPhamTrangSuc`.
   - Tích hợp subquery tính tồn kho tự động trong CSDL SQL Server: `Tổng nhập (ChiTietNhapKho) - Tổng xuất (ChiTietHoaDon không bị hủy)`.
