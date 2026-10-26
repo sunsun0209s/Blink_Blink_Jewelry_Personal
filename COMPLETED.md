@@ -1,5 +1,14 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-26] [Tài Liệu Lộ Trình: Tinh Giản scheduleCommit.md Thành Kế Hoạch 1 Lần Hoàn Tất Duy Nhất Theo 4 Thành Viên]:
+  - **Đồng bộ hóa 100% với huongdanCommit.md:** Xóa bỏ toàn bộ các mục Ngày 1, Ngày 2, Ngày 3 và các phiên Sáng / Chiều.
+  - **Cấu trúc lại chi tiết theo 4 thành viên:**
+    - `qhy`: Nhánh `feature/identity-management-module` (22 tệp kèm hash commit gốc và lệnh thực hiện 1 lần).
+    - `sun`: Nhánh `feature/catalog-reporting-module` (17 tệp kèm hash commit gốc và lệnh thực hiện 1 lần).
+    - `anhthy`: Nhánh `feature/cart-orders-foundation-module` (14 tệp kèm hash commit gốc và lệnh thực hiện 1 lần).
+    - `tlinh`: Nhánh `feature/inventory-warranty-module` (18 tệp kèm hash commit gốc và lệnh thực hiện 1 lần).
+  - **Bảo toàn Audit Trail & Nghiệm thu:** Giữ nguyên vẹn mốc baseline `7993495`, bảng tra cứu 68 tệp gốc và checklist nghiệm thu đảm bảo chuẩn Clean Architecture.
+
 - [x] [2026-10-26] [Tài Liệu Hướng Dẫn: Tinh Giản huongdanCommit.md Thành Quy Trình Đồng Bộ 1 Lần Hoàn Tất Duy Nhất]:
   - **Tái cấu trúc huongdanCommit.md theo Phương án 1:** Loại bỏ hoàn toàn lộ trình phân mảnh 3 ngày (Sáng/Chiều); chuyển đổi thành quy trình "1 lần hoàn thành luôn".
   - **Nhánh tính năng duy nhất cho mỗi thành viên:**
