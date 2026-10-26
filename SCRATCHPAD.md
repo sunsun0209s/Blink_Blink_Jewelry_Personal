@@ -11,7 +11,12 @@
 - **Thực hiện Commit Tự Động cho thành viên `qhy` sang Team Repo:**
   - Nhánh `feature/identity-management-module` tại `C:\Users\huy\Downloads\code\laptrinhCSharp\Blink_Blink_Jewelry`.
   - Commit `ab62b2a`: Đã đưa toàn bộ phân hệ Identity & Khách hàng (22 tệp mã nguồn sạch sẽ, không file rác).
-  - Cập nhật [scheduleCommit.md](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/scheduleCommit.md): `qhy` đã chuyển sang mục *thành viên đã thực hiện*.
+  - Cập nhật [scheduleCommit.md](scheduleCommit.md): `qhy` đã chuyển sang mục *thành viên đã thực hiện*.
+- **Thực hiện Commit Tự Động cho thành viên `anhthy` sang Team Repo:**
+  - Nhánh `feature/cart-orders-foundation-module` tại `E:\NNLT CS\DoAn_CSharp\Blink_Blink_Jewelry`.
+  - Commit `af335b0`: Đã đưa toàn bộ phân hệ Giỏ hàng, Đơn hàng & Nền tảng Kết nối CSDL (14 tệp mã nguồn sạch sẽ, không file rác).
+  - Đã push thành công lên GitHub và tạo nhánh sẵn sàng mở Pull Request.
+  - Cập nhật [scheduleCommit.md](scheduleCommit.md): `anhthy` đã chuyển sang mục *thành viên đã thực hiện*.
 - **Đồng bộ toàn diện Bộ đôi Tài liệu Lộ trình & Hướng dẫn ([scheduleCommit.md](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/scheduleCommit.md), [huongdanCommit.md](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/huongdanCommit.md)):**
   - Chuyển đổi 100% cả 2 tài liệu từ lộ trình 3 ngày sang quy trình 1 lần duy nhất hoàn thành cho cả 4 thành viên (`qhy`, `sun`, `anhthy`, `tlinh`).
   - Phân bổ 4 nhánh tính năng duy nhất tương ứng với 4 module: Identity, Catalog/Báo cáo, Giỏ hàng/Hóa đơn/CSDL, Kho/Bảo hành.

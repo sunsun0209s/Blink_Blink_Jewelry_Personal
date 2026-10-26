@@ -12,10 +12,10 @@
 ## Lần 1 [chưa thực hiện]: dùng git checkout 7993495 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
+- anhthy
 
 ## thành viên chưa thực hiện:
 - sun
-- anhthy
 - tlinh
 ## Lần 2: chưa thực hiện
 
