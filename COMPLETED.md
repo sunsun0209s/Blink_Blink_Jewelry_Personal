@@ -1,5 +1,26 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-26] [Kiến Trúc & Diagram: Đồng Bộ Toàn Diện 5 Tệp Sơ Đồ XML Khớp 100% Với Mã Nguồn C# Thực Tế]:
+  - **Phân hệ quản lý sản phẩm & kho hàng ([Phân hệ quản lý sản phẩm và kho hàng.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Phân hệ quản lý sản phẩm và kho hàng.xml)):**
+    - Bổ sung 3 thuộc tính còn thiếu của `SanPhamTrangSuc`: `_hinhAnh: string`, `_phanTramGiamGia: int`, `_soLuongTon: int`.
+  - **Phân hệ quản lý bán hàng ([Phân hệ quản lý bán hàng.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Phân hệ quản lý bán hàng.xml)):**
+    - Bổ sung phương thức `CapNhatKhachHangTheoSoDienThoai(maHoaDon: string, soDienThoai: string): bool` vào `IHoaDonRepository` và `HoaDonRepository`.
+    - Bổ sung đầy đủ Use Case POS bán hàng trực tiếp: `BanHangOfflineUseCase`, `TaoHoaDonOfflineDTO`, `SanPhamMuaOfflineDTO`.
+  - **Phân hệ quản lý người dùng & phân quyền ([Phân hệ quản lý người dùng và phân quyền.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Phân hệ quản lý người dùng và phân quyền.xml)):**
+    - Bổ sung vào `IKhachHangRepository` và `KhachHangRepository`: `TimTheoSoDienThoai(sdt: string): KhachHang`, `LayTatCa(): List<KhachHang>`, `KiemTraCoTheXoa(maKH: string): bool`, `XoaKhachHang(maKH: string): bool`.
+    - Bổ sung vào `INhanVienRepository` và `NhanVienRepository`: `LayTatCa(): List<NhanVien>`, `CapNhatNhanVien(nv: NhanVien): void`, `KiemTraCoTheXoa(maNV: string): bool`, `XoaNhanVien(maNV: string): bool`.
+    - Bổ sung vào `QuanLyNhanVienUseCase` và `QuanLyKhachHangUseCase`: phương thức xóa tài khoản có kiểm tra lịch sử phát sinh dữ liệu chứng từ nghiệp vụ.
+  - **Kiến trúc 3 Layers ([3 Layers.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/3 Layers.xml)):**
+    - Thay thế sạch sẽ 15 vị trí tồn dư `AppDbContext` và `- _context: AppDbContext` thành `DatabaseHelper` và `- _dbHelper: DatabaseHelper`.
+    - Cập nhật các thuộc tính tồn kho, hình ảnh và tỷ lệ giảm giá cho `SanPhamTrangSuc`.
+    - Chuẩn hóa thuộc tính bảo hành `chiPhiUocTinh: decimal`, `chiPhiThucTe: decimal` trong thực thể `PhieuBaoHanh`.
+  - **Sơ đồ tổng thể đa trang ([Class Diagram.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Class Diagram.xml)):**
+    - Cập nhật thuộc tính `c_SanPhamTrangSuc` ở Trang 1 (Quan hệ giữa các lớp).
+    - Đồng bộ tự động và nhất quán toàn bộ nội dung của cả 4 phân hệ tương ứng vào các trang draw.io trong file mẹ.
+  - **Kiểm thử & chất lượng:**
+    - Solution biên dịch 0 cảnh báo (0 warnings), 0 lỗi (0 errors) trên .NET 8 LTS.
+    - Toàn bộ 35/35 test cases (Unit Tests + Integration Tests) đều vượt qua 100% (Passed).
+
 - [x] [2026-10-26] [Hạ Tầng CSDL & Khởi Tạo 1-Chạm: Cơ Chế Tự Động Khởi Tạo CSDL (Auto-Database Provisioning & Auto-Seed) & Đồng Bộ Mật Khẩu Admin]:
   - **Khởi tạo CSDL tự động 1-Chạm ([DatabaseHelper.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs)):**
     - Bổ sung phương thức `TryProvisionDatabase`: Khi clone dự án về máy mới chưa có database `BlinkBlinkJewelryDb`, hệ thống tự động kết nối qua database `master` của SQL Server cục bộ (`.`, `localhost`, `.\MSSQL`, `(localdb)\mssqllocaldb`).

@@ -1,6 +1,13 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
+- **Rà soát & Đồng bộ Toàn diện 5 Sơ đồ Kiến trúc XML Khớp 100% với C# Code:**
+  - `XML/Phân hệ quản lý sản phẩm và kho hàng.xml`: Bổ sung `_hinhAnh`, `_phanTramGiamGia`, `_soLuongTon` cho `SanPhamTrangSuc`.
+  - `XML/Phân hệ quản lý bán hàng.xml`: Bổ sung `CapNhatKhachHangTheoSoDienThoai` cho `IHoaDonRepository`/`HoaDonRepository`, use case `BanHangOfflineUseCase`, DTO `TaoHoaDonOfflineDTO`, `SanPhamMuaOfflineDTO`.
+  - `XML/Phân hệ quản lý người dùng và phân quyền.xml`: Bổ sung `TimTheoSoDienThoai`, `LayTatCa`, `KiemTraCoTheXoa`, `XoaKhachHang` cho `IKhachHangRepository`/`KhachHangRepository`; `LayTatCa`, `CapNhatNhanVien`, `KiemTraCoTheXoa`, `XoaNhanVien` cho `INhanVienRepository`/`NhanVienRepository`; bổ sung phương thức xóa có điều kiện chứng từ cho `QuanLyNhanVienUseCase` và `QuanLyKhachHangUseCase`.
+  - `XML/3 Layers.xml`: Loại bỏ hoàn toàn 15 vị trí chứa `AppDbContext` và `- _context: AppDbContext` thay bằng `DatabaseHelper` và `- _dbHelper: DatabaseHelper`; bổ sung thuộc tính cho `SanPhamTrangSuc` và chuẩn hóa chi phí bảo hành ước tính / thực tế cho `PhieuBaoHanh`.
+  - `XML/Class Diagram.xml`: Cập nhật `c_SanPhamTrangSuc` tại Trang 1, ráp nối đồng bộ chuẩn xác toàn bộ 4 phân hệ mới vào các trang draw.io trong file mẹ, bảo toàn trọn vẹn 7 trang.
+  - Solution biên dịch 0 error, 0 warning (.NET 8 LTS); 35/35 test cases PASS 100%.
 - **Cơ chế Tự động Khởi tạo CSDL (Auto-Database Provisioning) & Đồng bộ Admin Mặc định:**
   - Nâng cấp [DatabaseHelper.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs) với `TryProvisionDatabase`: Khi clone dự án về máy mới chưa có `BlinkBlinkJewelryDb`, tự động kết nối qua `master` tạo database, phân tách khối lệnh `GO` và chạy toàn bộ script DDL/DML.
   - Nhúng [BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql) làm `EmbeddedResource` trong DLL `BlinkBlink.Infrastructure`, tự động dự phòng đọc file vật lý hoặc tài nguyên nhúng.
