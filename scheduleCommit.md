@@ -11,9 +11,9 @@
 ## Chỉ thực hiện việc commit và sửa thông tin thành viên hoàn thành theo hướng dẫn, không cần tự tạo ra schedule cho lần tiếp theo, việc này sẽ do nhóm trưởng làm khi mọi thành viên thực hiện xong.
 ## Lần 1 [chưa thực hiện]: dùng git checkout 7993495 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
+- qhy
 
 ## thành viên chưa thực hiện:
-- qhy
 - sun
 - anhthy
 - tlinh
