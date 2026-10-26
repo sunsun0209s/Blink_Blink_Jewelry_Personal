@@ -71,11 +71,14 @@ public class LoginForm : Form
             TextAlign = ContentAlignment.MiddleCenter
         };
 
+        var isDbConnected = AdminServiceScope.Instance.IsDatabaseConnected;
         var lblInstruction = new Label
         {
-            Text = "Vui lòng đăng nhập tài khoản nội bộ để tiếp tục",
+            Text = isDbConnected 
+                ? "Vui lòng đăng nhập tài khoản nội bộ để tiếp tục" 
+                : "Chế độ Offline bộ nhớ tạm (admin / 123456789)",
             Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
-            ForeColor = Color.FromArgb(148, 163, 184),
+            ForeColor = isDbConnected ? Color.FromArgb(148, 163, 184) : UITheme.PrimaryGold,
             Dock = DockStyle.Top,
             Height = 20,
             TextAlign = ContentAlignment.MiddleCenter

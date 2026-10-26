@@ -40,6 +40,24 @@ foreach (var connStr in candidateConnections)
     catch { }
 }
 
+// Nếu chưa có CSDL, kích hoạt cơ chế tự động tạo CSDL và nạp dữ liệu mẫu
+if (dbHelper == null)
+{
+    foreach (var connStr in candidateConnections)
+    {
+        try
+        {
+            if (DatabaseHelper.TryProvisionDatabase(connStr!, out var provisionedHelper) && provisionedHelper != null)
+            {
+                dbHelper = provisionedHelper;
+                Console.WriteLine($"[BlinkBlink.Web] Da tu dong khoi tao thanh cong co so du lieu SQL Server: {connStr}");
+                break;
+            }
+        }
+        catch { }
+    }
+}
+
 dbHelper ??= new DatabaseHelper("Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
 dbHelper.EnsureSchemaCompatibility();
 builder.Services.AddSingleton(dbHelper);

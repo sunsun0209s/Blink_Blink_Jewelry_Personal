@@ -1,6 +1,13 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
+- **Cơ chế Tự động Khởi tạo CSDL (Auto-Database Provisioning) & Đồng bộ Admin Mặc định:**
+  - Nâng cấp [DatabaseHelper.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs) với `TryProvisionDatabase`: Khi clone dự án về máy mới chưa có `BlinkBlinkJewelryDb`, tự động kết nối qua `master` tạo database, phân tách khối lệnh `GO` và chạy toàn bộ script DDL/DML.
+  - Nhúng [BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql) làm `EmbeddedResource` trong DLL `BlinkBlink.Infrastructure`, tự động dự phòng đọc file vật lý hoặc tài nguyên nhúng.
+  - Tích hợp tự động khởi tạo CSDL vào [AdminServiceScope.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/AdminServiceScope.cs) (WinForms) và [Program.cs (Web)](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Program.cs).
+  - Bổ sung dữ liệu và tài khoản quản trị `admin` (`123456789`) dự phòng trong [InMemoryDataContext.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/InMemoryDataContext.cs).
+  - Đồng bộ mật khẩu `admin` = `123456789` trong script [BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql) và [database/BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/database/BlinkBlinkJewelry.sql).
+  - Tạo mới bài test [DatabaseHelperTests.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/tests/BlinkBlink.IntegrationTests/DatabaseHelperTests.cs); toàn bộ 35/35 tests PASSED 100%.
 - **Thực hiện Commit Tự Động cho thành viên `qhy` sang Team Repo:**
   - Nhánh `feature/identity-management-module` tại `C:\Users\huy\Downloads\code\laptrinhCSharp\Blink_Blink_Jewelry`.
   - Commit `ab62b2a`: Đã đưa toàn bộ phân hệ Identity & Khách hàng (22 tệp mã nguồn sạch sẽ, không file rác).

@@ -1,5 +1,22 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-26] [Hạ Tầng CSDL & Khởi Tạo 1-Chạm: Cơ Chế Tự Động Khởi Tạo CSDL (Auto-Database Provisioning & Auto-Seed) & Đồng Bộ Mật Khẩu Admin]:
+  - **Khởi tạo CSDL tự động 1-Chạm ([DatabaseHelper.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs)):**
+    - Bổ sung phương thức `TryProvisionDatabase`: Khi clone dự án về máy mới chưa có database `BlinkBlinkJewelryDb`, hệ thống tự động kết nối qua database `master` của SQL Server cục bộ (`.`, `localhost`, `.\MSSQL`, `(localdb)\mssqllocaldb`).
+    - Tự động tạo mới database `BlinkBlinkJewelryDb`, phân tích tách khối lệnh `GO` và thực thi toàn bộ kịch bản DDL/DML khởi tạo 15 bảng và dữ liệu kim hoàn mẫu.
+    - Đóng gói kịch bản [BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql) dưới dạng `EmbeddedResource` trong DLL `BlinkBlink.Infrastructure` kết hợp tìm kiếm file vật lý, bảo đảm luôn có kịch bản SQL ở mọi môi trường chạy.
+  - **Tự động áp dụng cho WinForms Admin & Web API ([AdminServiceScope.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/AdminServiceScope.cs), [Program.cs (Web)](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Web/Program.cs)):**
+    - Cả ứng dụng WinForms Desktop và Web API đều tự động kích hoạt `TryProvisionDatabase` khi không tìm thấy CSDL, cho phép thành viên clone về chỉ cần bấm **F5 / Start** là hệ thống tự khởi tạo toàn diện.
+  - **Dự phòng bộ nhớ Offline ([InMemoryDataContext.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Services/InMemoryDataContext.cs), [LoginForm.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/src/BlinkBlink.Admin/Forms/LoginForm.cs)):**
+    - Nạp sẵn tài khoản `admin` (mật khẩu `123456789`), các tài khoản nhân sự (`thao.le`, `huy.nguyen`) cùng danh mục và sản phẩm mẫu vào `InMemoryDataContext` để ngay cả máy hoàn toàn không có SQL Server vẫn đăng nhập và xem thử giao diện bình thường.
+    - `LoginForm` tự động hiển thị chỉ báo trạng thái rõ ràng giữa CSDL SQL Server và chế độ dùng thử bộ nhớ tạm.
+  - **Đồng bộ hóa kịch bản SQL:**
+    - Cập nhật mật khẩu tài khoản quản trị viên `admin` thành `123456789` trong cả [BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql) và [database/BlinkBlinkJewelry.sql](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/database/BlinkBlinkJewelry.sql).
+  - **Kiểm thử tự động:**
+    - Tạo mới [DatabaseHelperTests.cs](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/tests/BlinkBlink.IntegrationTests/DatabaseHelperTests.cs) kiểm tra tải kịch bản SQL tự động.
+    - Toàn bộ 35/35 test cases (34 Unit Tests + 1 Integration Test) đều PASSED 100%; solution biên dịch 0 warning, 0 error (.NET 8 LTS).
+
+
 - [x] [2026-10-26] [Git Workflow: Hoàn Thành Đồng Bộ & Commit Toàn Diện Module Identity (22 tệp) Cho Thành Viên qhy]:
   - **Nhánh tính năng Team Repo:** `feature/identity-management-module` tại `C:\Users\huy\Downloads\code\laptrinhCSharp\Blink_Blink_Jewelry`.
   - **Mã Commit:** `ab62b2a`.

@@ -239,7 +239,7 @@ GO
 -- 2. Nạp người dùng (Bảng cha NguoiDung)
 INSERT INTO dbo.NguoiDung (MaNguoiDung, HoTen, SoDienThoai, TenDangNhap, MatKhau, MaVaiTro, TrangThai) VALUES
 ('0', N'Khách Hàng Vãng Lai (POS)', '', 'khach.pos', '123456789', 'KHACHHANG', 1),
-('USER_ADMIN01', N'Trần Minh Hoàng', '0901234567', 'admin', 'admin123', 'ADMIN', 1),
+('USER_ADMIN01', N'Trần Minh Hoàng', '0901234567', 'admin', '123456789', 'ADMIN', 1),
 ('USER_NV001', N'Lê Phương Thảo', '0912345678', 'thao.le', 'pass123', 'SALE', 1),
 ('USER_NV002', N'Nguyễn Quốc Huy', '0933445566', 'huy.nguyen', 'pass123', 'WAREHOUSE', 1),
 ('USER_KH001', N'Phạm Bích Ngọc', '0988112233', 'ngoc.pham', 'khach123', 'KHACHHANG', 1),

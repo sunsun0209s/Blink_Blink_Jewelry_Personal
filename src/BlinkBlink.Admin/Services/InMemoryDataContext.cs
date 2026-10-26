@@ -61,7 +61,34 @@ public class InMemoryDataContext
 
     public void SeedInitialLuxuryData()
     {
-        // Da loai bo du lieu mau trong C# theo yeu cau.
+        // 1. Vai trò hệ thống
+        VaiTros.Clear();
+        VaiTros.Add(new VaiTro("ADMIN", "Quản trị viên", "Quản trị toàn quyền hệ thống cửa hàng kim hoàn"));
+        VaiTros.Add(new VaiTro("SALE", "Nhân viên bán hàng", "Thu ngân và tư vấn bán hàng tại quầy POS"));
+        VaiTros.Add(new VaiTro("WAREHOUSE", "Thủ kho", "Quản lý nhập kho và lập biên bản kiểm kê trang sức"));
+        VaiTros.Add(new VaiTro("KHACHHANG", "Khách hàng", "Khách hàng mua sắm trực tuyến và tra cứu bảo hành"));
+
+        // 2. Tài khoản nhân sự mặc định (Đảm bảo luôn đăng nhập được với admin / 123456789)
+        NhanViens.Clear();
+        NhanViens.Add(new NhanVien("USER_ADMIN01", "Trần Minh Hoàng", "0901234567", "admin", "123456789", "ADMIN", "NV_ADMIN", 25000000, true));
+        NhanViens.Add(new NhanVien("USER_NV001", "Lê Phương Thảo", "0912345678", "thao.le", "123456789", "SALE", "NV001", 12000000, true));
+        NhanViens.Add(new NhanVien("USER_NV002", "Nguyễn Quốc Huy", "0933445566", "huy.nguyen", "123456789", "WAREHOUSE", "NV002", 14000000, true));
+
+        // 3. Danh mục sản phẩm kim hoàn
+        DanhMucs.Clear();
+        DanhMucs.Add(new DanhMuc("DM01", "Nhẫn Kim Cương", "Bộ sưu tập nhẫn đính hôn và nhẫn cưới"));
+        DanhMucs.Add(new DanhMuc("DM02", "Dây Chuyền & Mặt Dây", "Thiết kế vàng 18K và đá quý thiên nhiên"));
+        DanhMucs.Add(new DanhMuc("DM03", "Bông Tai Quý Phái", "Bông tai bạch kim và sapphire"));
+        DanhMucs.Add(new DanhMuc("DM04", "Lắc Tay & Vòng Tay", "Vòng tay tennis kim cương cao cấp"));
+
+        // 4. Sản phẩm trang sức mẫu
+        SanPhams.Clear();
+        SanPhams.Add(new SanPhamTrangSuc("SP001", "Nhẫn Solitaire Diamond 18K", "DM01", "Vàng trắng 18K đính kim cương chủ 5.4 ly", "Size 14", 18000000, 28500000, "SanSang", "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80", 10) { SoLuongTon = 10 });
+        SanPhams.Add(new SanPhamTrangSuc("SP002", "Dây Chuyền Eternal Heart Ruby", "DM02", "Vàng hồng 18K đính đá Ruby huyết bồ câu", "Size 45cm", 12000000, 19200000, "SanSang", "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80", 0) { SoLuongTon = 8 });
+        SanPhams.Add(new SanPhamTrangSuc("SP003", "Bông Tai Royal Blue Sapphire", "DM03", "Bạch kim Platin 950 đính Sapphire Hoàng gia", "Tiêu chuẩn", 22000000, 34000000, "SanSang", "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80", 15) { SoLuongTon = 5 });
+        SanPhams.Add(new SanPhamTrangSuc("SP004", "Lắc Tay Tennis Diamond Bracelet", "DM04", "Vàng trắng 18K đính 45 viên kim cương tự nhiên", "Size 17cm", 48000000, 72000000, "SanSang", "https://images.unsplash.com/photo-1611591475152-47354900a359?auto=format&fit=crop&w=800&q=80", 20) { SoLuongTon = 4 });
+        SanPhams.Add(new SanPhamTrangSuc("SP005", "Nhẫn Cưới Harmony Eternity", "DM01", "Vàng Ý 750 tinh tế đính kim cương tấm viền", "Size 16", 11000000, 16800000, "SanSang", "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80", 5) { SoLuongTon = 12 });
+        SanPhams.Add(new SanPhamTrangSuc("SP006", "Mặt Dây Chuyền Ngọc Trai South Sea", "DM02", "Vàng vàng 18K đính ngọc trai biển và kim cương", "Size 42cm", 28000000, 42500000, "SanSang", "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80", 0) { SoLuongTon = 6 });
     }
 
     private class MemorySanPhamRepository : ISanPhamRepository

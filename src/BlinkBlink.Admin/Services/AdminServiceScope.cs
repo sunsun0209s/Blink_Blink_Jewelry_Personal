@@ -109,6 +109,27 @@ public class AdminServiceScope
             }
         }
 
+        // Bước 2: Nếu chưa có database nào, kích hoạt cơ chế tự động khởi tạo CSDL qua SQL Server đang chạy
+        if (dbHelper == null)
+        {
+            foreach (var connStr in candidateConnections)
+            {
+                try
+                {
+                    if (DatabaseHelper.TryProvisionDatabase(connStr, out var provisionedHelper) && provisionedHelper != null)
+                    {
+                        dbHelper = provisionedHelper;
+                        IsDatabaseConnected = true;
+                        break;
+                    }
+                }
+                catch
+                {
+                    // Thử chuỗi kết nối kế tiếp
+                }
+            }
+        }
+
         if (IsDatabaseConnected && dbHelper != null)
         {
             // Tự động kiểm tra và nâng cấp schema nếu database hiện tại thiếu cột
