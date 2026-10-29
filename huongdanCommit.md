@@ -22,9 +22,9 @@ Tài liệu này hướng dẫn từng thành viên trong nhóm đưa toàn bộ
 ## 2. CHUẨN BỊ TRƯỚC KHI THỰC HIỆN
 [qhy]
 1. **Kho mã nguồn Personal:** Đảm bảo bạn đã clone hoặc pull nhánh `main` mới nhất (chứa commit `7993495`) về máy:
-   - Thư mục mẫu: `C:\Users\huy\Downloads\code\laptrinhCSharp\Clone_Blink_Blink\Blink_Blink_Jewelry_Personal`
+   - Thư mục mẫu: `D:\Học tập\Năm 3\Học kì 1\Blink_Blink_Jewelry_Personal`
 2. **Kho mã nguồn Dự án chính của nhóm (Team Repo):** Mở thư mục này trong IDE có tích hợp trợ lý Antigravity:
-   - Thư mục mẫu: `C:\Users\huy\Downloads\code\laptrinhCSharp\Blink_Blink_Jewelry`
+   - Thư mục mẫu: `D:\Học tập\Năm 3\Học kì 1\Blink_Blink_Jewelry`
 3. Đảm bảo kho dự án chính đã được cập nhật mới nhất từ `main`:
    ```bash
    git checkout main
@@ -33,9 +33,9 @@ Tài liệu này hướng dẫn từng thành viên trong nhóm đưa toàn bộ
 ---
 [sun]
 1. **Kho mã nguồn Personal:** Đảm bảo bạn đã clone hoặc pull nhánh `main` mới nhất (chứa commit `7993495`) về máy:
-   - Thư mục mẫu: `[dán thư mục chứa commit vào đây]`
+   - Thư mục mẫu: `D:\Học tập\Năm 3\Học kì 1\Blink_Blink_Jewelry_Personal`
 2. **Kho mã nguồn Dự án chính của nhóm (Team Repo):** Mở thư mục này trong IDE có tích hợp trợ lý Antigravity:
-   - Thư mục mẫu: `[dán thư mục cần commit vào đây]`
+   - Thư mục mẫu: `D:\Học tập\Năm 3\Học kì 1\Blink_Blink_Jewelry`
 3. Đảm bảo kho dự án chính đã được cập nhật mới nhất từ `main`:
    ```bash
    git checkout main
