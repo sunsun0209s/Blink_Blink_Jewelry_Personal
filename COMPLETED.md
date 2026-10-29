@@ -1,5 +1,89 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-29] [Đồng Bộ & Commit Phân Hệ Catalog & Báo Cáo Thống Kê Cho Thành Viên sun Sang Dự Án Nhóm]:
+  - **Tạo nhánh và đồng bộ 17 tệp mã nguồn sạch sẽ ([huongdanCommit.md](huongdanCommit.md), [scheduleCommit.md](scheduleCommit.md)):**
+    - Tạo nhánh làm việc duy nhất `feature/catalog-reporting-module` trên kho dự án chung `d:\Học tập\Năm 3\Học kì 1\Blink_Blink_Jewelry`.
+    - Sao chép chính xác toàn bộ 17 tệp thuộc phân hệ của `sun` (5 tệp Domain: DanhMuc, SanPhamTrangSuc, IDanhMucRepository, ISanPhamRepository, IThongKeRepository; 9 tệp Application: DTOs Catalog & Reporting, QuanLySanPhamUseCase, ThongKeDoanhThuUseCase, ThongKeKhoHangUseCase; 3 tệp Infrastructure: DanhMucRepository, SanPhamRepository, ThongKeRepository).
+    - Thực hiện `git add` an toàn từng file (loại bỏ hoàn toàn build artifacts / file rác) và commit với thông điệp: `feat(catalog-reporting): tich hop toan bo module SanPham, DanhMuc va BaoCaoThongKe` (`ec45874`).
+    - Đẩy thành công nhánh lên GitHub (`origin/feature/catalog-reporting-module`), sẵn sàng mở Pull Request gộp vào `main`.
+    - Cập nhật tiến độ trong [scheduleCommit.md](scheduleCommit.md): chuyển `sun` từ mục *thành viên chưa thực hiện* sang *thành viên đã thực hiện*.
+
+- [x] [2026-10-28] [Khắc Phục Toàn Diện Sơ Đồ Luồng Màn Hình Hình Sao: LuocDoLuongManHinh.xml]:
+  - **Tính toán toạ độ hình học chính xác và khắc phục lỗi trùng mũi tên ([LuocDoLuongManHinh.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoLuongManHinh.xml)):**
+    - Sử dụng thuật toán giao điểm tia và hình chữ nhật (Ray-Box Intersection) kèm độ lệch vuông góc 14px cho mỗi phía, đảm bảo hai mũi tên song song có khoảng cách rõ ràng 28px, tuyệt đối không còn hiện tượng đè nét hoặc che khuất nhãn.
+    - Định hướng chuẩn xác toàn bộ 22 cặp mũi tên: Mũi tên ra (1 đến 11) có đầu mũi tên hướng vào màn hình vệ tinh; mũi tên về (13) có đầu mũi tên hướng về màn hình chính.
+    - Bổ sung nền trắng labelBackgroundColor=#ffffff cho toàn bộ nhãn số, chống trùng nét chữ lên đường kẻ.
+    - Căn chỉnh kích thước trang vừa khít (980x740), loại bỏ hoàn toàn đường kẻ đứt phân trang cắt ngang các hộp.
+    - Duy trì đầy đủ 2 trang (Trang 1: Blink Blink Jewelry, Trang 2: Mẫu LiMS tham chiếu), 100% tiếng Việt thuần túy.
+
+- [x] [2026-10-28] [Cập Nhật Sơ Đồ Luồng Màn Hình Hình Sao (Hub-and-Spoke / Radial Flow) Chuẩn Ảnh Mẫu]:
+  - **Tái cấu trúc tệp bản vẽ sơ đồ luồng màn hình ([LuocDoLuongManHinh.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoLuongManHinh.xml)):**
+    - Chuyển đổi toàn bộ bố cục sang chuẩn hình sao hướng tâm (Hub-and-Spoke / Radial Flow) khớp 100% với ảnh mẫu tham chiếu: Màn hình đăng nhập nằm ở đỉnh, Màn hình giao diện chính nằm tại trung tâm, các màn hình chức năng vệ tinh tỏa đều xung quanh.
+    - Đồng bộ chuẩn phong cách thẩm mỹ: Các hộp màu xanh dương đậm (#4d7fbc), viền xanh (#385d8a), chữ trắng in đậm, các cặp mũi tên hai chiều đi và về kèm đánh số thứ tự hành động (1 đến 11 là mũi tên ra, 13 là mũi tên quay về màn hình chính).
+    - Tích hợp 2 trang bản vẽ trong cùng 1 tệp XML: Trang 1 dành cho hệ thống Blink Blink Jewelry (12 màn hình thực tế của dự án), Trang 2 là bản gốc LiMS mẫu để đối chiếu tuyệt đối.
+    - Tuân thủ nghiêm ngặt quy định: 100% tiếng Việt thuần túy, không chêm tiếng Anh sau tiếng Việt.
+
+- [x] [2026-10-28] [Thiết Kế Sơ Đồ Luồng Màn Hình Draw.io XML: LuocDoLuongManHinh.xml]:
+  - **Tạo mới tệp sơ đồ luồng màn hình ([LuocDoLuongManHinh.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoLuongManHinh.xml)):**
+    - Thiết kế sơ đồ luồng điều hướng màn hình (Screen Flow Diagram) toàn diện cho toàn bộ hệ thống Blink Blink Jewelry theo chuẩn đồ họa draw.io mxGraph XML.
+    - Phân định 4 miền phân hệ theo màu pastel: Phân hệ Khách hàng Cổng mua sắm trực tuyến (Web), Xác thực đăng nhập & Điều hướng trung tâm, Phân hệ Nghiệp vụ bán hàng tại quầy / Kho hàng / Bảo hành (Thu ngân & Thủ kho), và Phân hệ Quản trị cấp cao & Báo cáo thống kê (Quản trị viên).
+    - Thể hiện đầy đủ 12 màn hình chính (SCR_BBJ_001 đến SCR_BBJ_012), các hộp thoại con, các điểm quyết định điều kiện logic và các luồng dữ liệu kết nối chéo (Khách đặt hàng trực tuyến gửi về Quản lý đơn hàng; Bán hàng tại quầy kiểm tra và trừ tồn kho; Nhập kho cộng dồn tồn kho; Bảo hành đối chiếu hóa đơn; Báo cáo tổng hợp doanh thu và tồn kho).
+    - Đường nối trực giao rõ ràng, có nhãn nền trắng chống đè nét, kèm Bảng giải thích ký hiệu (Legend).
+    - Tuân thủ nghiêm ngặt quy định: 100% tiếng Việt thuần túy, tuyệt đối không chêm tiếng Anh sau tiếng Việt.
+
+- [x] [2026-10-28] [Thiết Kế Khung Sường Màn Hình Chuẩn Fsoft Insight 2.0: BlinkBlinkJewelry_ScreenDesign.xlsx]:
+  - **Tạo mới tệp tài liệu thiết kế màn hình ([BlinkBlinkJewelry_ScreenDesign.xlsx](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry_ScreenDesign.xlsx)):**
+    - Kế thừa và chuẩn hóa 100% phong cách từ tệp mẫu [Đinh Ngọc Tuyển_topic2(LiMS)_ScreenDesign.xlsx](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/Đinh%20Ngọc%20Tuyển_topic2(LiMS)_ScreenDesign.xlsx).
+    - Tạo đầy đủ 14 sheets: Sheet Cover (Header, tổng quan hệ thống, khung dán sơ đồ luồng màn hình, chú thích 13 bước điều hướng và bảng danh mục 12 màn hình); Sheet Template_Mau (Khung sường mẫu trắng chuẩn để dễ dàng nhân bản màn hình mới); cùng 12 sheets chi tiết từ SCR_BBJ_001 đến SCR_BBJ_012 bao quát toàn bộ ứng dụng WinForms Desktop (Admin, Thu ngân, Thủ kho) và Web Khách hàng.
+    - Định dạng sẵn: Vùng dán ảnh giao diện chính (Ctrl+V), Vùng dán ảnh trạng thái lỗi / hộp thoại xác nhận, Bảng thành phần giao diện chi tiết, Quy tắc tương tác màn hình chính và Quy chuẩn hiển thị.
+    - Tuân thủ nghiêm ngặt quy định: 100% tiếng Việt thuần túy, tuyệt đối không chêm tiếng Anh sau tiếng Việt.
+
+- [x] [2026-10-27] [Thiết Kế Lược Đồ Mức Vật Lý: Chuyển Đổi Sang Mô Hình Dữ Liệu Vật Lý SQL Server DDL]:
+  - **Tạo mới tệp bản vẽ lược đồ vật lý ([LuocDoVatLy.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoVatLy.xml)):**
+    - Kế thừa toàn bộ bố cục 6 phân hệ màu sắc pastel và các hành lang định tuyến đường nối chuẩn xác từ bản vẽ luận lý.
+    - Định danh chính xác 15 bảng theo tiền tố schema dbo. chuẩn Microsoft SQL Server (ví dụ: dbo.SanPhamTrangSuc, dbo.HoaDon, dbo.NguoiDung).
+    - Chuẩn hóa 100% kiểu dữ liệu vật lý và ràng buộc cột khớp với script DDL [BlinkBlinkJewelry.sql](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/BlinkBlinkJewelry.sql): VARCHAR(50), NVARCHAR(100/200/500), DECIMAL(18,2), INT, DATETIME2, BIT, DATE.
+    - Thể hiện tường minh trạng thái khóa và tính toàn vẹn: [PK, NOT NULL], [FK, NOT NULL], [UNIQUE, NOT NULL], [NULL], loại bỏ các khóa logic ảo thay bằng khóa chính kết hợp cho các bảng chi tiết.
+
+- [x] [2026-10-27] [Thiết Kế Lược Đồ Luận Lý: Nâng Cấp Từ Lược Đồ Ý Niệm Sang Mô Hình Dữ Liệu Luận Lý Draw.io]:
+  - **Lưu trữ và đồng bộ bản vẽ chuẩn đã nghiệm thu ([LuocDoLuanLy.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoLuanLy.xml)):**
+    - Đã cập nhật và lưu trữ chính xác 100% bản vẽ chuẩn đã nghiệm thu với đầy đủ tọa độ, chiều cao tối ưu, định tuyến đường nối và huy hiệu bản số lượng sắc nét.
+    - Sửa triệt để lỗi hiển thị chữ `<br>` trong draw.io, đảm bảo mỗi thuộc tính xuống dòng độc lập, căn chỉnh trực quan và dễ đọc.
+    - Định tuyến lại toàn bộ các đường liên kết liên phân hệ chạy qua các hành lang biên và khe phân cách (corridors), xóa bỏ hoàn toàn hiện tượng đường nối đâm xuyên qua thân bảng hoặc tiêu đề.
+    - Bổ sung nền trắng (`backgroundColor=#ffffff`) cho toàn bộ nhãn bản số lượng (`1..1`, `1..*`, `0..*`), chống đè chữ lên đường biên.
+
+- [x] [2026-10-27] [Thiết Kế Lược Đồ Ý Niệm: Xuất Mã XML Draw.io Theo Phong Cách Bản Vẽ Mẫu Chuẩn Tiếng Việt C# / CSDL]:
+  - **Tạo mới tệp bản vẽ lược đồ ý niệm ([LuocDoYNiem.xml](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/XML/LuocDoYNiem.xml)):**
+    - Thiết kế lược đồ ý niệm (Conceptual Diagram / Domain Model) cho hệ thống Blink Blink Jewelry chuẩn hóa 100% đồ họa theo ảnh mẫu (6 miền nghiệp vụ phân màu pastel: Danh mục sản phẩm, Giỏ hàng, Quản lý kho hàng, Kiểm soát truy cập & Phân quyền, Quy trình đặt hàng & Thanh toán, Dịch vụ & Bảo hành).
+    - Thể hiện các thực thể miền dạng swimlane vàng viền đen (`#ffffc0`) tương ứng 1:1 với tên thực thể C# và bảng CSDL SQL Server (`SanPhamTrangSuc`, `SanPhamHot`, `ThongTinTonKho`, `KhachHang`, `QuanTriVien`, `GioHang`, `KhoHang`, `NguoiDung`, `VaiTro`, `HoaDon`, `PhuongThucThanhToan`, `TrangThaiDonHang`, `ThongTinGioHang`, `PhieuBaoHanh`).
+    - Đồng bộ 11 đường quan hệ chiếu xạ chéo miền `is a` trỏ về các thực thể gốc (`NguoiDung`, `SanPhamTrangSuc`, `GioHang`, `KhoHang`), cùng đầy đủ nhãn hành vi nghiệp vụ và chỉ số bản số lượng (`1..1`, `1..*`, `0..*`).
+
+- [x] [2026-10-27] [Định Dạng Văn Bản: Xóa Khoảng Cách Trước Và Sau Đoạn Trong Tệp PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html]:
+  - **Chuẩn hóa định dạng văn bản học thuật ([PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/PHÂN%20TÍCH%20VÀ%20THIẾT%20KẾ%20HỆ%20THỐNG.html)):**
+    - Thiết lập toàn bộ các đoạn văn và tiêu đề (`p`, `.section-title`, `.sub-section-title`, `.item-title`, `.story-label`, `.story-line`) có `margin: 0; padding: 0;` (khoảng cách trước đoạn = 0, khoảng cách sau đoạn = 0 / Spacing Before & After = 0pt).
+    - Loại bỏ toàn bộ các dòng trống giữa các thẻ đoạn văn trong mã nguồn HTML để văn bản liền mạch chuẩn thể thức văn bản hành chính/học thuật.
+
+- [x] [2026-10-27] [Tài Liệu Phân Tích: Bổ Sung Mục 2. Câu Chuyện Người Dùng (User Story) Chuẩn Nhu Cầu Thực Tế Vào Tệp PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html]:
+  - **Cập nhật tệp tài liệu phân tích hệ thống ([PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/PHÂN%20TÍCH%20VÀ%20THIẾT%20KẾ%20HỆ%20THỐNG.html)):**
+    - Soạn thảo chuẩn hóa Mục 2 theo đúng cấu trúc phân cấp yêu cầu (2.1 đến 2.7 tương ứng 7 phân hệ; 2.1.1 đến 2.7.3 gồm 27 ca sử dụng chi tiết với cấu trúc: Tiêu đề ca sử dụng -> `User Story:` -> `Với tư cách là...` -> `Tôi muốn...` -> `Để...`).
+    - Thể hiện hoàn toàn từ góc nhìn nhu cầu, động lực và bối cảnh thực tế của con người (mua quà vừa ngân sách, an tâm khi mua đồ giá trị cao, tránh chờ đợi thanh toán, minh bạch chi phí sửa chữa để tránh tranh chấp, bảo vệ tài sản giá trị cao khỏi thất thoát, bảo mật dữ liệu khi nhân viên nghỉ việc...) thay vì liệt kê máy móc chức năng kỹ thuật của hệ thống.
+    - Giữ trọn vẹn quy chuẩn: Phông chữ Times New Roman 13pt, màu đen thuần túy (`#000000`), tuyệt đối không in đậm (`font-weight: normal !important;`), không chèn thuật ngữ tiếng Anh chú giải sau từ tiếng Việt.
+
+- [x] [2026-10-27] [Tài Liệu Phân Tích: Soạn Thảo Mục 1. Bối Cảnh Kinh Doanh Của Hệ Thống Vào Tệp PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html]:
+  - **Tạo mới tệp tài liệu phân tích hệ thống ([PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.html](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/PHÂN%20TÍCH%20VÀ%20THIẾT%20KẾ%20HỆ%20THỐNG.html)):**
+    - Soạn thảo chuẩn hóa mục *1. Bối cảnh kinh doanh của hệ thống* cho hệ thống kinh doanh trang sức Blink Blink Jewelry theo cấu trúc mẫu, bao gồm: Danh mục sản phẩm, Giỏ hàng, Quy trình đặt hàng và thanh toán, Quản lý kho hàng và nhập kho, Dịch vụ và bảo hành, Báo cáo và thống kê, Kiểm soát truy cập và phân quyền, cùng các công việc khởi tạo ban đầu.
+    - Tuân thủ 100% quy chuẩn định dạng: Phông chữ Times New Roman, kích cỡ 13pt, văn bản màu đen thuần túy (`#000000`), tuyệt đối không in đậm (`font-weight: normal !important;`), không chèn thuật ngữ tiếng Anh chú giải sau từ tiếng Việt.
+
+- [x] [2026-10-27] [Tài Liệu Kỹ Thuật: Rà Soát & Cập Nhật Toàn Diện CONG_NGHE_VA_QUY_TRINH.md Chuẩn Mã Nguồn Thực Tế]:
+  - **Rà soát & Đồng bộ 100% với Hiện trạng Mã nguồn Dự án ([CONG_NGHE_VA_QUY_TRINH.md](file:///d:/Học%20tập/Năm%203/Học%20kì%201/Blink_Blink_Jewelry_Personal/CONG_NGHE_VA_QUY_TRINH.md)):**
+    - Cập nhật bảng công nghệ: .NET 8 LTS, WinForms Custom Controls theo Taste Skill kim hoàn cao cấp, ASP.NET Core 8 Web App (kết hợp MVC Razor Views và RESTful Web API Controller với Swagger OpenAPI UI `/swagger` và CORS `AllowAll`), ADO.NET thuần `DatabaseHelper` với cơ chế Tự động Khởi tạo CSDL (Auto-Database Provisioning `TryProvisionDatabase`) và tự động tương thích lược đồ (`EnsureSchemaCompatibility`).
+    - Cập nhật mô hình kiến trúc C4 qua 4 mức: Bổ sung chi tiết các Component thực tế gồm `LoginForm`, `MainForm` (header tài khoản/vai trò, đổi mật khẩu, đăng xuất), phân hệ POS bán hàng tại quầy `OfflineSalesView` (thanh toán tiền mặt, QR chuyển khoản), phân hệ sản phẩm và kho hàng `ProductsView` (tính tồn kho tự động thời gian thực từ Nhập trừ Bán, định dạng số tabular figures), `ProductEditDialog`, `CategoryView`, `ProductsAndInventoryContainerView`, `InventoryInwardView`, `WarrantyView`, `UsersView` (KPI Quản trị viên), `ReportingView`.
+    - Cập nhật đầy đủ các Use Cases thực tế trong `BlinkBlink.Application` (`BanHangOfflineUseCase`, `QuanLyKhachHangUseCase`, `QuanLyNhanVienUseCase` có ràng buộc chứng từ).
+    - Quy chuẩn giao diện Taste Skill kim hoàn (bảng màu xanh ngọc lục bảo `#0F5132`/`#198754`, vàng kim `#D4AF37`, quy tắc Anti-slop, tabular figures).
+    - Quy chuẩn quy trình phát triển nhóm (Git workflow, quy ước nhánh, chu trình quản lý task qua `TODO.md`, `COMPLETED.md`, `SCRATCHPAD.md`).
+  - **Kiểm thử & Chất lượng:**
+    - Toàn bộ 35/35 test cases (Unit Tests + Integration Tests) PASSED 100% trên nền tảng .NET 8 LTS.
+
 - [x] [2026-10-26] [Kiến Trúc & Diagram: Đồng Bộ Toàn Diện 5 Tệp Sơ Đồ XML Khớp 100% Với Mã Nguồn C# Thực Tế]:
   - **Phân hệ quản lý sản phẩm & kho hàng ([Phân hệ quản lý sản phẩm và kho hàng.xml](file:///c:/Users/huy/Downloads/code/laptrinhCSharp/Clone_Blink_Blink/Blink_Blink_Jewelry_Personal/XML/Phân hệ quản lý sản phẩm và kho hàng.xml)):**
     - Bổ sung 3 thuộc tính còn thiếu của `SanPhamTrangSuc`: `_hinhAnh: string`, `_phanTramGiamGia: int`, `_soLuongTon: int`.

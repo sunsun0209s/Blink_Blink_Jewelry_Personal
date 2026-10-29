@@ -13,9 +13,9 @@
 ## thành viên đã thực hiện:
 - qhy
 - anhthy
+- sun
 
 ## thành viên chưa thực hiện:
-- sun
 - tlinh
 ## Lần 2: chưa thực hiện
 
