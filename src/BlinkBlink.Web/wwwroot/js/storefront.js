@@ -1219,12 +1219,12 @@ function renderCheckoutSummary() {
         return `
         <div class="checkout-mini-item">
             <img src="${itemImg}" 
-                 alt="${item.tenSP}" 
+                 alt="${item.tenSanPham}" 
                  class="checkout-mini-img"
                  loading="lazy"
                  onerror="this.onerror=null; this.src='/images/hero-jewelry.jpg';" />
             <div class="checkout-mini-info">
-                <div class="checkout-mini-title">${item.tenSP}</div>
+                <div class="checkout-mini-title">${item.tenSanPham}</div>
                 <div class="checkout-mini-meta">Số lượng: ${item.soLuong} • Size: ${item.kichCo || 'Tiêu chuẩn'}</div>
             </div>
             <div class="checkout-mini-price">${formatCurrency(item.giaBan * item.soLuong)}</div>
