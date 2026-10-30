@@ -1,4 +1,4 @@
-# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY (1 LẦN HOÀN TẤT)
+﻿# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY (1 LẦN HOÀN TẤT)
 **Dành cho nhóm 4 thành viên:** `qhy`, `sun`, `anhthy`, `tlinh`  
 **Phạm vi 3 thư mục cốt lõi Clean Architecture:**  
 - `src/BlinkBlink.Domain`
@@ -9,14 +9,14 @@
 ## Lưu ý: 
 ## Khi thực hiện xong lần 1 hãy đánh dấu thay đổi chữ [chưa thực hiện] thành [đã hoàn thành] khi mà mọi thành viên đều đã thực hiện xong. Nhớ là khi thành viên nhóm thực hiện xong và AI agent đã chỉnh sửa nội dung file theo hướng dẫn hãy up file này lên github.
 ## Chỉ thực hiện việc commit và sửa thông tin thành viên hoàn thành theo hướng dẫn, không cần tự tạo ra schedule cho lần tiếp theo, việc này sẽ do nhóm trưởng làm khi mọi thành viên thực hiện xong.
-## Lần 1 [chưa thực hiện]: dùng git checkout 7993495 commit này cho lần thực thi này.
+## Lần 1 [đã hoàn thành]: dùng git checkout 7993495 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
 - anhthy
 - sun
+- tlinh
 
 ## thành viên chưa thực hiện:
-- tlinh
 ## Lần 2: chưa thực hiện
 
 
