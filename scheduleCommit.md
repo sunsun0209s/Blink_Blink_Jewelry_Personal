@@ -20,11 +20,11 @@
 ## Lần 2 [chưa thực hiện]: dùng git checkout 4ea7311 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
+- sun
+- tlinh
 
 ## thành viên chưa thực hiện:
-- sun
 - anhthy
-- tlinh
 
 ---
 
