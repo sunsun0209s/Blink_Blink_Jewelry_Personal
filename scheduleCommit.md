@@ -17,14 +17,14 @@
 - sun
 - tlinh
 
-## Lần 2 [chưa thực hiện]: dùng git checkout 4ea7311 commit này cho lần thực thi này.
+## Lần 2 [đã hoàn thành]: dùng git checkout 4ea7311 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
 - sun
 - tlinh
+- anhthy
 
 ## thành viên chưa thực hiện:
-- anhthy
 
 ---
 
