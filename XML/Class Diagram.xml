@@ -3021,7 +3021,6 @@
         <mxCell id="inv-repo-del" parent="618drPIvKTOmIINHH8TA-64" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ XoaNhanVien(maNV: string): bool" vertex="1">
           <mxGeometry height="26" width="280" y="164" as="geometry" />
         </mxCell>
-        </mxCell>
         <mxCell id="618drPIvKTOmIINHH8TA-68" edge="1" parent="1" source="618drPIvKTOmIINHH8TA-39" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="618drPIvKTOmIINHH8TA-51" value="Use">
           <mxGeometry relative="1" width="160" as="geometry">
             <mxPoint x="560" y="2940" as="sourcePoint" />
