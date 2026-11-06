@@ -3153,3 +3153,238 @@ a {
         width: 100%;
     }
 }
+
+
+/* ====================================================================================
+   QUY CHUẨN PHÂN TRANG KIM HOÀN CAO CẤP (HAUTE JOAILLERIE CATALOG PAGINATION)
+   Tuân thủ nghiêm ngặt Taste Skill: Tabular Figures, Gold/Emerald Accents, Anti-Slop
+   ==================================================================================== */
+.catalog-pagination-wrap {
+    margin-top: 48px;
+    margin-bottom: 32px;
+    padding: 18px 24px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    transition: var(--transition);
+}
+
+.pagination-summary {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination-summary .summary-highlight {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pagination-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    border-color: var(--gold-primary);
+    color: var(--gold-hover);
+    background-color: var(--gold-light);
+}
+
+.pagination-btn.active {
+    background-color: var(--dark-obsidian);
+    border-color: var(--dark-obsidian);
+    color: var(--gold-primary);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(17, 22, 27, 0.18);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background-color: #F8F9FA;
+    border-color: var(--border-light);
+    color: var(--text-muted);
+}
+
+.pagination-btn-nav {
+    padding: 0 14px;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+}
+
+.pagination-ellipsis {
+    min-width: 32px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.pagination-size-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.pagination-size-select {
+    padding: 7px 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: var(--transition);
+    outline: none;
+}
+
+.pagination-size-select:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 2px rgba(197, 168, 128, 0.2);
+}
+
+@media (max-width: 768px) {
+    .catalog-pagination-wrap {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-btn {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 8px;
+        font-size: 0.82rem;
+    }
+}
+
+
+/* ====================================================================================
+ * ĐỒNG BỘ TRẠNG THÁI BẢO HÀNH & TỒN KHO - TASTE SKILL KIM HOÀN
+ * ==================================================================================== */
+.badge-status-cancelled {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #FF8A80;
+    border: 1px solid rgba(255, 138, 128, 0.4);
+    padding: 4px 12px;
+    border-radius: var(--radius-xs);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Kiểu dáng cho nhóm kích cỡ và tồn kho sản phẩm trong Quick View */
+.modal-group-sizes-wrap {
+    background: #F9F7F4;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+}
+
+.modal-group-sizes-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark-obsidian);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.modal-group-sizes-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.modal-size-pill {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border-light);
+    background: #FFFFFF;
+    color: var(--dark-obsidian);
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.modal-size-pill:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+    background: #FFFDF9;
+}
+
+.modal-size-pill.is-active {
+    background: var(--dark-obsidian);
+    color: var(--gold-primary);
+    border-color: var(--dark-obsidian);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.modal-size-pill.is-out-of-stock {
+    opacity: 0.5;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+.product-status-tag.out-of-stock {
+    background: rgba(108, 117, 125, 0.92);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    letter-spacing: 0.08em;
+}
+
+.btn-card-addcart:disabled,
+.btn-card-addcart.is-disabled {
+    background: #D5D5D5 !important;
+    color: #777777 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    box-shadow: none !important;
+}

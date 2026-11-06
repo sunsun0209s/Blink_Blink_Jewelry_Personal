@@ -129,7 +129,10 @@ public class SanPhamController : ControllerBase
                 PhanTramGiamGia = sp.PhanTramGiamGia,
                 GiaSauGiam = giaSauGiam,
                 TrangThai = sp.TrangThai,
-                HinhAnh = sp.HinhAnh
+                HinhAnh = sp.HinhAnh,
+                SoLuongTon = sp.SoLuongTon,
+                MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                ConHang = sp.SoLuongTon > 0 && sp.TrangThai == "SanSang"
             };
         });
 
@@ -142,6 +145,49 @@ public class SanPhamController : ControllerBase
     /// <param name="maSanPham">Mã sản phẩm trang sức</param>
     /// <param name="cancellationToken">Token hủy tác vụ</param>
     /// <returns>Dữ liệu chi tiết sản phẩm</returns>
+    /// <summary>
+    /// Lấy danh sách sản phẩm trang sức cùng nhóm mẫu nhưng khác size.
+    /// </summary>
+    /// <param name="maNhom">Mã nhóm sản phẩm</param>
+    /// <param name="cancellationToken">Token hủy tác vụ</param>
+    /// <returns>Danh sách sản phẩm trong nhóm</returns>
+    [HttpGet("nhom/{maNhom}")]
+    public async Task<IActionResult> LayTheoNhom(string maNhom, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(maNhom) || maNhom == "0")
+        {
+            return Ok(new { Success = true, Data = Array.Empty<object>() });
+        }
+
+        var items = await _sanPhamRepository.LayTheoNhomAsync(maNhom, cancellationToken);
+        var response = items.Select(sp =>
+        {
+            decimal giaSauGiam = sp.PhanTramGiamGia > 0
+                ? Math.Round(sp.GiaBan * (100 - sp.PhanTramGiamGia) / 100m, 0)
+                : sp.GiaBan;
+
+            return new
+            {
+                MaSanPham = sp.MaSanPham,
+                TenSanPham = sp.TenSanPham,
+                MaDanhMuc = sp.MaDanhMuc,
+                TenDanhMuc = sp.DanhMuc?.TenDanhMuc ?? sp.MaDanhMuc,
+                MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                ChatLieu = sp.ChatLieu,
+                Size = sp.Size,
+                GiaBan = sp.GiaBan,
+                PhanTramGiamGia = sp.PhanTramGiamGia,
+                GiaSauGiam = giaSauGiam,
+                TrangThai = sp.TrangThai,
+                SoLuongTon = sp.SoLuongTon,
+                ConHang = sp.SoLuongTon > 0 && sp.TrangThai == "SanSang",
+                HinhAnh = sp.HinhAnh
+            };
+        });
+
+        return Ok(new { Success = true, Data = response });
+    }
+
     [HttpGet("{maSanPham}")]
     public async Task<IActionResult> LayChiTiet(string maSanPham, CancellationToken cancellationToken)
     {
@@ -175,7 +221,10 @@ public class SanPhamController : ControllerBase
                 PhanTramGiamGia = sp.PhanTramGiamGia,
                 GiaSauGiam = giaSauGiam,
                 TrangThai = sp.TrangThai,
-                HinhAnh = sp.HinhAnh
+                HinhAnh = sp.HinhAnh,
+                SoLuongTon = sp.SoLuongTon,
+                MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                ConHang = sp.SoLuongTon > 0 && sp.TrangThai == "SanSang"
             }
         });
     }

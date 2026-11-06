@@ -64,6 +64,7 @@ builder.Services.AddSingleton(dbHelper);
 
 // Đăng ký các Kho dữ liệu (Repositories) sử dụng ADO.NET thuần
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
+builder.Services.AddScoped<INhomSanPhamRepository, NhomSanPhamRepository>();
 builder.Services.AddScoped<IDanhMucRepository, DanhMucRepository>();
 builder.Services.AddScoped<IKhachHangRepository, KhachHangRepository>();
 builder.Services.AddScoped<INhanVienRepository, NhanVienRepository>();
@@ -78,6 +79,8 @@ builder.Services.AddScoped<IThongKeRepository, ThongKeRepository>();
 
 // Đăng ký các Trường hợp sử dụng (Use Cases)
 builder.Services.AddScoped<QuanLySanPhamUseCase>();
+builder.Services.AddScoped<QuanLyNhomSanPhamUseCase>();
+builder.Services.AddScoped<QuanLyKiemKeUseCase>();
 builder.Services.AddScoped<DangNhapUseCase>();
 builder.Services.AddScoped<DangKyKhachHangUseCase>();
 builder.Services.AddScoped<QuanLyNhanVienUseCase>();

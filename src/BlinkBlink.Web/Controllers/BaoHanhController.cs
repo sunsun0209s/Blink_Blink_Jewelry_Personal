@@ -128,7 +128,32 @@ public class BaoHanhController : ControllerBase
             return NotFound(new { Success = false, Message = "Không tìm thấy thông tin phiếu bảo hành." });
         }
 
-        return Ok(new { Success = true, Data = phieu });
+        return Ok(new
+        {
+            Success = true,
+            Data = new
+            {
+                SoPhieu = phieu.SoPhieuBH,
+                SoPhieuBH = phieu.SoPhieuBH,
+                MaKhachHang = phieu.MaKhachHang,
+                TenKhachHang = phieu.KhachHang?.HoTen ?? (!string.IsNullOrWhiteSpace(phieu.SoDienThoai) ? $"Khách hàng ({phieu.SoDienThoai})" : "Khách vãng lai"),
+                SoDienThoai = phieu.SoDienThoai,
+                MaSanPham = phieu.MaSanPham,
+                TenSanPham = phieu.SanPham?.TenSanPham ?? phieu.MaSanPham,
+                LyDoBaoHanh = phieu.LyDoBaoHanh,
+                LyDo = phieu.LyDoBaoHanh,
+                TinhTrangTiepNhan = phieu.TinhTrangTiepNhan,
+                GhiChu = phieu.GhiChu,
+                ChiPhiUocTinh = phieu.ChiPhiUocTinh,
+                ChiPhiThucTe = phieu.ChiPhiThucTe,
+                ChiPhi = phieu.ChiPhiBaoHanh,
+                ChiPhiBaoHanh = phieu.ChiPhiBaoHanh,
+                TrangThaiXuLy = phieu.TrangThaiXuLy,
+                TrangThai = phieu.TrangThaiXuLy,
+                NgayTiepNhan = phieu.NgayTiepNhan.ToString("dd/MM/yyyy"),
+                NgayHenTra = phieu.NgayHenTra.HasValue ? phieu.NgayHenTra.Value.ToString("dd/MM/yyyy") : "Đang cập nhật"
+            }
+        });
     }
 
     /// <summary>

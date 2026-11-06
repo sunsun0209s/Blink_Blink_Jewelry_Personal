@@ -9,6 +9,11 @@
 // 1. Danh mục sản phẩm trang sức nạp động 100% từ CSDL SQL Server qua RESTful API /api/SanPham
 let catalogProducts = [];
 
+// Trạng thái phân trang danh mục và tìm kiếm kiệt tác chuẩn Taste Skill
+let currentCatalogPage = 1;
+let currentCatalogPageSize = 8;
+let currentFilteredProducts = [];
+
 /**
  * Tải toàn bộ danh mục sản phẩm từ CSDL SQL Server qua API
  */
@@ -191,7 +196,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     initHeaderSearch();
     initNavigationAndScrollSpy();
     await fetchCatalogFromApi();
-    initProductGrid(catalogProducts);
+    // Thiết lập kích thước trang mặc định: 12 sản phẩm/trang trên trang tìm kiếm, 8 sản phẩm/trang trên trang chủ
+    if (window.location.pathname.toLowerCase().includes('timkiem') || document.querySelector('.search-page-container')) {
+        currentCatalogPageSize = 12;
+    } else {
+        currentCatalogPageSize = 8;
+    }
     initCategoryFilters();
     applyProductFilters();
     await loadCart();
@@ -217,10 +227,18 @@ function initProductGrid(products) {
         const card = document.createElement('div');
         card.className = 'product-card';
 
+        const stock = p.soLuongTon !== undefined ? p.soLuongTon : (p.SoLuongTon !== undefined ? p.SoLuongTon : 1);
+        const isOutOfStock = stock <= 0 || p.trangThai === 'HetHang';
         const hasSale = p.phanTramGiamGia && p.phanTramGiamGia > 0;
-        const tagHtml = hasSale
-            ? `<span class="product-status-tag sale">-${p.phanTramGiamGia}%</span>`
-            : `<span class="product-status-tag">Kiệt Tác</span>`;
+
+        let tagHtml = '';
+        if (isOutOfStock) {
+            tagHtml = '<span class="product-status-tag out-of-stock">Tạm Hết Hàng</span>';
+        } else if (hasSale) {
+            tagHtml = `<span class="product-status-tag sale">-${p.phanTramGiamGia}%</span>`;
+        } else {
+            tagHtml = '<span class="product-status-tag">Kiệt Tác</span>';
+        }
 
         const effectivePrice = p.giaSauGiam || p.giaBan;
         const priceHtml = hasSale
@@ -232,6 +250,20 @@ function initProductGrid(products) {
               `
             : `<span class="product-price-tabular">${formatCurrency(p.giaBan)}</span>`;
 
+        const buyButtonHtml = isOutOfStock
+            ? `
+                <button class="btn-card-addcart is-disabled" disabled title="Kiệt tác hiện đang tạm hết hàng tại showroom">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Hết Hàng
+                </button>
+              `
+            : `
+                <button class="btn-card-addcart" onclick="addToCart('${p.maSanPham}')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    Chọn Mua
+                </button>
+              `;
+
         card.innerHTML = `
             <div class="product-thumb-wrap">
                 <img src="${p.hinhAnh || '/images/hero-jewelry.jpg'}" alt="${p.tenSanPham}" loading="lazy" onerror="this.onerror=null;this.src='/images/hero-jewelry.jpg';" />
@@ -241,10 +273,7 @@ function initProductGrid(products) {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         Xem Nhanh
                     </button>
-                    <button class="btn-card-addcart" onclick="addToCart('${p.maSanPham}')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        Chọn Mua
-                    </button>
+                    ${buyButtonHtml}
                 </div>
             </div>
             <div class="product-info-body">
@@ -468,7 +497,10 @@ function initCategoryFilters() {
 /**
  * Áp dụng toàn bộ bộ lọc đa chiều: từ khóa, danh mục, mức giá, chất liệu, sắp xếp
  */
-function applyProductFilters() {
+function applyProductFilters(resetPage = true) {
+    if (resetPage) {
+        currentCatalogPage = 1;
+    }
     let filtered = [...catalogProducts];
 
     // 1. Lọc theo danh mục
@@ -553,13 +585,174 @@ function applyProductFilters() {
     // Cập nhật số lượng và render lưới sản phẩm
     updateFilterStatusCount(filtered.length);
     updateActiveFilterBadges(category, keyword, priceRange, material);
-    initProductGrid(filtered);
+    // Lưu danh sách sản phẩm sau lọc để phân trang
+    currentFilteredProducts = filtered;
+
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / currentCatalogPageSize) || 1;
+    if (currentCatalogPage > totalPages) {
+        currentCatalogPage = totalPages;
+    }
+    if (currentCatalogPage < 1) {
+        currentCatalogPage = 1;
+    }
+
+    const startIndex = (currentCatalogPage - 1) * currentCatalogPageSize;
+    const endIndex = Math.min(startIndex + currentCatalogPageSize, totalItems);
+    const pagedItems = filtered.slice(startIndex, endIndex);
+
+    initProductGrid(pagedItems);
+    renderCatalogPagination(totalItems, currentCatalogPage, currentCatalogPageSize);
 }
 
 /**
  * Cập nhật số lượng sản phẩm hiển thị trên thanh trạng thái
  * @param {number} count - Số lượng kết quả
  */
+/**
+ * Vẽ thanh phân trang sản phẩm theo Taste Skill kim hoàn cao cấp
+ * Giải thích: Chia nhỏ tập kết quả giúp giảm tải DOM, tăng tốc độ render ảnh và nâng tầm trải nghiệm sang trọng.
+ * @param {number} totalItems - Tổng số sản phẩm sau khi lọc
+ * @param {number} currentPage - Số thứ tự trang hiện tại (1-based)
+ * @param {number} pageSize - Số sản phẩm trên mỗi trang
+ */
+function renderCatalogPagination(totalItems, currentPage, pageSize) {
+    const paginationContainer = document.getElementById('products-pagination');
+    if (!paginationContainer) return;
+
+    if (!totalItems || totalItems === 0) {
+        paginationContainer.style.display = 'none';
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, totalItems);
+
+    paginationContainer.style.display = 'flex';
+
+    // 1. Dòng tổng quan số lượng hiển thị (Tabular summary)
+    const summaryHtml = `
+        <div class="pagination-summary">
+            <span>Hiển thị</span>
+            <span class="summary-highlight">${startIndex + 1} - ${endIndex}</span>
+            <span>trong tổng số</span>
+            <span class="summary-highlight">${totalItems}</span>
+            <span>kiệt tác</span>
+        </div>
+    `;
+
+    // 2. Cụm nút chuyển trang (Pagination Controls)
+    let buttonsHtml = '';
+
+    // Nút Trang trước
+    const prevDisabled = currentPage <= 1 ? 'disabled' : '';
+    buttonsHtml += `
+        <button type="button" class="pagination-btn pagination-btn-nav" ${prevDisabled} onclick="changeCatalogPage(${currentPage - 1})" title="Trang trước">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Trước
+        </button>
+    `;
+
+    // Dãy số trang với thuật toán thu gọn thông minh (Ellipsis)
+    if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) {
+            const activeClass = i === currentPage ? 'active' : '';
+            buttonsHtml += `<button type="button" class="pagination-btn ${activeClass}" onclick="changeCatalogPage(${i})">${i}</button>`;
+        }
+    } else {
+        const pages = [];
+        if (currentPage <= 4) {
+            for (let i = 1; i <= 5; i++) pages.push(i);
+            pages.push('...');
+            pages.push(totalPages);
+        } else if (currentPage >= totalPages - 3) {
+            pages.push(1);
+            pages.push('...');
+            for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+        } else {
+            pages.push(1);
+            pages.push('...');
+            pages.push(currentPage - 1);
+            pages.push(currentPage);
+            pages.push(currentPage + 1);
+            pages.push('...');
+            pages.push(totalPages);
+        }
+
+        pages.forEach(p => {
+            if (p === '...') {
+                buttonsHtml += `<span class="pagination-ellipsis">&hellip;</span>`;
+            } else {
+                const activeClass = p === currentPage ? 'active' : '';
+                buttonsHtml += `<button type="button" class="pagination-btn ${activeClass}" onclick="changeCatalogPage(${p})">${p}</button>`;
+            }
+        });
+    }
+
+    // Nút Trang sau
+    const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+    buttonsHtml += `
+        <button type="button" class="pagination-btn pagination-btn-nav" ${nextDisabled} onclick="changeCatalogPage(${currentPage + 1})" title="Trang kế tiếp">
+            Sau
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+    `;
+
+    const controlsHtml = `<div class="pagination-controls">${buttonsHtml}</div>`;
+
+    // 3. Khối tùy chọn kích thước trang linh hoạt
+    const sizeSelectorHtml = `
+        <div class="pagination-size-wrapper">
+            <label for="pagination-page-size">Mỗi trang:</label>
+            <select id="pagination-page-size" class="pagination-size-select" onchange="changeCatalogPageSize(Number(this.value))">
+                <option value="8" ${pageSize === 8 ? 'selected' : ''}>8 mẫu</option>
+                <option value="12" ${pageSize === 12 ? 'selected' : ''}>12 mẫu</option>
+                <option value="24" ${pageSize === 24 ? 'selected' : ''}>24 mẫu</option>
+                <option value="48" ${pageSize === 48 ? 'selected' : ''}>48 mẫu</option>
+            </select>
+        </div>
+    `;
+
+    paginationContainer.innerHTML = summaryHtml + controlsHtml + sizeSelectorHtml;
+}
+
+/**
+ * Chuyển đến trang chỉ định và tự động cuộn nhẹ lên đầu danh sách sản phẩm
+ * @param {number} newPage - Trang đích cần hiển thị
+ */
+function changeCatalogPage(newPage) {
+    const totalPages = Math.ceil(currentFilteredProducts.length / currentCatalogPageSize) || 1;
+    if (newPage < 1 || newPage > totalPages || newPage === currentCatalogPage) return;
+
+    currentCatalogPage = newPage;
+    applyProductFilters(false);
+
+    // Cuộn mượt về đầu danh mục sản phẩm có tính toán trừ khoảng cách của thanh navbar cố định
+    const targetElement = document.getElementById('products-grid') || document.getElementById('catalog');
+    if (targetElement) {
+        const headerOffset = 100;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+        });
+    }
+}
+
+/**
+ * Điều chỉnh số lượng sản phẩm trên mỗi trang và reset về trang 1
+ * @param {number} newSize - Số sản phẩm mỗi trang (8, 12, 24, 48)
+ */
+function changeCatalogPageSize(newSize) {
+    if (!newSize || newSize <= 0) return;
+    currentCatalogPageSize = Number(newSize);
+    currentCatalogPage = 1;
+    applyProductFilters(false);
+}
+
 function updateFilterStatusCount(count) {
     const countEl = document.getElementById('filtered-count');
     if (countEl) {
@@ -644,9 +837,19 @@ async function addToCart(maSanPham) {
     const product = catalogProducts.find(p => p.maSanPham === maSanPham);
     if (!product) return;
 
+    const stock = product.soLuongTon !== undefined ? product.soLuongTon : (product.SoLuongTon !== undefined ? product.SoLuongTon : 1);
+    if (stock <= 0 || product.trangThai === 'HetHang') {
+        showToast(`Kiệt tác "${product.tenSanPham}" hiện đang tạm hết hàng tại showroom. Quý khách vui lòng chọn mẫu khác hoặc liên hệ nhân viên tư vấn.`);
+        return;
+    }
+
     const effectivePrice = product.giaSauGiam || product.giaBan;
     const existingIndex = cart.findIndex(item => item.maSanPham === maSanPham);
     if (existingIndex > -1) {
+        if (cart[existingIndex].soLuong + 1 > stock) {
+            showToast(`Số lượng trong giỏ đã đạt mức tồn kho tối đa (${stock} món) của kiệt tác này.`);
+            return;
+        }
         cart[existingIndex].soLuong += 1;
     } else {
         cart.push({
@@ -815,12 +1018,72 @@ function openQuickView(maSanPham) {
     document.getElementById('modal-size').textContent = product.size || 'Tiêu chuẩn';
     document.getElementById('modal-desc').textContent = product.moTa || `Kiệt tác trang sức ${product.tenSanPham} chế tác tinh xảo từ ${product.chatLieu}.`;
 
+    // Hiển thị trạng thái tồn kho thực tế từ CSDL
+    const stockEl = document.getElementById('modal-stock');
+    const stock = product.soLuongTon !== undefined ? product.soLuongTon : (product.SoLuongTon !== undefined ? product.SoLuongTon : 1);
+    const isOutOfStock = stock <= 0 || product.trangThai === 'HetHang';
+    if (stockEl) {
+        if (isOutOfStock) {
+            stockEl.textContent = 'Tạm hết hàng tại showroom';
+            stockEl.style.color = '#FF8A80';
+        } else if (stock <= 3) {
+            stockEl.textContent = `Chỉ còn ${stock} món tại showroom`;
+            stockEl.style.color = 'var(--gold-primary)';
+        } else {
+            stockEl.textContent = `Còn hàng (${stock} món sẵn sàng giao)`;
+            stockEl.style.color = '#81C784';
+        }
+    }
+
+    // Hiển thị danh sách nhóm kích cỡ cùng mẫu chế tác
+    const groupWrap = document.getElementById('modal-group-sizes');
+    const groupList = document.getElementById('modal-group-sizes-list');
+    const maNhom = product.maNhom || product.MaNhom || '0';
+
+    if (groupWrap && groupList) {
+        if (maNhom && maNhom !== '0') {
+            const groupVariants = catalogProducts.filter(item => (item.maNhom || item.MaNhom) === maNhom);
+            if (groupVariants.length > 1) {
+                groupList.innerHTML = groupVariants.map(variant => {
+                    const isActive = variant.maSanPham === product.maSanPham;
+                    const vStock = variant.soLuongTon !== undefined ? variant.soLuongTon : (variant.SoLuongTon !== undefined ? variant.SoLuongTon : 1);
+                    const vOutOfStock = vStock <= 0 || variant.trangThai === 'HetHang';
+                    const activeClass = isActive ? 'is-active' : '';
+                    const stockClass = vOutOfStock ? 'is-out-of-stock' : '';
+                    const label = variant.size ? variant.size : variant.maSanPham;
+
+                    return `<button type="button" class="modal-size-pill ${activeClass} ${stockClass}" onclick="openQuickView('${variant.maSanPham}')" title="${vOutOfStock ? 'Tạm hết hàng' : 'Có sẵn ' + vStock + ' món'}">${label}</button>`;
+                }).join('');
+                groupWrap.style.display = 'block';
+            } else {
+                groupWrap.style.display = 'none';
+            }
+        } else {
+            groupWrap.style.display = 'none';
+        }
+    }
+
+    // Xử lý nút Thêm vào giỏ hàng theo tồn kho
     const addBtn = document.getElementById('modal-btn-add');
     if (addBtn) {
-        addBtn.onclick = () => {
-            addToCart(product.maSanPham);
-            closeQuickView();
-        };
+        if (isOutOfStock) {
+            addBtn.disabled = true;
+            addBtn.className = 'btn-luxury-primary is-disabled';
+            addBtn.style.opacity = '0.5';
+            addBtn.style.cursor = 'not-allowed';
+            addBtn.textContent = 'Tạm Hết Hàng';
+            addBtn.onclick = null;
+        } else {
+            addBtn.disabled = false;
+            addBtn.className = 'btn-luxury-primary';
+            addBtn.style.opacity = '1';
+            addBtn.style.cursor = 'pointer';
+            addBtn.textContent = 'Thêm Vào Giỏ Hàng';
+            addBtn.onclick = () => {
+                addToCart(product.maSanPham);
+                closeQuickView();
+            };
+        }
     }
 
     modal.classList.add('active');
@@ -841,7 +1104,7 @@ function closeQuickView() {
 /**
  * Tra cứu bảo hành kim hoàn
  */
-function lookupWarranty(ticketCode) {
+async function lookupWarranty(ticketCode) {
     const input = document.getElementById('warranty-search-input');
     const code = (ticketCode || (input ? input.value : '')).trim().toUpperCase();
 
@@ -853,7 +1116,25 @@ function lookupWarranty(ticketCode) {
     if (input) input.value = code;
 
     const card = document.getElementById('warranty-result-card');
-    const ticket = sampleWarrantyTickets[code];
+    let ticket = null;
+
+    // 1. Tra cứu trực tiếp từ CSDL SQL Server qua RESTful API
+    try {
+        const res = await fetch(`/api/BaoHanh/${encodeURIComponent(code)}`);
+        if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+                ticket = json.data;
+            }
+        }
+    } catch (e) {
+        console.warn(`[BlinkBlink.Web] Lỗi kết nối /api/BaoHanh/${code}:`, e);
+    }
+
+    // 2. Dự phòng kho mẫu nếu mất kết nối hoặc dữ liệu cục bộ
+    if (!ticket && sampleWarrantyTickets[code]) {
+        ticket = sampleWarrantyTickets[code];
+    }
 
     if (!ticket) {
         showToast(`Không tìm thấy thông tin cho mã phiếu: ${code}`);
@@ -862,19 +1143,45 @@ function lookupWarranty(ticketCode) {
     }
 
     // Nạp dữ liệu vào thẻ bảo hành
-    document.getElementById('wb-ticket-no').textContent = ticket.soPhieu;
-    document.getElementById('wb-customer').textContent = ticket.tenKhachHang;
-    document.getElementById('wb-product').textContent = ticket.tenSanPham;
-    document.getElementById('wb-date-in').textContent = ticket.ngayTiepNhan;
-    document.getElementById('wb-date-out').textContent = ticket.ngayHenTra;
-    document.getElementById('wb-cost').textContent = ticket.chiPhi === 0 ? 'Miễn phí bảo dưỡng' : formatCurrency(ticket.chiPhi);
-    document.getElementById('wb-note').textContent = `${ticket.lyDo} — ${ticket.ghiChu}`;
+    const elTicketNo = document.getElementById('wb-ticket-no');
+    const elCustomer = document.getElementById('wb-customer');
+    const elProduct = document.getElementById('wb-product');
+    const elDateIn = document.getElementById('wb-date-in');
+    const elDateOut = document.getElementById('wb-date-out');
+    const elCost = document.getElementById('wb-cost');
+    const elNote = document.getElementById('wb-note');
+
+    if (elTicketNo) elTicketNo.textContent = ticket.soPhieu || ticket.soPhieuBH || code;
+    if (elCustomer) elCustomer.textContent = ticket.tenKhachHang || 'Khách hàng Blink Blink';
+    if (elProduct) elProduct.textContent = ticket.tenSanPham || 'Kiệt tác trang sức';
+    if (elDateIn) elDateIn.textContent = ticket.ngayTiepNhan || '-';
+    if (elDateOut) elDateOut.textContent = ticket.ngayHenTra || 'Đang cập nhật';
+
+    const costVal = ticket.chiPhi !== undefined ? ticket.chiPhi : (ticket.chiPhiBaoHanh || 0);
+    if (elCost) elCost.textContent = costVal === 0 ? 'Miễn phí bảo dưỡng' : formatCurrency(costVal);
+
+    const noteParts = [
+        ticket.lyDo || ticket.lyDoBaoHanh,
+        ticket.tinhTrangTiepNhan ? `Tình trạng: ${ticket.tinhTrangTiepNhan}` : '',
+        ticket.ghiChu
+    ].filter(Boolean);
+    if (elNote) elNote.textContent = noteParts.join(' — ') || 'Đang được nghệ nhân Blink Blink chăm sóc và gia công.';
 
     const badgeEl = document.getElementById('wb-status-badge');
     if (badgeEl) {
-        if (ticket.trangThai === 'DaHoanTat') {
+        const rawStatus = (ticket.trangThaiXuLy || ticket.trangThai || '').toUpperCase();
+        if (rawStatus === 'DAHOANTAT' || rawStatus === 'DATRAKHACH') {
             badgeEl.className = 'badge-status-completed';
             badgeEl.textContent = 'Đã Hoàn Tất Dịch Vụ';
+        } else if (rawStatus === 'DAXULY') {
+            badgeEl.className = 'badge-status-completed';
+            badgeEl.textContent = 'Đã Xử Lý Xong • Chờ Giao Khách';
+        } else if (rawStatus === 'DAHUY') {
+            badgeEl.className = 'badge-status-cancelled';
+            badgeEl.textContent = 'Phiếu Đã Hủy';
+        } else if (rawStatus === 'TIEPNHAN') {
+            badgeEl.className = 'badge-status-processing';
+            badgeEl.textContent = 'Đã Tiếp Nhận Yêu Cầu';
         } else {
             badgeEl.className = 'badge-status-processing';
             badgeEl.textContent = 'Đang Gia Công Bảo Dưỡng';
