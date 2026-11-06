@@ -23,6 +23,12 @@ public class PhieuBaoHanh
     public string MaKhachHang { get; set; } = string.Empty;
 
     /// <summary>
+    /// Số điện thoại liên hệ của khách hàng tiếp nhận bảo hành (áp dụng cho cả khách thành viên và khách vãng lai, có thể để trống).
+    /// Khớp thuộc tính: - _soDienThoai: string trong Diagram
+    /// </summary>
+    public string SoDienThoai { get; set; } = string.Empty;
+
+    /// <summary>
     /// Mã sản phẩm trang sức cần bảo hành
     /// Khớp thuộc tính: - _maSanPham: string trong Diagram
     /// </summary>
@@ -104,7 +110,8 @@ public class PhieuBaoHanh
         DateTime? ngayHenTra = null,
         decimal chiPhiThucTe = 0m,
         string tinhTrangTiepNhan = "",
-        string ghiChu = "")
+        string ghiChu = "",
+        string soDienThoai = "")
     {
         SoPhieuBH = soPhieuBH;
         MaKhachHang = maKhachHang;
@@ -117,6 +124,7 @@ public class PhieuBaoHanh
         NgayHenTra = ngayHenTra;
         TinhTrangTiepNhan = tinhTrangTiepNhan;
         GhiChu = ghiChu;
+        SoDienThoai = soDienThoai ?? string.Empty;
     }
 
     /// <summary>

@@ -23,6 +23,8 @@ public class InventoryInwardView : UserControl
 
     private TextBox _txtSearch = null!;
     private Button _btnCreateReceipt = null!;
+    private Button _btnViewDetails = null!;
+    private Button _btnInvalidate = null!;
     private Button _btnRefresh = null!;
 
     private Label _lblKpiTotalReceipts = null!;
@@ -30,7 +32,6 @@ public class InventoryInwardView : UserControl
     private Label _lblKpiTotalValue = null!;
 
     private DataGridView _dgvReceipts = null!;
-    private DataGridView _dgvDetails = null!;
 
     public InventoryInwardView()
     {
@@ -128,6 +129,14 @@ public class InventoryInwardView : UserControl
         _btnCreateReceipt.Margin = new Padding(0, 2, 8, 2);
         _btnCreateReceipt.Click += (s, e) => ShowCreateReceiptDialog();
 
+        _btnViewDetails = UITheme.CreateFlatButton("👁 Xem Chi Tiết", Color.FromArgb(51, 65, 85), Color.White);
+        _btnViewDetails.Margin = new Padding(0, 2, 8, 2);
+        _btnViewDetails.Click += (s, e) => ShowReceiptDetailsDialog();
+
+        _btnInvalidate = UITheme.CreateFlatButton("🚫 Vô Hiệu Hóa Phiếu", Color.FromArgb(239, 68, 68), Color.White);
+        _btnInvalidate.Margin = new Padding(0, 2, 8, 2);
+        _btnInvalidate.Click += (s, e) => InvalidateSelectedReceipt();
+
         _btnRefresh = UITheme.CreateFlatButton("⟳ Nạp Lại", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
         _btnRefresh.Margin = new Padding(0, 2, 0, 2);
         _btnRefresh.Click += (s, e) => LoadReceiptsData();
@@ -135,9 +144,17 @@ public class InventoryInwardView : UserControl
         toolbarPanel.Controls.Add(lblSearch);
         toolbarPanel.Controls.Add(_txtSearch);
         toolbarPanel.Controls.Add(_btnCreateReceipt);
+        toolbarPanel.Controls.Add(_btnViewDetails);
+
+        // Nút vô hiệu hóa phiếu nhập kho dành riêng cho tài khoản Quản trị viên ADMIN
+        if (IsCurrentAdmin())
+        {
+            toolbarPanel.Controls.Add(_btnInvalidate);
+        }
+
         toolbarPanel.Controls.Add(_btnRefresh);
 
-        // Main Container với SplitContainer chia bảng phiếu và bảng chi tiết
+        // Bảng phiếu nhập kho chiếm toàn bộ diện tích
         var pnlGridContainer = new Panel
         {
             Dock = DockStyle.Fill,
@@ -145,39 +162,14 @@ public class InventoryInwardView : UserControl
             BackColor = UITheme.CanvasBackground
         };
 
-        var splitContainer = new SplitContainer
-        {
-            Dock = DockStyle.Fill,
-            Orientation = Orientation.Horizontal,
-            SplitterDistance = 320,
-            SplitterWidth = 8,
-            BackColor = UITheme.CanvasBackground
-        };
-
-        // Bảng phiếu nhập kho
         var pnlReceiptsCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(1) };
         _dgvReceipts = new DataGridView();
         UITheme.ApplyGridViewStyle(_dgvReceipts);
         ConfigureReceiptGridColumns();
-        _dgvReceipts.SelectionChanged += DgvReceipts_SelectionChanged;
+        _dgvReceipts.CellDoubleClick += (s, e) => ShowReceiptDetailsDialog();
         pnlReceiptsCard.Controls.Add(_dgvReceipts);
-        splitContainer.Panel1.Controls.Add(pnlReceiptsCard);
 
-        // Bảng chi tiết dòng hàng
-        var pnlDetailsCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(1) };
-        var pnlDetailsHeader = new Panel { Dock = DockStyle.Top, Height = 34, BackColor = Color.FromArgb(248, 250, 252), Padding = new Padding(12, 8, 12, 4) };
-        var lblDetailsTitle = new Label { Text = "CHI TIẾT MẶT HÀNG TRANG SỨC THEO PHIẾU NHẬP ĐANG CHỌN", Font = UITheme.SubHeaderFont, ForeColor = UITheme.TextPrimary, AutoSize = true };
-        pnlDetailsHeader.Controls.Add(lblDetailsTitle);
-
-        _dgvDetails = new DataGridView();
-        UITheme.ApplyGridViewStyle(_dgvDetails);
-        ConfigureDetailGridColumns();
-
-        pnlDetailsCard.Controls.Add(_dgvDetails);
-        pnlDetailsCard.Controls.Add(pnlDetailsHeader);
-        splitContainer.Panel2.Controls.Add(pnlDetailsCard);
-
-        pnlGridContainer.Controls.Add(splitContainer);
+        pnlGridContainer.Controls.Add(pnlReceiptsCard);
 
         this.Controls.Add(pnlGridContainer);
         this.Controls.Add(toolbarPanel);
@@ -218,6 +210,17 @@ public class InventoryInwardView : UserControl
         return card;
     }
 
+    private bool IsCurrentAdmin()
+    {
+        var staffRole = _services.CurrentStaff?.MaVaiTro?.ToUpperInvariant();
+        var userRole = _services.CurrentUser?.MaVaiTro?.ToUpperInvariant();
+        if (staffRole == "ADMIN" || userRole == "ADMIN" || (staffRole == null && userRole == null))
+        {
+            return true;
+        }
+        return false;
+    }
+
     private void ConfigureReceiptGridColumns()
     {
         _dgvReceipts.Columns.Clear();
@@ -229,7 +232,7 @@ public class InventoryInwardView : UserControl
         colNgay.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         colNgay.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
-        var colNcc = new DataGridViewTextBoxColumn { Name = "NhaCungCap", HeaderText = "NHÀ CUNG CẤP TRANG SỨC", FillWeight = 220, MinimumWidth = 200 };
+        var colNcc = new DataGridViewTextBoxColumn { Name = "NhaCungCap", HeaderText = "NHÀ CUNG CẤP TRANG SỨC", FillWeight = 200, MinimumWidth = 180 };
         colNcc.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         colNcc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
@@ -240,37 +243,14 @@ public class InventoryInwardView : UserControl
         var colSl = new DataGridViewTextBoxColumn { Name = "TongSoLuong", HeaderText = "TỔNG SỐ LƯỢNG", FillWeight = 95, MinimumWidth = 115, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
         colSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-        var colTong = new DataGridViewTextBoxColumn { Name = "TongGiaTri", HeaderText = "TỔNG TIỀN NHẬP (VND)", FillWeight = 140, MinimumWidth = 160, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        var colTong = new DataGridViewTextBoxColumn { Name = "TongGiaTri", HeaderText = "TỔNG TIỀN NHẬP (VND)", FillWeight = 140, MinimumWidth = 150, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
         colTong.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-        _dgvReceipts.Columns.AddRange(colMa, colNgay, colNcc, colNv, colSl, colTong);
-    }
+        var colTrangThai = new DataGridViewTextBoxColumn { Name = "TrangThai", HeaderText = "TRẠNG THÁI", FillWeight = 110, MinimumWidth = 120 };
+        colTrangThai.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-    private void ConfigureDetailGridColumns()
-    {
-        _dgvDetails.Columns.Clear();
-        var colMa = new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 100, MinimumWidth = 100 };
-        colMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-        var colTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 200 };
-        colTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-        var colSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 85, MinimumWidth = 95, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
-        colSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-
-        var colGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVonNhap", HeaderText = "ĐƠN GIÁ VỐN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
-        colGiaVon.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-
-        var colThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 140, MinimumWidth = 150, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
-        colThanhTien.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-
-        var colChungTu = new DataGridViewTextBoxColumn { Name = "SoChungTu", HeaderText = "SỐ CHỨNG TỪ", FillWeight = 110, MinimumWidth = 110 };
-        colChungTu.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colChungTu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-        _dgvDetails.Columns.AddRange(colMa, colTen, colSl, colGiaVon, colThanhTien, colChungTu);
+        _dgvReceipts.Columns.AddRange(colMa, colNgay, colNcc, colNv, colSl, colTong, colTrangThai);
     }
 
     public void LoadReceiptsData()
@@ -284,8 +264,8 @@ public class InventoryInwardView : UserControl
     {
         var viVn = new CultureInfo("vi-VN");
         _lblKpiTotalReceipts.Text = _allReceipts.Count.ToString("N0", viVn);
-        _lblKpiTotalQuantity.Text = _allReceipts.Sum(r => r.TongSoSanPham).ToString("N0", viVn);
-        _lblKpiTotalValue.Text = _allReceipts.Sum(r => r.TongGiaTri).ToString("N0", viVn);
+        _lblKpiTotalQuantity.Text = _allReceipts.Where(r => r.TrangThai).Sum(r => r.TongSoSanPham).ToString("N0", viVn);
+        _lblKpiTotalValue.Text = _allReceipts.Where(r => r.TrangThai).Sum(r => r.TongGiaTri).ToString("N0", viVn);
     }
 
     private void FilterReceipts()
@@ -304,55 +284,200 @@ public class InventoryInwardView : UserControl
 
         foreach (var r in filtered)
         {
-            _dgvReceipts.Rows.Add(
+            var rowIndex = _dgvReceipts.Rows.Add(
                 r.MaPhieuNhap,
                 r.NgayNhap.ToString("dd/MM/yyyy HH:mm"),
                 r.NhaCungCap,
                 r.MaNhanVien,
                 r.TongSoSanPham.ToString("N0", viVn),
-                r.TongGiaTri.ToString("N0", viVn)
+                r.TongGiaTri.ToString("N0", viVn),
+                r.TrangThai ? "✓ Hợp lệ" : "🚫 Đã vô hiệu hóa"
             );
-        }
 
-        if (_dgvReceipts.Rows.Count > 0)
-        {
-            _dgvReceipts.Rows[0].Selected = true;
-            DisplaySelectedReceiptDetails();
-        }
-        else
-        {
-            _dgvDetails.Rows.Clear();
+            var cellTrangThai = _dgvReceipts.Rows[rowIndex].Cells["TrangThai"];
+            if (r.TrangThai)
+            {
+                cellTrangThai.Style.ForeColor = Color.FromArgb(22, 101, 52);
+                cellTrangThai.Style.BackColor = Color.FromArgb(220, 252, 231);
+                cellTrangThai.Style.Font = new Font(UITheme.RegularFont, FontStyle.Bold);
+            }
+            else
+            {
+                cellTrangThai.Style.ForeColor = Color.FromArgb(153, 27, 27);
+                cellTrangThai.Style.BackColor = Color.FromArgb(254, 226, 226);
+                cellTrangThai.Style.Font = new Font(UITheme.RegularFont, FontStyle.Bold);
+            }
         }
     }
 
-    private void DgvReceipts_SelectionChanged(object? sender, EventArgs e)
+    private void ShowReceiptDetailsDialog()
     {
-        DisplaySelectedReceiptDetails();
-    }
-
-    private void DisplaySelectedReceiptDetails()
-    {
-        _dgvDetails.Rows.Clear();
-        if (_dgvReceipts.SelectedRows.Count == 0) return;
+        if (_dgvReceipts.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn một phiếu nhập kho để xem chi tiết.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
 
         var maPhieu = _dgvReceipts.SelectedRows[0].Cells["MaPhieuNhap"].Value?.ToString();
         var receipt = _allReceipts.FirstOrDefault(r => r.MaPhieuNhap == maPhieu);
-        if (receipt == null || receipt.ChiTietNhapKhos == null) return;
+        if (receipt == null) return;
+
+        using var dialog = new Form
+        {
+            Text = $"Chi Tiết Phiếu Nhập Kho #{receipt.MaPhieuNhap} - Blink Blink Jewelry",
+            Size = new Size(880, 560),
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            BackColor = UITheme.CanvasBackground,
+            Font = UITheme.RegularFont
+        };
+
+        var pnlHeader = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 110,
+            BackColor = Color.White,
+            Padding = new Padding(20, 15, 20, 15)
+        };
+
+        var lblTitle = new Label
+        {
+            Text = $"PHIẾU NHẬP KHO: {receipt.MaPhieuNhap}",
+            Font = UITheme.SubHeaderFont,
+            ForeColor = UITheme.TextPrimary,
+            Dock = DockStyle.Top,
+            Height = 25
+        };
 
         var viVn = new CultureInfo("vi-VN");
-        foreach (var ct in receipt.ChiTietNhapKhos)
-        {
-            var tenSp = ct.SanPhamTrangSuc?.TenSanPham ?? ct.MaSanPham;
-            var thanhTien = ct.TinhGiaTri();
+        var statusText = receipt.TrangThai ? "HỢP LỆ" : "ĐÃ VÔ HIỆU HÓA";
 
-            _dgvDetails.Rows.Add(
-                ct.MaSanPham,
-                tenSp,
-                ct.SoLuong.ToString("N0", viVn),
-                ct.GiaVonNhap.ToString("N0", viVn),
-                thanhTien.ToString("N0", viVn),
-                string.IsNullOrEmpty(ct.SoChungTu) ? "-" : ct.SoChungTu
-            );
+        var lblInfo = new Label
+        {
+            Text = $"Ngày nhập: {receipt.NgayNhap:dd/MM/yyyy HH:mm}   |   Nhà cung cấp: {receipt.NhaCungCap}   |   Nhân viên: {receipt.MaNhanVien}\n" +
+                   $"Tổng số lượng: {receipt.TongSoSanPham:N0} món   |   Tổng giá trị: {receipt.TongGiaTri.ToString("N0", viVn)} VND   |   Trạng thái: {statusText}",
+            Font = UITheme.RegularFont,
+            ForeColor = UITheme.TextSecondary,
+            Dock = DockStyle.Fill
+        };
+
+        pnlHeader.Controls.Add(lblInfo);
+        pnlHeader.Controls.Add(lblTitle);
+
+        var pnlGrid = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(20, 10, 20, 10),
+            BackColor = UITheme.CanvasBackground
+        };
+
+        var dgv = new DataGridView();
+        UITheme.ApplyGridViewStyle(dgv);
+
+        var colMa = new DataGridViewTextBoxColumn { Name = "MaSanPham", HeaderText = "MÃ SẢN PHẨM", FillWeight = 100, MinimumWidth = 100 };
+        var colTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 200 };
+        var colSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 85, MinimumWidth = 95, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        var colGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVonNhap", HeaderText = "ĐƠN GIÁ VỐN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        var colThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 140, MinimumWidth = 150, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        var colChungTu = new DataGridViewTextBoxColumn { Name = "SoChungTu", HeaderText = "SỐ CHỨNG TỪ", FillWeight = 110, MinimumWidth = 110 };
+
+        dgv.Columns.AddRange(colMa, colTen, colSl, colGiaVon, colThanhTien, colChungTu);
+
+        if (receipt.ChiTietNhapKhos != null)
+        {
+            foreach (var ct in receipt.ChiTietNhapKhos)
+            {
+                var tenSp = ct.SanPhamTrangSuc?.TenSanPham ?? ct.MaSanPham;
+                var thanhTien = ct.TinhGiaTri();
+                dgv.Rows.Add(
+                    ct.MaSanPham,
+                    tenSp,
+                    ct.SoLuong.ToString("N0", viVn),
+                    ct.GiaVonNhap.ToString("N0", viVn),
+                    thanhTien.ToString("N0", viVn),
+                    string.IsNullOrEmpty(ct.SoChungTu) ? "-" : ct.SoChungTu
+                );
+            }
+        }
+
+        var pnlCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(1) };
+        pnlCard.Controls.Add(dgv);
+        pnlGrid.Controls.Add(pnlCard);
+
+        var pnlFooter = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 60,
+            BackColor = Color.White,
+            Padding = new Padding(20, 12, 20, 12)
+        };
+
+        var btnClose = UITheme.CreateFlatButton("Đóng", Color.FromArgb(241, 245, 249), UITheme.TextPrimary);
+        btnClose.Dock = DockStyle.Right;
+        btnClose.Width = 110;
+        btnClose.Click += (s, e) => dialog.Close();
+
+        pnlFooter.Controls.Add(btnClose);
+
+        dialog.Controls.Add(pnlGrid);
+        dialog.Controls.Add(pnlFooter);
+        dialog.Controls.Add(pnlHeader);
+
+        dialog.ShowDialog(this);
+    }
+
+    private void InvalidateSelectedReceipt()
+    {
+        if (!IsCurrentAdmin())
+        {
+            MessageBox.Show("Chức năng vô hiệu hóa phiếu nhập kho chỉ dành riêng cho tài khoản Quản trị viên (ADMIN).", "Quyền truy cập bị từ chối", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (_dgvReceipts.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Vui lòng chọn một phiếu nhập kho cần vô hiệu hóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var maPhieu = _dgvReceipts.SelectedRows[0].Cells["MaPhieuNhap"].Value?.ToString();
+        var receipt = _allReceipts.FirstOrDefault(r => r.MaPhieuNhap == maPhieu);
+        if (receipt == null) return;
+
+        if (!receipt.TrangThai)
+        {
+            MessageBox.Show($"Phiếu nhập kho [{receipt.MaPhieuNhap}] đã bị vô hiệu hóa trước đó.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            $"Bạn có chắc chắn muốn vô hiệu hóa phiếu nhập kho [{receipt.MaPhieuNhap}]?\n\n" +
+            "Hệ thống sẽ:\n" +
+            "1. Đánh dấu phiếu nhập là vô hiệu hóa (không xóa lịch sử chứng từ).\n" +
+            "2. Trừ số lượng tồn kho tương ứng của các mặt hàng trong phiếu.\n" +
+            "3. Tính lại giá vốn nhập bình quân của sản phẩm như khi phiếu nhập này chưa từng tồn tại.\n\n" +
+            "Thao tác này KHÔNG THỂ khôi phục trực tiếp!",
+            "Xác nhận vô hiệu hóa phiếu nhập",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2
+        );
+
+        if (confirm != DialogResult.Yes) return;
+
+        var adminId = _services.CurrentStaff?.MaNhanVien ?? _services.CurrentUser?.MaNguoiDung ?? "ADMIN";
+        var success = _services.XacNhanNhapKho.VoHieuHoaPhieuNhap(receipt.MaPhieuNhap, adminId, out var error);
+
+        if (success)
+        {
+            MessageBox.Show($"Đã vô hiệu hóa thành công phiếu nhập kho [{receipt.MaPhieuNhap}]. Tồn kho và giá vốn đã được cập nhật lại chính xác.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadReceiptsData();
+        }
+        else
+        {
+            MessageBox.Show($"Không thể vô hiệu hóa phiếu nhập kho:\n{error}", "Lỗi xử lý", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -368,7 +493,7 @@ public class InventoryInwardView : UserControl
         using var dialog = new Form
         {
             Text = "Lập Phiếu Nhập Kho Trang Sức Mới - Blink Blink Jewelry",
-            Width = 1000,
+            Width = 1060,
             Height = 740,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
@@ -416,7 +541,7 @@ public class InventoryInwardView : UserControl
 
         var infoRow1 = new FlowLayoutPanel
         {
-            Width = 940,
+            Width = 980,
             Height = 44,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false,
@@ -467,7 +592,7 @@ public class InventoryInwardView : UserControl
 
         var infoRow2 = new FlowLayoutPanel
         {
-            Width = 940,
+            Width = 980,
             Height = 44,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false,
@@ -531,7 +656,7 @@ public class InventoryInwardView : UserControl
 
         var itemRow1 = new FlowLayoutPanel
         {
-            Width = 920,
+            Width = 980,
             Height = 44,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false,
@@ -550,7 +675,7 @@ public class InventoryInwardView : UserControl
 
         var txtSearchSp = new TextBox
         {
-            Width = 140,
+            Width = 130,
             Height = 30,
             Font = UITheme.RegularFont,
             PlaceholderText = "🔍 Tìm SP...",
@@ -568,7 +693,7 @@ public class InventoryInwardView : UserControl
 
         var cboSp = new ComboBox
         {
-            Width = 330,
+            Width = 320,
             Height = 30,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Font = UITheme.RegularFont,
@@ -586,7 +711,7 @@ public class InventoryInwardView : UserControl
 
         var cboSize = new ComboBox
         {
-            Width = 140,
+            Width = 145,
             Height = 30,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Font = UITheme.RegularFont,
@@ -602,7 +727,7 @@ public class InventoryInwardView : UserControl
 
         var itemRow2 = new FlowLayoutPanel
         {
-            Width = 920,
+            Width = 980,
             Height = 44,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false,

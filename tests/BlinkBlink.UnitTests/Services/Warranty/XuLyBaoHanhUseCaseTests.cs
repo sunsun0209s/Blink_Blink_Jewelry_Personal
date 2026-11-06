@@ -64,6 +64,15 @@ public class XuLyBaoHanhUseCaseTests
             Data[pbh.SoPhieuBH] = pbh;
         }
 
+        public void CapNhatKhachHangTheoSoDienThoai(string soDienThoai, string maKhachHangMoi)
+        {
+            if (string.IsNullOrWhiteSpace(soDienThoai) || string.IsNullOrWhiteSpace(maKhachHangMoi)) return;
+            foreach (var p in Data.Values.Where(p => p.SoDienThoai == soDienThoai && (p.MaKhachHang == "0" || p.MaKhachHang == "KH_0")))
+            {
+                p.MaKhachHang = maKhachHangMoi;
+            }
+        }
+
         public Task CapNhatPhieuAsync(PhieuBaoHanh pbh, CancellationToken cancellationToken = default)
         {
             Data[pbh.SoPhieuBH] = pbh;

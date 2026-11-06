@@ -85,14 +85,7 @@ INSERT INTO dbo.ChiTietGioHang (MaGioHang, MaSanPham, SoLuongSanPham) VALUES
 ('GH_KH001', 'SP004', 1);
 GO
 
--- 10. Nạp phiếu kiểm kê kho
-INSERT INTO dbo.PhieuKiemKe (MaPhieuKiemKe, NgayKiemKe, ViTriKiemKe, MaNhanVienKho, TrangThaiDuyet) VALUES
-('PKK20260320', '2026-03-20 18:00:00', N'Tủ kính trưng bày khu A - Sảnh chính', 'USER_NV002', 1);
-
-INSERT INTO dbo.ChiTietKiemKe (MaPhieuKiemKe, MaSanPham, TonSoSach, TonThucTe, ChenhLech, LyDoChenhLech) VALUES
-('PKK20260320', 'SP001', 5, 5, 0, N'Khớp hoàn toàn sổ sách'),
-('PKK20260320', 'SP002', 3, 3, 0, N'Khớp hoàn toàn sổ sách'),
-('PKK20260320', 'SP003', 2, 2, 0, N'Khớp hoàn toàn sổ sách');
+-- 10. Phiếu kiểm kê kho (để trống ban đầu, nhân viên kho tự tạo khi kiểm kê)
 GO
 
 -- 11. Nạp phiếu tiếp nhận bảo hành dịch vụ kim hoàn

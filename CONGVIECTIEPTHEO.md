@@ -1,4 +1,26 @@
 
+Tôi muốn phần nhập phiếu bảo hành nó cũng sẽ theo cơ chế ô search và combobox, tôi muốn xóa bỏ phần thông tin nhập sẵn trong modal tạo phiếu bảo hành đi, và cũng phải cho khách vãng lai không có tài khoản bảo hành, nhớ ghi nhận lại sdt của khách. Sau này khách tạo tài khoản thì ngoài đơn hàng được liên kết, phiếu bảo hành cũng được liên kết đến.
+
+
+
+
+
+//Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
+
+
+Trang bảo hành của admin và nhân viên sẽ có nút: Tiếp nhận mới, Đang xử lý, Đã xử lý, Hoàn tất & trả khách, Hủy phiếu
+Bảo hành có 3 trạng thái: Tiếp nhận, Đang xử lý, Đã xử lý, Đã trả khách.
+Nhân viên bán hàng sẽ là người tạo phiếu bảo hành, có thể ghi chi phí dự tính hoặc để trống cũng không sao, có phần để ghi tình trạng sản phẩm khi tiếp nhận, và phần ghi chú. Phiếu bảo hành vừa tạo sẽ có trạng thái là: Tiếp nhận.
+Thêm nhân viên kỹ thuật, nhân viên kỹ thuật chỉ có thể thay đổi trạng thái của dịch vụ bảo hành từ tiếp nhận(trạng thái ban đầu khi phiếu bảo hành được khởi tạo bởi nhân viên bán hàng) -> Đang xử lý (để báo rằng sản phẩm đó đang được bảo hành) và từ Đang xử lý -> Đã xử lý (Báo rằng đã sửa xong), ghi nhận chi phí thực tế khi sửa chữa.
+
+Nhân viên bán hàng khi trả lại sản phẩm cho khách sẽ chuyển trạng thái Đã xử lý -> Đã trả khách bằng việc nhấn Hoàn tất và trả khách. Nếu chi phi thực tế khác 0, thì sẽ hiện lên giao diện tính tiền bằng tiền mặt hoặc chuyển khoản giống trang bán offline, sau đó nhấn xác nhận thanh toán mới chuyển trạng thái của phiếu bảo hành. 
+
+
+
+trang bán offline phải có ràng buộc về số lượng sản phẩm, sẽ kiểm tra số lượng sản phẩm khi nhân viên thực hiện thao tác thay đổi số lượng, và chỉ bán được những sản phẩm cho phép bán (tức là sản phẩm không bị ẩn khỏi trang mua sắm của người dùng), rà soát lại: có phải đối với khách vãng lai có để lại sdt cho đơn hàng, khi khách hàng tạo tài khoản với số điện thoại đó, hệ thống cũng sẽ tự liên kết lại các đơn hàng đó vô tài khoản vừa tạo.
+
+--------------------------
+
 
 
 mỗi sản phẩm nên có nhiều size, hiện tại size được nhập theo kiểu string, cùng một loại sản phẩm nhưng khác size sẽ là sản phẩm khác nhau, về cơ bản là chưa có cơ chế góm nhóm cho nó giả sử sau này khi chọn 1 sản phẩm nó sẽ hiển thị ra nhiều tùy chọn size. Tôi đề xuất thực hiện điều này bằng cách có phần mã nhóm cho sản phẩm, nghĩa là tạo thêm một bảng csdl về mã nhóm, và có tab quản lý nhóm, quy ước các sản phẩm cùng nhóm là các sản phẩm đó phải cùng tên nhưng khác size. Nghĩa là trong csdl có bảng nhóm sản phẩm, sanpham sẽ phải bổ sung thêm phần mã nhóm.
@@ -21,19 +43,12 @@ sau khi đã thực hiện được yêu cầu trên, hãy vào phần nhập kh
 
 sau đó vào trang quản lý bán hàng tại quầy pos, phần thêm sản phẩm chỗ chọn sản phẩm hiển thị mã sản phẩm với tên sản phẩm là được, phía dưới là combobox cho chọn size. cơ chế tương tự chọn size của nhập kho.
 
+----------------------------
+Tôi muốn sửa một chút tại phần quản lý kho hàng, thay vì các sản phẩm chi tiết của phiếu nhập hiện trong bảng phía dưới, tôi muốn bỏ bảng đó đi, có một nút xem chi tiết bên phải nút Lập phiếu nhập kho, nhân vào đó sẽ hiện ra chi tiết các thứ có trong phiếu nhập đó. 
 
+đối với tài khoản admin, sẽ có một nút dùng để vô hiệu hóa phiếu nhập trong trường hợp nhân viên lập ra một phiếu nhập lỗi, vậy cần thêm 1 thuộc tính trong csdl cho phiếu nhập dùng để xem coi đó có phải phiếu nhập hợp lệ không. Nếu quản trị viên chọn vô hiệu hóa thì phiếu đó sẽ được đánh dấu là vô hiệu hóa. Tồn kho sẽ thay đổi tương ứng, giá bán bình quân cũng được tính lại theo ngữ cảnh phiếu nhập đó chưa từng tồn tại. Tuyệt đối không cho sửa phiếu nhập. 
 
+Tôi muốn thêm 1 tab là Kiểm kê, trong tab này đối với nhân viên kho sẽ lập được phiếu kiểm kê, phiếu kiểm kê đó sẽ do quản lý duyệt, quản lý duyệt ok thì giả sử tồn kho lệch, quản lý duyệt xong thì tồn kho thực tế mới bị trừ. Nhớ là trong phiếu kiểm kê có thể kiểm kê cùng lúc nhiều sản phẩm, dùng cơ chế search và chọn bằng combobox để chọn sản phẩm muốn lập kiểm kê khi có chênh lệch. Khi sản phẩm đầu tiên được tìm thấy hiện trong combobox hoặc người dùng mở combobox và chọn được sản phẩm thì phía dưới là một textbox chỉ đọc hiện số lượng tồn kho trong hệ thống, bên phải textbox đó là một textbox khác cho nhập tồn kho thực tế. Sau đó nhấn thêm thì sản phẩm cùng với số lượng nằm trong hệ thống, và số lượng thực tế mới hiện trong bảng phía dưới đồng thời cũng làm trống search (mặc định combobox khi ô search trống sẽ hiển thị tất cả sản phẩm). tất nhiên là dưới bảng chứa danh sách sản phẩm kiểm kê là nút dùng để loại sản phẩm đó khỏi danh sách kiểm kê giả sử nhân viên nhập nhầm, phía dưới nút loại đó là chỗ cho nhập ghi chú. Phía cuối cùng modal sẽ là nút Thêm biên bản kiểm kê và nút hủy.
+Khi thêm xong, phiếu kiểm kê đó sẽ nằm trong danh sách các phiếu kiểm kê, sẽ hiện theo thứ tự các phiếu mới nhất, phiếu đó sẽ có trạng thái chờ duyệt, tất nhiên cũng có nút xem chi tiết phiếu kiểm kê cạnh nút thêm, nút này sẽ mở lại modal chi tiết của phiếu kiểm kê, phía cuối modal đối với nhân viên kho sẽ có 2 nút là Đóng và nút Lưu thay đổi, cho phép sửa lại phiếu đó nếu phiếu đó chưa được duyệt. Admin khi mở chi tiết phiếu đó lên, thì ngoài 2 nút đó sẽ có thêm nút duyệt phiếu, duyệt sẽ thay đổi trạng thái của phiếu đó, đóng modal, thay đổi trạng thái phiếu trong danh sách hiển thị. Khi xem chi tiết phiếu đó thì chỉ còn nút đóng phiếu chứ không có nút lưu thay đổi nữa. Cũng không cho sửa bất kì chỗ nào. Phiếu đã được duyệt thì tồn kho sản phẩm sẽ thay đổi, chi thay đổi tồn kho thôi là được không cần thay đổi thêm gì khác. Khi mở chi tiết một phiếu đã được duyệt, đối với nhân viên thì cuối modal chỉ có nút đóng, đối với admin sẽ có thêm nút Vô hiệu hóa dùng để vô hiệu hóa phiếu, trả lại số lượng tồn kho ban đầu nếu duyệt nhầm phiếu. Có thêm một nút xóa kế nút xem chi tiết phiếu. Nút này chỉ sáng đối với các phiếu chưa được duyệt, nhân viên và admin đều dùng được.
 
-//Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
-
-Trang bảo hành của admin và nhân viên sẽ có nút: Tiếp nhận mới, Đang xử lý, Đã xử lý, Hoàn tất & trả khách, Hủy phiếu
-Bảo hành có 3 trạng thái: Tiếp nhận, Đang xử lý, Đã xử lý, Đã trả khách.
-Nhân viên bán hàng sẽ là người tạo phiếu bảo hành, có thể ghi chi phí dự tính hoặc để trống cũng không sao, có phần để ghi tình trạng sản phẩm khi tiếp nhận, và phần ghi chú. Phiếu bảo hành vừa tạo sẽ có trạng thái là: Tiếp nhận.
-Thêm nhân viên kỹ thuật, nhân viên kỹ thuật chỉ có thể thay đổi trạng thái của dịch vụ bảo hành từ tiếp nhận(trạng thái ban đầu khi phiếu bảo hành được khởi tạo bởi nhân viên bán hàng) -> Đang xử lý (để báo rằng sản phẩm đó đang được bảo hành) và từ Đang xử lý -> Đã xử lý (Báo rằng đã sửa xong), ghi nhận chi phí thực tế khi sửa chữa.
-
-Nhân viên bán hàng khi trả lại sản phẩm cho khách sẽ chuyển trạng thái Đã xử lý -> Đã trả khách bằng việc nhấn Hoàn tất và trả khách. Nếu chi phi thực tế khác 0, thì sẽ hiện lên giao diện tính tiền bằng tiền mặt hoặc chuyển khoản giống trang bán offline, sau đó nhấn xác nhận thanh toán mới chuyển trạng thái của phiếu bảo hành. 
-
-
-
-trang bán offline phải có ràng buộc về số lượng sản phẩm, sẽ kiểm tra số lượng sản phẩm khi nhân viên thực hiện thao tác thay đổi số lượng, và chỉ bán được những sản phẩm cho phép bán (tức là sản phẩm không bị ẩn khỏi trang mua sắm của người dùng), rà soát lại: có phải đối với khách vãng lai có để lại sdt cho đơn hàng, khi khách hàng tạo tài khoản với số điện thoại đó, hệ thống cũng sẽ tự liên kết lại các đơn hàng đó vô tài khoản vừa tạo.
-
+Tôi muốn bạn lưu ý giả sử có phiếu kiểm kê chồng chéo lên nhau. Thì tôi muốn khi phiếu bị vô hiệu hóa phải có cơ chế trả lại số sản phẩm tồn kho một cách chính xác chứ không phải lấy số lượng được ghi trong phiếu và sửa lại. Ví dụ lỡ như khi duyệt phiếu có sản phẩm thực tế còn 100 cái nhưng hệ thống ghi 105 cái, sau đó khách mua 2 cái thì còn 98 cái, sau đó vô hiệu hóa phiếu, thì không thể nào trả lại số sản phẩm trong tồn kho là 105 được, nó sẽ là 103 cái. Vấn đề ràng buộc, giả sử có 2 phiếu cùng sửa 1 sản phẩm được gửi đến cho admin duyệt giả khi duyệt 1 phiếu, thì số lượng tồn kho thực tế của sản phẩm đã khác so với số lượng tồn kho thực tế trong hệ thống ghi nhận của phiếu còn lại. Lúc này bạn phải kiểm tra và từ chối cho duyệt phiếu đó với lí do là số lượng tồn kho được ghi nhận của phiếu không chính xác. Phiếu kiểm kê không chỉ ghi nhận thâm hụt, mà còn có thể ghi nhận nếu số lượng thực tế nhiều hơn so với số lượng tồn tại trong hệ thống. Giả sử phiếu kiểm kê 1 vào ngày hôm qua ghi nhận 1 sản phẩm đã được duyệt, phiếu kiểm kê 2 vào ngày hôm nay ghi nhận cùng sản phẩm đó và đã được duyệt. Lúc này nếu admin vô hiệu hóa phiếu kiểm kê 1 sẽ không cho. Nó sẽ thông báo chỉ cho vô hiệu hóa phiếu có chỉnh sửa mới nhất đối với sản phẩm. Lúc này admin có 2 lựa chọn là lập phiếu kiểm kê khác để bù lại số lượng. Hoặc là vô hiệu hóa phiếu kiểm kê kia trước.

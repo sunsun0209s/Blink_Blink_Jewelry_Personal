@@ -72,6 +72,7 @@ public class AdminServiceScope
     public QuanLyKhachHangUseCase QuanLyKhachHang { get; }
     public ThongKeDoanhThuUseCase ThongKeDoanhThu { get; }
     public ThongKeKhoHangUseCase ThongKeKhoHang { get; }
+    public QuanLyKiemKeUseCase QuanLyKiemKe { get; }
 
     /// <summary>
     /// Người dùng / Nhân viên đang đăng nhập vào phần mềm Admin WinForms phục vụ phân quyền.
@@ -179,11 +180,12 @@ public class AdminServiceScope
         XuLyDonHang = new XuLyDonHangUseCase(HoaDonRepo, SanPhamRepo);
         DatHang = new DatHangUseCase(HoaDonRepo, GioHangRepo, SanPhamRepo);
         BanHangOffline = new BanHangOfflineUseCase(HoaDonRepo, SanPhamRepo, KhachHangRepo);
-        TiepNhanBaoHanh = new TiepNhanBaoHanhUseCase(BaoHanhRepo, SanPhamRepo);
+        TiepNhanBaoHanh = new TiepNhanBaoHanhUseCase(BaoHanhRepo, SanPhamRepo, KhachHangRepo);
         XuLyBaoHanh = new XuLyBaoHanhUseCase(BaoHanhRepo, SanPhamRepo);
         QuanLyNhanVien = new QuanLyNhanVienUseCase(NhanVienRepo, VaiTroRepo);
         QuanLyKhachHang = new QuanLyKhachHangUseCase(KhachHangRepo);
         ThongKeDoanhThu = new ThongKeDoanhThuUseCase(ThongKeRepo);
         ThongKeKhoHang = new ThongKeKhoHangUseCase(ThongKeRepo);
+        QuanLyKiemKe = new QuanLyKiemKeUseCase(PhieuKiemKeRepo, SanPhamRepo);
     }
 }

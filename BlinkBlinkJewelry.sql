@@ -175,6 +175,7 @@ CREATE TABLE dbo.PhieuNhapKho (
     MaNhanVien VARCHAR(50) NOT NULL,
     TongSoSanPham INT NOT NULL DEFAULT 0,
     TongGiaTri DECIMAL(18, 2) NOT NULL DEFAULT 0,
+    TrangThai BIT NOT NULL DEFAULT 1, -- 1: Hợp lệ / Hoạt động, 0: Đã vô hiệu hóa bởi Admin
     CONSTRAINT FK_PhieuNhapKho_NhanVien FOREIGN KEY (MaNhanVien) REFERENCES dbo.NguoiDung(MaNguoiDung)
 );
 GO
@@ -198,7 +199,10 @@ CREATE TABLE dbo.PhieuKiemKe (
     NgayKiemKe DATETIME2 NOT NULL DEFAULT GETDATE(),
     ViTriKiemKe NVARCHAR(150) NULL,
     MaNhanVienKho VARCHAR(50) NOT NULL,
+    TrangThai NVARCHAR(50) NOT NULL DEFAULT 'ChoDuyet', -- ChoDuyet, DaDuyet, VoHieuHoa
     TrangThaiDuyet BIT NOT NULL DEFAULT 0,
+    GhiChu NVARCHAR(500) NULL,
+    NgayDuyet DATETIME2 NULL,
     CONSTRAINT FK_PhieuKiemKe_NhanVien FOREIGN KEY (MaNhanVienKho) REFERENCES dbo.NguoiDung(MaNguoiDung)
 );
 GO
@@ -229,6 +233,7 @@ CREATE TABLE dbo.PhieuBaoHanh (
     ChiPhiThucTe DECIMAL(18, 2) NOT NULL DEFAULT 0,
     ChiPhiBaoHanh DECIMAL(18, 2) NOT NULL DEFAULT 0,
     TrangThaiXuLy NVARCHAR(50) NOT NULL DEFAULT 'TiepNhan', -- TiepNhan, DangXuLy, DaXuLy, DaTraKhach, DaHuy
+    SoDienThoai VARCHAR(20) NULL,
     NgayTiepNhan DATETIME2 NOT NULL DEFAULT GETDATE(),
     NgayHenTra DATETIME2 NULL,
     CONSTRAINT FK_PhieuBaoHanh_KhachHang FOREIGN KEY (MaKhachHang) REFERENCES dbo.NguoiDung(MaNguoiDung),
@@ -324,14 +329,7 @@ INSERT INTO dbo.ChiTietGioHang (MaGioHang, MaSanPham, SoLuongSanPham) VALUES
 ('GH_KH001', 'SP004', 1);
 GO
 
--- 10. Nạp phiếu kiểm kê kho
-INSERT INTO dbo.PhieuKiemKe (MaPhieuKiemKe, NgayKiemKe, ViTriKiemKe, MaNhanVienKho, TrangThaiDuyet) VALUES
-('PKK20260320', '2026-03-20 18:00:00', N'Tủ kính trưng bày khu A - Sảnh chính', 'USER_NV002', 1);
-
-INSERT INTO dbo.ChiTietKiemKe (MaPhieuKiemKe, MaSanPham, TonSoSach, TonThucTe, ChenhLech, LyDoChenhLech) VALUES
-('PKK20260320', 'SP001', 5, 5, 0, N'Khớp hoàn toàn sổ sách'),
-('PKK20260320', 'SP002', 3, 3, 0, N'Khớp hoàn toàn sổ sách'),
-('PKK20260320', 'SP003', 2, 2, 0, N'Khớp hoàn toàn sổ sách');
+-- 10. Phiếu kiểm kê kho (để trống ban đầu, nhân viên kho tự tạo khi kiểm kê)
 GO
 
 -- 11. Nạp phiếu tiếp nhận bảo hành dịch vụ kim hoàn

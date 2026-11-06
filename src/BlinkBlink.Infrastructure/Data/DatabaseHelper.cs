@@ -141,6 +141,11 @@ public class DatabaseHelper
                     ALTER TABLE dbo.PhieuBaoHanh ADD GhiChu NVARCHAR(500) NULL;
                 END
 
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuBaoHanh') AND name = 'SoDienThoai')
+                BEGIN
+                    ALTER TABLE dbo.PhieuBaoHanh ADD SoDienThoai VARCHAR(20) NULL;
+                END
+
                 IF NOT EXISTS (SELECT 1 FROM dbo.VaiTro WHERE MaVaiTro = 'TECHNICIAN')
                 BEGIN
                     INSERT INTO dbo.VaiTro (MaVaiTro, TenVaiTro, MoTa)
@@ -184,6 +189,28 @@ public class DatabaseHelper
                 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.SanPhamTrangSuc') AND name = 'MaNhom')
                 BEGIN
                     ALTER TABLE dbo.SanPhamTrangSuc ADD MaNhom NVARCHAR(50) NOT NULL CONSTRAINT DF_SanPhamTrangSuc_MaNhom DEFAULT '0';
+                END
+
+                -- Cột TrangThai cho PhieuNhapKho (1: Hợp lệ, 0: Vô hiệu hóa)
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuNhapKho') AND name = 'TrangThai')
+                BEGIN
+                    ALTER TABLE dbo.PhieuNhapKho ADD TrangThai BIT NOT NULL CONSTRAINT DF_PhieuNhapKho_TrangThai DEFAULT 1;
+                END
+
+                -- Cột TrangThai, GhiChu và NgayDuyet cho PhieuKiemKe
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuKiemKe') AND name = 'TrangThai')
+                BEGIN
+                    ALTER TABLE dbo.PhieuKiemKe ADD TrangThai NVARCHAR(50) NOT NULL CONSTRAINT DF_PhieuKiemKe_TrangThai DEFAULT 'ChoDuyet';
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuKiemKe') AND name = 'GhiChu')
+                BEGIN
+                    ALTER TABLE dbo.PhieuKiemKe ADD GhiChu NVARCHAR(500) NULL;
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PhieuKiemKe') AND name = 'NgayDuyet')
+                BEGIN
+                    ALTER TABLE dbo.PhieuKiemKe ADD NgayDuyet DATETIME2 NULL;
                 END";
 
             ExecuteNonQuery(migrationSql);

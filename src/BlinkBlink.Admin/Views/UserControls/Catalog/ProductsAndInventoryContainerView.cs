@@ -19,6 +19,7 @@ public class ProductsAndInventoryContainerView : UserControl
     private readonly Button _btnTabProductGroups;
     private readonly Button _btnTabCategories;
     private readonly Button _btnTabInventory;
+    private readonly Button _btnTabAudit;
 
     private Button? _currentActiveTab;
     private UserControl? _currentActiveView;
@@ -27,6 +28,7 @@ public class ProductsAndInventoryContainerView : UserControl
     private ProductGroupsView? _productGroupsView;
     private CategoryView? _categoryView;
     private InventoryInwardView? _inventoryView;
+    private InventoryAuditView? _inventoryAuditView;
 
     public ProductsAndInventoryContainerView()
     {
@@ -55,16 +57,19 @@ public class ProductsAndInventoryContainerView : UserControl
         _btnTabProductGroups = CreateSubTabButton("🏷️ Quản Lý Nhóm Sản Phẩm");
         _btnTabCategories = CreateSubTabButton("📁 Danh Mục Sản Phẩm");
         _btnTabInventory = CreateSubTabButton("📦 Quản Lý Nhập Kho Hàng");
+        _btnTabAudit = CreateSubTabButton("📋 Kiểm Kê Kho Hàng");
 
         _btnTabProducts.Click += (s, e) => SwitchTab(_btnTabProducts, GetProductsView());
         _btnTabProductGroups.Click += (s, e) => SwitchTab(_btnTabProductGroups, GetProductGroupsView());
         _btnTabCategories.Click += (s, e) => SwitchTab(_btnTabCategories, GetCategoryView());
         _btnTabInventory.Click += (s, e) => SwitchTab(_btnTabInventory, GetInventoryView());
+        _btnTabAudit.Click += (s, e) => SwitchTab(_btnTabAudit, GetInventoryAuditView());
 
         flpTabs.Controls.Add(_btnTabProducts);
         flpTabs.Controls.Add(_btnTabProductGroups);
         flpTabs.Controls.Add(_btnTabCategories);
         flpTabs.Controls.Add(_btnTabInventory);
+        flpTabs.Controls.Add(_btnTabAudit);
         _pnlTabsBar.Controls.Add(flpTabs);
 
         // Content Host Panel
@@ -106,6 +111,7 @@ public class ProductsAndInventoryContainerView : UserControl
     private ProductGroupsView GetProductGroupsView() => _productGroupsView ??= new ProductGroupsView();
     private CategoryView GetCategoryView() => _categoryView ??= new CategoryView();
     private InventoryInwardView GetInventoryView() => _inventoryView ??= new InventoryInwardView();
+    private InventoryAuditView GetInventoryAuditView() => _inventoryAuditView ??= new InventoryAuditView();
 
     private void SwitchTab(Button tabButton, UserControl targetView)
     {
@@ -143,6 +149,10 @@ public class ProductsAndInventoryContainerView : UserControl
         else if (targetView is InventoryInwardView iv)
         {
             iv.LoadReceiptsData();
+        }
+        else if (targetView is InventoryAuditView iav)
+        {
+            iav.LoadAuditData();
         }
     }
 }

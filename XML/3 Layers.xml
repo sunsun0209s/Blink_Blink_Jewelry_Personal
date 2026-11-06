@@ -966,10 +966,10 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-360" parent="G7yYkuvG5_feF9ZhlREz-122" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="BaoHanhRepository " vertex="1">
-          <mxGeometry height="164" width="330" x="1470" y="2640" as="geometry" />
+          <mxGeometry height="190" width="330" x="1470" y="2640" as="geometry" />
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-368" parent="G7yYkuvG5_feF9ZhlREz-122" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;div&gt;IBaoHanhRepository &lt;/div&gt;" vertex="1">
-          <mxGeometry height="152" width="330" x="1460" y="2390" as="geometry" />
+          <mxGeometry height="178" width="330" x="1460" y="2390" as="geometry" />
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-426" edge="1" parent="G7yYkuvG5_feF9ZhlREz-122" source="sYpmYnBCgzIWU84yiE9o-350" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;fontSize=12;curved=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" target="sYpmYnBCgzIWU84yiE9o-355" value="">
           <mxGeometry relative="1" width="160" as="geometry">
@@ -1027,6 +1027,9 @@
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-339" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        - maKhachHang: string&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="26" width="280" x="1310" y="3312" as="geometry" />
+        </mxCell>
+        <mxCell id="sYpmYnBCgzIWU84yiE9o-339-sdt" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        - soDienThoai: string&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="280" x="1310" y="3338" as="geometry" />
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-338" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        - maSanPham: string&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="26" width="280" x="1310" y="3338" as="geometry" />
@@ -1118,6 +1121,9 @@
         <mxCell id="sYpmYnBCgzIWU84yiE9o-364" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        + LayTheoKhachHang(maKh: string): List&amp;lt;PhieuBaoHanh&amp;gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="26" width="330" x="1470" y="2778" as="geometry" />
         </mxCell>
+        <mxCell id="sYpmYnBCgzIWU84yiE9o-635" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        + CapNhatKhachHangTheoSoDienThoai(sdt: string, maKH: string): void&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="330" x="1470" y="2804" as="geometry" />
+        </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-370" parent="G7yYkuvG5_feF9ZhlREz-122" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="" vertex="1">
           <mxGeometry height="8" width="330" x="1460" y="2430" as="geometry" />
         </mxCell>
@@ -1132,6 +1138,9 @@
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-374" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        + LayTheoKhachHang(maKh: string): List&amp;lt;PhieuBaoHanh&amp;gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="26" width="330" x="1460" y="2516" as="geometry" />
+        </mxCell>
+        <mxCell id="sYpmYnBCgzIWU84yiE9o-636" parent="G7yYkuvG5_feF9ZhlREz-122" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=0;resizable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="        + CapNhatKhachHangTheoSoDienThoai(sdt: string, maKH: string): void&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="330" x="1460" y="2542" as="geometry" />
         </mxCell>
         <mxCell id="sYpmYnBCgzIWU84yiE9o-375" parent="G7yYkuvG5_feF9ZhlREz-122" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=130;height=30;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;container=0;" value="Business" vertex="1">
           <mxGeometry height="580" width="1210" x="680" y="1630" as="geometry" />

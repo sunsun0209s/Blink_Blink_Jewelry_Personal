@@ -262,6 +262,21 @@ public class InMemoryDataContext
             if (idx >= 0) _ctx.PhieuBaoHanhs[idx] = pbh;
         }
         public Task CapNhatPhieuAsync(PhieuBaoHanh pbh, CancellationToken ct = default) { CapNhatPhieu(pbh); return Task.CompletedTask; }
+
+        public void CapNhatKhachHangTheoSoDienThoai(string soDienThoai, string maKhachHangMoi)
+        {
+            if (string.IsNullOrWhiteSpace(soDienThoai) || string.IsNullOrWhiteSpace(maKhachHangMoi)) return;
+            var sdt = soDienThoai.Trim();
+            var matched = _ctx.PhieuBaoHanhs
+                .Where(p => !string.IsNullOrEmpty(p.SoDienThoai) &&
+                            string.Equals(p.SoDienThoai.Trim(), sdt, StringComparison.OrdinalIgnoreCase) &&
+                            (p.MaKhachHang == "0" || p.MaKhachHang == "KH_0" || p.MaKhachHang == "KH_GUEST_POS"))
+                .ToList();
+            foreach (var pbh in matched)
+            {
+                pbh.MaKhachHang = maKhachHangMoi;
+            }
+        }
     }
 
     private class MemoryNhanVienRepository : INhanVienRepository
@@ -357,21 +372,66 @@ public class InMemoryDataContext
     {
         private readonly InMemoryDataContext _ctx;
         public MemoryPhieuNhapKhoRepository(InMemoryDataContext ctx) => _ctx = ctx;
-        public void LuuPhieuNhap(PhieuNhapKho phieu) => _ctx.PhieuNhapKhos.Add(phieu);
+        public void LuuPhieuNhap(PhieuNhapKho phieu)
+        {
+            var existing = _ctx.PhieuNhapKhos.FirstOrDefault(p => p.MaPhieuNhap == phieu.MaPhieuNhap);
+            if (existing != null) _ctx.PhieuNhapKhos.Remove(existing);
+            _ctx.PhieuNhapKhos.Add(phieu);
+        }
         public Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken ct = default) { LuuPhieuNhap(phieu); return Task.CompletedTask; }
-        public Task<PhieuNhapKho?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(_ctx.PhieuNhapKhos.FirstOrDefault(p => p.MaPhieuNhap == id));
-        public List<PhieuNhapKho> LayTatCa() => _ctx.PhieuNhapKhos.ToList();
+        public PhieuNhapKho? TimTheoId(string id) => _ctx.PhieuNhapKhos.FirstOrDefault(p => p.MaPhieuNhap == id);
+        public Task<PhieuNhapKho?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
+        public List<PhieuNhapKho> LayTatCa() => _ctx.PhieuNhapKhos.OrderByDescending(p => p.NgayNhap).ToList();
         public Task<List<PhieuNhapKho>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
+        public void VoHieuHoaPhieuNhap(string maPhieuNhap)
+        {
+            var p = TimTheoId(maPhieuNhap);
+            if (p != null) p.TrangThai = false;
+        }
     }
 
     private class MemoryPhieuKiemKeRepository : IPhieuKiemKeRepository
     {
         private readonly InMemoryDataContext _ctx;
         public MemoryPhieuKiemKeRepository(InMemoryDataContext ctx) => _ctx = ctx;
-        public void LuuPhieuKiemKe(PhieuKiemKe phieu) => _ctx.PhieuKiemKes.Add(phieu);
+        public void LuuPhieuKiemKe(PhieuKiemKe phieu)
+        {
+            var existing = _ctx.PhieuKiemKes.FirstOrDefault(p => p.MaPhieuKiemKe == phieu.MaPhieuKiemKe);
+            if (existing != null) _ctx.PhieuKiemKes.Remove(existing);
+            _ctx.PhieuKiemKes.Add(phieu);
+        }
         public Task LuuPhieuKiemKeAsync(PhieuKiemKe phieu, CancellationToken ct = default) { LuuPhieuKiemKe(phieu); return Task.CompletedTask; }
         public PhieuKiemKe? TimTheoId(string id) => _ctx.PhieuKiemKes.FirstOrDefault(p => p.MaPhieuKiemKe == id);
         public Task<PhieuKiemKe?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
+        public List<PhieuKiemKe> LayTatCa() => _ctx.PhieuKiemKes.OrderByDescending(k => k.NgayKiemKe).ToList();
+        public void XoaPhieuKiemKe(string maPhieu)
+        {
+            var item = TimTheoId(maPhieu);
+            if (item != null && string.Equals(item.TrangThai, "ChoDuyet", StringComparison.OrdinalIgnoreCase))
+            {
+                _ctx.PhieuKiemKes.Remove(item);
+            }
+        }
+        public void CapNhatTrangThai(string maPhieu, string trangThaiMoi, DateTime? ngayDuyet = null)
+        {
+            var item = TimTheoId(maPhieu);
+            if (item != null)
+            {
+                item.TrangThai = trangThaiMoi;
+                item.TrangThaiDuyet = string.Equals(trangThaiMoi, "DaDuyet", StringComparison.OrdinalIgnoreCase);
+                if (ngayDuyet.HasValue) item.NgayDuyet = ngayDuyet.Value;
+            }
+        }
+        public bool KiemTraCoPhieuKiemKeMoiHon(string maPhieu, string maSanPham)
+        {
+            var target = TimTheoId(maPhieu);
+            if (target == null) return false;
+            var targetDate = target.NgayDuyet ?? target.NgayKiemKe;
+            return _ctx.PhieuKiemKes.Any(k => k.MaPhieuKiemKe != maPhieu
+                && string.Equals(k.TrangThai, "DaDuyet", StringComparison.OrdinalIgnoreCase)
+                && (k.NgayDuyet ?? k.NgayKiemKe) > targetDate
+                && k.ChiTietKiemKes.Any(ct => ct.MaSanPham == maSanPham));
+        }
     }
 
     private class MemoryNguoiDungRepository : INguoiDungRepository

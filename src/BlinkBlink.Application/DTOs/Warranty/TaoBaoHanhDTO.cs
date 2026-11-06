@@ -14,6 +14,11 @@ public class TaoBaoHanhDTO
     public string MaKhachHang { get; set; } = string.Empty;
 
     /// <summary>
+    /// Số điện thoại liên hệ của khách hàng (có thể để trống)
+    /// </summary>
+    public string SoDienThoai { get; set; } = string.Empty;
+
+    /// <summary>
     /// Mã sản phẩm trang sức cần bảo hành
     /// </summary>
     public string MaSanPham { get; set; } = string.Empty;

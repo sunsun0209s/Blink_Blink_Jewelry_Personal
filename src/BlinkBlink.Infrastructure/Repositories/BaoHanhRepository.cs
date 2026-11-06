@@ -50,13 +50,14 @@ public class BaoHanhRepository : IBaoHanhRepository
                     ChiPhiBaoHanh = @ChiPhiBaoHanh,
                     TrangThaiXuLy = @TrangThaiXuLy,
                     NgayTiepNhan = @NgayTiepNhan,
-                    NgayHenTra = @NgayHenTra
+                    NgayHenTra = @NgayHenTra,
+                    SoDienThoai = @SoDienThoai
                 WHERE SoPhieuBH = @SoPhieuBH;
             END
             ELSE
             BEGIN
-                INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, TinhTrangTiepNhan, GhiChu, ChiPhiUocTinh, ChiPhiThucTe, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra)
-                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @TinhTrangTiepNhan, @GhiChu, @ChiPhiUocTinh, @ChiPhiThucTe, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra);
+                INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, TinhTrangTiepNhan, GhiChu, ChiPhiUocTinh, ChiPhiThucTe, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra, SoDienThoai)
+                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @TinhTrangTiepNhan, @GhiChu, @ChiPhiUocTinh, @ChiPhiThucTe, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra, @SoDienThoai);
             END";
 
         var parameters = new[]
@@ -72,7 +73,8 @@ public class BaoHanhRepository : IBaoHanhRepository
             new SqlParameter("@ChiPhiBaoHanh", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = pbh.ChiPhiBaoHanh },
             new SqlParameter("@TrangThaiXuLy", SqlDbType.NVarChar, 50) { Value = pbh.TrangThaiXuLy },
             new SqlParameter("@NgayTiepNhan", SqlDbType.DateTime2) { Value = pbh.NgayTiepNhan },
-            new SqlParameter("@NgayHenTra", SqlDbType.DateTime2) { Value = (object?)pbh.NgayHenTra ?? DBNull.Value }
+            new SqlParameter("@NgayHenTra", SqlDbType.DateTime2) { Value = (object?)pbh.NgayHenTra ?? DBNull.Value },
+            new SqlParameter("@SoDienThoai", SqlDbType.VarChar, 20) { Value = (object?)pbh.SoDienThoai ?? DBNull.Value }
         };
 
         _dbHelper.ExecuteNonQuery(sql, parameters);
@@ -87,7 +89,7 @@ public class BaoHanhRepository : IBaoHanhRepository
 
         const string sql = @"
             SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.TinhTrangTiepNhan, b.GhiChu,
-                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra, b.SoDienThoai,
                    u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
                    s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
             FROM dbo.PhieuBaoHanh b
@@ -119,7 +121,7 @@ public class BaoHanhRepository : IBaoHanhRepository
 
         const string sql = @"
             SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.TinhTrangTiepNhan, b.GhiChu,
-                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra, b.SoDienThoai,
                    u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
                    s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
             FROM dbo.PhieuBaoHanh b
@@ -148,7 +150,7 @@ public class BaoHanhRepository : IBaoHanhRepository
 
         const string sql = @"
             SELECT b.SoPhieuBH, b.MaKhachHang, b.MaSanPham, b.LyDoBaoHanh, b.TinhTrangTiepNhan, b.GhiChu,
-                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra,
+                   b.ChiPhiUocTinh, b.ChiPhiThucTe, b.ChiPhiBaoHanh, b.TrangThaiXuLy, b.NgayTiepNhan, b.NgayHenTra, b.SoDienThoai,
                    u.HoTen AS TenKhachHang, u.SoDienThoai AS SdtKhachHang, kh.MaKhachHang AS MaDinhDanhKhachHang, kh.NgaySinh AS NgaySinhKhachHang,
                    s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai AS TrangThaiSanPham
             FROM dbo.PhieuBaoHanh b
@@ -229,6 +231,26 @@ public class BaoHanhRepository : IBaoHanhRepository
         return Task.CompletedTask;
     }
 
+    public void CapNhatKhachHangTheoSoDienThoai(string soDienThoai, string maKhachHangMoi)
+    {
+        if (string.IsNullOrWhiteSpace(soDienThoai) || string.IsNullOrWhiteSpace(maKhachHangMoi))
+        {
+            return;
+        }
+
+        const string sql = @"
+            UPDATE dbo.PhieuBaoHanh
+            SET MaKhachHang = @MaKhachHangMoi
+            WHERE SoDienThoai = @SoDienThoai
+              AND (MaKhachHang = '0' OR MaKhachHang = 'KH_0' OR MaKhachHang = 'KH_GUEST_POS');";
+
+        using var conn = _dbHelper.GetConnection();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@SoDienThoai", SqlDbType.VarChar, 20) { Value = soDienThoai.Trim() });
+        cmd.Parameters.Add(new SqlParameter("@MaKhachHangMoi", SqlDbType.VarChar, 50) { Value = maKhachHangMoi.Trim() });
+        cmd.ExecuteNonQuery();
+    }
+
     private static PhieuBaoHanh MapReaderToPhieuBaoHanh(SqlDataReader reader)
     {
         decimal chiPhiUocTinh = 0m;
@@ -273,6 +295,14 @@ public class BaoHanhRepository : IBaoHanhRepository
         }
         catch { }
 
+        string soDienThoai = string.Empty;
+        try
+        {
+            var ordSdt = reader.GetOrdinal("SoDienThoai");
+            if (!reader.IsDBNull(ordSdt)) soDienThoai = reader.GetString(ordSdt);
+        }
+        catch { }
+
         var pbh = new PhieuBaoHanh(
             soPhieuBH: reader.GetString(reader.GetOrdinal("SoPhieuBH")),
             maKhachHang: reader.GetString(reader.GetOrdinal("MaKhachHang")),
@@ -284,7 +314,8 @@ public class BaoHanhRepository : IBaoHanhRepository
             ngayHenTra: reader.IsDBNull(reader.GetOrdinal("NgayHenTra")) ? null : reader.GetDateTime(reader.GetOrdinal("NgayHenTra")),
             chiPhiThucTe: chiPhiThucTe,
             tinhTrangTiepNhan: tinhTrang,
-            ghiChu: ghiChu
+            ghiChu: ghiChu,
+            soDienThoai: soDienThoai
         );
 
         if (!reader.IsDBNull(reader.GetOrdinal("TenSanPham")))

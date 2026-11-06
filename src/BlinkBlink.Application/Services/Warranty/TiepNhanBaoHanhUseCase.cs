@@ -16,13 +16,16 @@ public class TiepNhanBaoHanhUseCase
 {
     private readonly IBaoHanhRepository _baoHanhRepo;
     private readonly ISanPhamRepository _sanPhamRepo;
+    private readonly IKhachHangRepository? _khachHangRepo;
 
     public TiepNhanBaoHanhUseCase(
         IBaoHanhRepository baoHanhRepo,
-        ISanPhamRepository sanPhamRepo)
+        ISanPhamRepository sanPhamRepo,
+        IKhachHangRepository? khachHangRepo = null)
     {
         _baoHanhRepo = baoHanhRepo ?? throw new ArgumentNullException(nameof(baoHanhRepo));
         _sanPhamRepo = sanPhamRepo ?? throw new ArgumentNullException(nameof(sanPhamRepo));
+        _khachHangRepo = khachHangRepo;
     }
 
     /// <summary>
@@ -49,12 +52,25 @@ public class TiepNhanBaoHanhUseCase
             return false;
         }
 
-        // Bắt buộc phải có mã khách hàng, mã sản phẩm và lý do tiếp nhận bảo hành
-        if (string.IsNullOrWhiteSpace(request.MaKhachHang) ||
-            string.IsNullOrWhiteSpace(request.MaSanPham) ||
+        // Bắt buộc phải có mã sản phẩm và lý do tiếp nhận bảo hành
+        if (string.IsNullOrWhiteSpace(request.MaSanPham) ||
             string.IsNullOrWhiteSpace(request.LyDoBaoHanh))
         {
             return false;
+        }
+
+        // Xác định mã khách hàng: Nếu để trống hoặc là '0', coi là khách vãng lai
+        var maKhachHang = string.IsNullOrWhiteSpace(request.MaKhachHang) ? "0" : request.MaKhachHang.Trim();
+        var soDienThoai = request.SoDienThoai?.Trim() ?? string.Empty;
+
+        // Nếu là khách vãng lai và có cung cấp số điện thoại, thử tìm xem khách đã có hồ sơ chưa
+        if (maKhachHang == "0" && !string.IsNullOrWhiteSpace(soDienThoai) && _khachHangRepo != null)
+        {
+            var existingKh = _khachHangRepo.TimTheoSoDienThoai(soDienThoai);
+            if (existingKh != null)
+            {
+                maKhachHang = existingKh.MaKhachHang;
+            }
         }
 
         // Kiểm tra sản phẩm có tồn tại trong hệ thống hay không
@@ -69,7 +85,7 @@ public class TiepNhanBaoHanhUseCase
 
         var phieuBaoHanh = new PhieuBaoHanh(
             soPhieuBH: soPhieu,
-            maKhachHang: request.MaKhachHang.Trim(),
+            maKhachHang: maKhachHang,
             maSanPham: request.MaSanPham.Trim(),
             lyDoBaoHanh: request.LyDoBaoHanh.Trim(),
             chiPhiUocTinh: Math.Max(0m, request.ChiPhiBaoHanh),
@@ -78,7 +94,8 @@ public class TiepNhanBaoHanhUseCase
             ngayHenTra: request.NgayHenTra,
             chiPhiThucTe: 0m,
             tinhTrangTiepNhan: request.TinhTrangTiepNhan?.Trim() ?? string.Empty,
-            ghiChu: request.GhiChu?.Trim() ?? string.Empty
+            ghiChu: request.GhiChu?.Trim() ?? string.Empty,
+            soDienThoai: soDienThoai
         );
 
         // Chuyển trạng thái vòng đời sản phẩm trang sức kim hoàn sang đang bảo hành

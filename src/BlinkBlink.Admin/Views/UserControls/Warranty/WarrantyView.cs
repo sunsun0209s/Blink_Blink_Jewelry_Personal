@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BlinkBlink.Admin.Services;
 using BlinkBlink.Admin.Views.Helpers;
 using BlinkBlink.Application.DTOs.Warranty;
+using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Entities.Warranty;
 
 namespace BlinkBlink.Admin.Views.UserControls.Warranty;
@@ -749,73 +750,354 @@ public class WarrantyView : UserControl
 
     /// <summary>
     /// Mở dialog tiếp nhận bảo dưỡng / sửa chữa mới.
-    /// Hỗ trợ ghi nhận Tình trạng sản phẩm khi nhận, Ghi chú thêm, và chi phí ước tính có thể để trống hoặc = 0.
+    /// Hỗ trợ cơ chế ô tìm kiếm và combobox cho Khách hàng và Sản phẩm, tiếp nhận khách vãng lai và ghi nhận SĐT.
     /// </summary>
     private void BtnNew_Click(object? sender, EventArgs e)
     {
+        var allProducts = _services.SanPhamRepo.LayTatCa();
+        if (allProducts.Count == 0)
+        {
+            MessageBox.Show("Hiện chưa có sản phẩm nào trong danh mục để tiếp nhận bảo hành.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        var allCustomers = _services.KhachHangRepo.LayTatCa();
+
         using var dialog = new Form
         {
             Text = "Tiếp Nhận Bảo Hành Trang Sức Mới - Blink Blink Jewelry",
-            Width = 520,
-            Height = 520,
+            Width = 750,
+            Height = 670,
             StartPosition = FormStartPosition.CenterParent,
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
             MinimizeBox = false,
-            BackColor = Color.White
+            BackColor = Color.White,
+            Font = UITheme.RegularFont
         };
 
-        var lblHead = new Label
+        // Header Panel
+        var pnlHead = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 75,
+            BackColor = UITheme.DarkHeader,
+            Padding = new Padding(24, 14, 24, 10)
+        };
+        var lblTitle = new Label
         {
             Text = "PHIẾU TIẾP NHẬN DỊCH VỤ & BẢO HÀNH",
-            Font = UITheme.SubHeaderFont,
-            ForeColor = UITheme.TextPrimary,
-            Location = new Point(25, 18),
-            AutoSize = true
+            Font = UITheme.HeaderFont,
+            ForeColor = UITheme.PrimaryGold,
+            Dock = DockStyle.Top,
+            Height = 24
         };
-        dialog.Controls.Add(lblHead);
-
-        int top = 55;
-        TextBox AddField(string labelText, string defaultVal)
+        var lblSub = new Label
         {
-            var l = new Label { Text = labelText, Location = new Point(25, top), AutoSize = true, ForeColor = UITheme.TextSecondary };
-            var t = new TextBox { Text = defaultVal, Location = new Point(190, top - 3), Width = 285 };
-            dialog.Controls.Add(l);
-            dialog.Controls.Add(t);
-            top += 40;
-            return t;
-        }
-
-        var txtMaKH = AddField("Mã Khách Hàng:", "KH001");
-        var txtMaSP = AddField("Mã Sản Phẩm:", "SP001");
-        var txtLyDo = AddField("Lỗi / Yêu Cầu:", "Đánh bóng, xi mạ làm mới");
-        var txtTinhTrang = AddField("Tình Trạng Khi Nhận:", "Mặt nhẫn trầy nhẹ, chấu giữ hơi lỏng");
-        var txtGhiChu = AddField("Ghi Chú Thêm:", "Khách cần gấp trước ngày hẹn");
-        var txtCostEst = AddField("Chi Phí Ước Tính (VND):", "0");
-        var txtHenTra = AddField("Ngày Hẹn Trả:", DateTime.Now.AddDays(3).ToString("dd/MM/yyyy"));
-
-        var lblNote = new Label
-        {
-            Text = "* Chi phí ước tính có thể để trống hoặc 0 VND (Kỹ thuật sẽ quyết toán thực tế sau)",
-            Location = new Point(25, top),
-            AutoSize = true,
-            ForeColor = UITheme.TextSecondary,
-            Font = new Font("Segoe UI", 8.2F, FontStyle.Italic)
+            Text = "Tiếp nhận bảo dưỡng, sửa chữa cho khách hàng thành viên hoặc khách vãng lai (hỗ trợ liên kết tài khoản sau này)",
+            Font = new Font("Segoe UI", 9F),
+            ForeColor = Color.FromArgb(203, 213, 225),
+            Dock = DockStyle.Fill
         };
-        dialog.Controls.Add(lblNote);
-        top += 30;
+        pnlHead.Controls.Add(lblSub);
+        pnlHead.Controls.Add(lblTitle);
+
+        // Footer buttons
+        var pnlFoot = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 65,
+            BackColor = UITheme.CanvasBackground,
+            Padding = new Padding(24, 14, 24, 14)
+        };
+        var flpFoot = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.RightToLeft
+        };
+
+        var btnCancel = UITheme.CreateFlatButton("Hủy", Color.FromArgb(226, 232, 240), UITheme.TextPrimary);
+        btnCancel.Width = 110;
+        btnCancel.Height = 36;
+        btnCancel.Margin = new Padding(12, 0, 0, 0);
+        btnCancel.Click += (s, e) => dialog.Close();
 
         var btnSave = UITheme.CreateFlatButton("Tạo Phiếu Tiếp Nhận", UITheme.PrimaryGold, Color.Black);
-        btnSave.Location = new Point(190, top + 10);
-        btnSave.Size = new Size(285, 40);
-        btnSave.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnSave.Width = 210;
+        btnSave.Height = 36;
+        btnSave.Margin = new Padding(0);
 
+        flpFoot.Controls.Add(btnCancel);
+        flpFoot.Controls.Add(btnSave);
+        pnlFoot.Controls.Add(flpFoot);
+
+        // Body Panel
+        var pnlBody = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(24, 16, 24, 12),
+            AutoScroll = true
+        };
+
+        int top = 8;
+        const int rowSpacing = 44;
+
+        // 1. Hàng chọn Khách hàng (Search + ComboBox + SĐT)
+        var lblKhach = new Label
+        {
+            Text = "Khách hàng (*):",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtSearchKhach = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 125,
+            PlaceholderText = "🔍 Tìm khách..."
+        };
+        var cboKhach = new ComboBox
+        {
+            Location = new Point(275, top),
+            Width = 265,
+            DropDownStyle = ComboBoxStyle.DropDownList
+        };
+        var lblSdt = new Label
+        {
+            Text = "SĐT:",
+            Location = new Point(550, top + 4),
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtSdt = new TextBox
+        {
+            Location = new Point(590, top),
+            Width = 110,
+            PlaceholderText = "Số điện thoại..."
+        };
+
+        pnlBody.Controls.AddRange(new Control[] { lblKhach, txtSearchKhach, cboKhach, lblSdt, txtSdt });
+        top += rowSpacing;
+
+        // 2. Hàng chọn Sản phẩm (Search + ComboBox)
+        var lblSp = new Label
+        {
+            Text = "Sản phẩm (*):",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtSearchSp = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 125,
+            PlaceholderText = "🔍 Tìm SP..."
+        };
+        var cboSp = new ComboBox
+        {
+            Location = new Point(275, top),
+            Width = 425,
+            DropDownStyle = ComboBoxStyle.DropDownList
+        };
+
+        pnlBody.Controls.AddRange(new Control[] { lblSp, txtSearchSp, cboSp });
+        top += rowSpacing;
+
+        // 3. Hàng Lỗi / Yêu cầu
+        var lblLyDo = new Label
+        {
+            Text = "Lỗi / Yêu cầu (*):",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtLyDo = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 560,
+            PlaceholderText = "Đánh bóng, xi mạ, gắn đá rơi, chỉnh ni nhẫn, hàn khoen khóa..."
+        };
+        pnlBody.Controls.AddRange(new Control[] { lblLyDo, txtLyDo });
+        top += rowSpacing;
+
+        // 4. Hàng Tình trạng khi nhận
+        var lblTinhTrang = new Label
+        {
+            Text = "Tình trạng khi nhận:",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtTinhTrang = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 560,
+            PlaceholderText = "Mặt nhẫn trầy nhẹ, chấu giữ đá phụ bị lỏng, đứt khoen khóa cài..."
+        };
+        pnlBody.Controls.AddRange(new Control[] { lblTinhTrang, txtTinhTrang });
+        top += rowSpacing;
+
+        // 5. Hàng Ghi chú thêm
+        var lblGhiChu = new Label
+        {
+            Text = "Ghi chú thêm:",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtGhiChu = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 560,
+            PlaceholderText = "Khách cần gấp trước ngày hẹn, lưu ý đặc biệt từ khách hàng..."
+        };
+        pnlBody.Controls.AddRange(new Control[] { lblGhiChu, txtGhiChu });
+        top += rowSpacing;
+
+        // 6. Hàng Chi phí ước tính & Ngày hẹn trả
+        var lblCost = new Label
+        {
+            Text = "CP ước tính (VND):",
+            Location = new Point(0, top + 4),
+            Width = 135,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtCostEst = new TextBox
+        {
+            Location = new Point(140, top),
+            Width = 175,
+            Text = "0",
+            Font = UITheme.TabularNumericFont
+        };
+
+        var lblHenTra = new Label
+        {
+            Text = "Ngày hẹn trả (*):",
+            Location = new Point(345, top + 4),
+            Width = 120,
+            ForeColor = UITheme.TextSecondary
+        };
+        var txtHenTra = new TextBox
+        {
+            Location = new Point(475, top),
+            Width = 225,
+            Text = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy")
+        };
+        pnlBody.Controls.AddRange(new Control[] { lblCost, txtCostEst, lblHenTra, txtHenTra });
+        top += rowSpacing + 8;
+
+        // Chú thích hướng dẫn
+        var lblNote1 = new Label
+        {
+            Text = "* Chi phí ước tính có thể để trống hoặc 0 VND (Kỹ thuật viên sẽ kiểm tra và quyết toán thực tế sau).",
+            Location = new Point(140, top),
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Italic)
+        };
+        top += 22;
+
+        var lblNote2 = new Label
+        {
+            Text = "* Đối với khách vãng lai: Số điện thoại có thể để trống. Nếu có SĐT, hệ thống sẽ tự động liên kết phiếu này khi khách tạo tài khoản sau này.",
+            Location = new Point(140, top),
+            AutoSize = true,
+            ForeColor = Color.FromArgb(100, 116, 139),
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Italic)
+        };
+        pnlBody.Controls.AddRange(new Control[] { lblNote1, lblNote2 });
+
+        // Logic nạp danh sách Khách hàng
+        void PopulateKhach(string filter)
+        {
+            cboKhach.Items.Clear();
+            cboKhach.Items.Add(new CustomerComboItem("0", "Khách hàng vãng lai (Chưa có tài khoản)", ""));
+
+            var q = filter.Trim().ToLowerInvariant();
+            var matches = allCustomers.Where(k =>
+                string.IsNullOrEmpty(q) ||
+                k.MaKhachHang.ToLowerInvariant().Contains(q) ||
+                k.HoTen.ToLowerInvariant().Contains(q) ||
+                (!string.IsNullOrEmpty(k.SoDienThoai) && k.SoDienThoai.Contains(q))
+            ).ToList();
+
+            foreach (var kh in matches)
+            {
+                var phone = string.IsNullOrEmpty(kh.SoDienThoai) ? "" : $" - {kh.SoDienThoai}";
+                cboKhach.Items.Add(new CustomerComboItem(kh.MaKhachHang, $"[{kh.MaKhachHang}] {kh.HoTen}{phone}", kh.SoDienThoai ?? ""));
+            }
+
+            cboKhach.SelectedIndex = 0;
+        }
+
+        PopulateKhach(string.Empty);
+        txtSearchKhach.TextChanged += (s, e) => PopulateKhach(txtSearchKhach.Text);
+
+        cboKhach.SelectedIndexChanged += (s, e) =>
+        {
+            if (cboKhach.SelectedItem is CustomerComboItem selected)
+            {
+                if (selected.MaKhachHang == "0")
+                {
+                    txtSdt.ReadOnly = false;
+                    txtSdt.BackColor = Color.White;
+                    txtSdt.Text = string.Empty;
+                }
+                else
+                {
+                    txtSdt.Text = selected.SoDienThoai;
+                    txtSdt.ReadOnly = true;
+                    txtSdt.BackColor = Color.FromArgb(241, 245, 249);
+                }
+            }
+        };
+
+        // Logic nạp danh sách Sản phẩm
+        void PopulateSp(string filter)
+        {
+            cboSp.Items.Clear();
+            var q = filter.Trim().ToLowerInvariant();
+            var matches = allProducts.Where(p =>
+                string.IsNullOrEmpty(q) ||
+                p.MaSanPham.ToLowerInvariant().Contains(q) ||
+                p.TenSanPham.ToLowerInvariant().Contains(q)
+            ).ToList();
+
+            foreach (var sp in matches)
+            {
+                var sizeText = string.IsNullOrEmpty(sp.Size) ? "" : $" (Size: {sp.Size})";
+                cboSp.Items.Add(new ProductComboItem(sp, $"[{sp.MaSanPham}] {sp.TenSanPham}{sizeText}"));
+            }
+
+            if (cboSp.Items.Count > 0)
+            {
+                cboSp.SelectedIndex = 0;
+            }
+        }
+
+        PopulateSp(string.Empty);
+        txtSearchSp.TextChanged += (s, e) => PopulateSp(txtSearchSp.Text);
+
+        // Submit Tạo phiếu tiếp nhận
         btnSave.Click += (s, ev) =>
         {
-            if (string.IsNullOrWhiteSpace(txtMaKH.Text) || string.IsNullOrWhiteSpace(txtMaSP.Text) || string.IsNullOrWhiteSpace(txtLyDo.Text))
+            if (cboSp.SelectedItem is not ProductComboItem selectedSp)
             {
-                MessageBox.Show("Vui lòng điền đầy đủ mã khách hàng, mã sản phẩm và lý do tiếp nhận.", "Thiếu Thông Tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn sản phẩm trang sức cần bảo hành.", "Thiếu Thông Tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtLyDo.Text))
+            {
+                MessageBox.Show("Vui lòng nhập lỗi hoặc yêu cầu tiếp nhận bảo hành.", "Thiếu Thông Tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtLyDo.Focus();
+                return;
+            }
+
+            var maKhachHang = "0";
+            if (cboKhach.SelectedItem is CustomerComboItem selectedKh)
+            {
+                maKhachHang = selectedKh.MaKhachHang;
             }
 
             DateTime.TryParseExact(txtHenTra.Text.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var henTraDate);
@@ -828,13 +1110,14 @@ public class WarrantyView : UserControl
 
             var req = new TaoBaoHanhDTO
             {
-                MaKhachHang = txtMaKH.Text.Trim(),
-                MaSanPham = txtMaSP.Text.Trim(),
+                MaKhachHang = maKhachHang,
+                MaSanPham = selectedSp.Product.MaSanPham,
                 LyDoBaoHanh = txtLyDo.Text.Trim(),
                 TinhTrangTiepNhan = txtTinhTrang.Text.Trim(),
                 GhiChu = txtGhiChu.Text.Trim(),
                 ChiPhiBaoHanh = costEst >= 0 ? costEst : 0m,
-                NgayHenTra = henTraDate != default ? henTraDate : DateTime.Now.AddDays(3)
+                NgayHenTra = henTraDate != default ? henTraDate : DateTime.Now.AddDays(3),
+                SoDienThoai = txtSdt.Text.Trim()
             };
 
             var ok = _services.TiepNhanBaoHanh.Execute(req);
@@ -846,16 +1129,48 @@ public class WarrantyView : UserControl
             }
             else
             {
-                MessageBox.Show("Không thể tạo phiếu bảo hành. Vui lòng kiểm tra mã khách hàng và mã sản phẩm.", "Lỗi Tạo Phiếu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tạo phiếu bảo hành. Vui lòng kiểm tra lại thông tin.", "Lỗi Tạo Phiếu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         };
 
-        dialog.Controls.Add(btnSave);
+        dialog.Controls.Add(pnlBody);
+        dialog.Controls.Add(pnlFoot);
+        dialog.Controls.Add(pnlHead);
 
-        if (dialog.ShowDialog() == DialogResult.OK)
+        if (dialog.ShowDialog(this) == DialogResult.OK)
         {
             LoadWarrantyData();
         }
+    }
+
+    private class CustomerComboItem
+    {
+        public string MaKhachHang { get; }
+        public string DisplayText { get; }
+        public string SoDienThoai { get; }
+
+        public CustomerComboItem(string maKhachHang, string displayText, string soDienThoai)
+        {
+            MaKhachHang = maKhachHang;
+            DisplayText = displayText;
+            SoDienThoai = soDienThoai;
+        }
+
+        public override string ToString() => DisplayText;
+    }
+
+    private class ProductComboItem
+    {
+        public SanPhamTrangSuc Product { get; }
+        public string DisplayText { get; }
+
+        public ProductComboItem(SanPhamTrangSuc product, string displayText)
+        {
+            Product = product;
+            DisplayText = displayText;
+        }
+
+        public override string ToString() => DisplayText;
     }
 
     private Image? LoadQrImage()
