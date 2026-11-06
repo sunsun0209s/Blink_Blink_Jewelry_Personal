@@ -102,14 +102,35 @@
         <mxCell id="c_DanhMuc_m2" parent="c_DanhMuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="+ CapNhatDanhMuc(): bool" vertex="1">
           <mxGeometry height="22" width="230" y="120" as="geometry" />
         </mxCell>
+        <mxCell id="c_NhomSanPham" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Times New Roman;fontSize=12;" value="NhomSanPham" vertex="1">
+          <mxGeometry height="140" width="220" x="730" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c_NhomSanPham_a1" parent="c_NhomSanPham" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _maNhom: string" vertex="1">
+          <mxGeometry height="22" width="220" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_NhomSanPham_a2" parent="c_NhomSanPham" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _tenNhom: string" vertex="1">
+          <mxGeometry height="22" width="220" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_NhomSanPham_a3" parent="c_NhomSanPham" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _moTa: string" vertex="1">
+          <mxGeometry height="22" width="220" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_NhomSanPham_line" parent="c_NhomSanPham" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="6" width="220" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="c_NhomSanPham_m1" parent="c_NhomSanPham" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="+ ToString(): string" vertex="1">
+          <mxGeometry height="22" width="220" y="98" as="geometry" />
+        </mxCell>
         <mxCell id="c_SanPhamTrangSuc" parent="1" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Times New Roman;fontSize=12;" value="SanPhamTrangSuc" vertex="1">
-          <mxGeometry height="340" width="260" x="730" y="270" as="geometry" />
+          <mxGeometry height="362" width="260" x="730" y="270" as="geometry" />
         </mxCell>
         <mxCell id="c_SanPhamTrangSuc_a1" parent="c_SanPhamTrangSuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _maSanPham: string" vertex="1">
           <mxGeometry height="22" width="260" y="26" as="geometry" />
         </mxCell>
-        <mxCell id="c_SanPhamTrangSuc_a2" parent="c_SanPhamTrangSuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _tenSanPham: string" vertex="1">
+        <mxCell id="c_SanPhamTrangSuc_a_manhom" parent="c_SanPhamTrangSuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _maNhom: string" vertex="1">
           <mxGeometry height="22" width="260" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_SanPhamTrangSuc_a2" parent="c_SanPhamTrangSuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _tenSanPham: string" vertex="1">
+          <mxGeometry height="22" width="260" y="70" as="geometry" />
         </mxCell>
         <mxCell id="c_SanPhamTrangSuc_a3" parent="c_SanPhamTrangSuc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=11;" value="- _maDanhMuc: string" vertex="1">
           <mxGeometry height="22" width="260" y="70" as="geometry" />

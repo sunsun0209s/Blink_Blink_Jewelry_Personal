@@ -452,7 +452,8 @@ public class InventoryInwardView : UserControl
         };
         var txtNcc = new TextBox
         {
-            Text = "Tập đoàn Kim Hoàn Doji Atelier",
+            Text = "",
+            PlaceholderText = "Nhập tên nhà cung cấp...",
             Width = 360,
             Height = 30,
             Font = UITheme.RegularFont,
@@ -500,7 +501,8 @@ public class InventoryInwardView : UserControl
         };
         var txtChungTu = new TextBox
         {
-            Text = $"CT_{DateTime.Now:yyMMdd}_IN",
+            Text = "",
+            PlaceholderText = "Nhập số hóa đơn / chứng từ...",
             Width = 360,
             Height = 30,
             Font = UITheme.RegularFont,
@@ -515,11 +517,11 @@ public class InventoryInwardView : UserControl
         pnlInfo.Controls.Add(infoRow1);
         pnlInfo.Controls.Add(infoRow2);
 
-        // Thêm mặt hàng nhập: Cấu hình FlowLayoutPanel 2 hàng tuần tự, chống đè nhãn/ô nhập 100%
+        // Thêm mặt hàng nhập: Có ô tìm kiếm, chọn sản phẩm, chọn size thông minh và nút thêm
         var pnlAddItem = new FlowLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 115,
+            Height = 120,
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
             BackColor = Color.FromArgb(248, 250, 252),
@@ -537,53 +539,66 @@ public class InventoryInwardView : UserControl
             Margin = new Padding(0)
         };
 
+        var lblSearchSp = new Label
+        {
+            Text = "Tìm SP:",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 6, 0)
+        };
+
+        var txtSearchSp = new TextBox
+        {
+            Width = 140,
+            Height = 30,
+            Font = UITheme.RegularFont,
+            PlaceholderText = "🔍 Tìm SP...",
+            Margin = new Padding(0, 2, 16, 0)
+        };
+
         var lblSp = new Label
         {
             Text = "Sản Phẩm Nhập (*):",
             AutoSize = true,
             ForeColor = UITheme.TextSecondary,
             Font = UITheme.RegularFont,
-            Margin = new Padding(0, 6, 8, 0)
+            Margin = new Padding(0, 6, 6, 0)
         };
 
         var cboSp = new ComboBox
         {
-            Width = 430,
+            Width = 330,
             Height = 30,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Font = UITheme.RegularFont,
-            Margin = new Padding(0, 2, 35, 0)
+            Margin = new Padding(0, 2, 16, 0)
         };
-        foreach (var sp in allProducts)
-        {
-            cboSp.Items.Add(new ProductComboItem(sp.MaSanPham, sp.TenSanPham, sp.GiaNhap));
-        }
-        if (cboSp.Items.Count > 0) cboSp.SelectedIndex = 0;
 
-        var lblSl = new Label
+        var lblSize = new Label
         {
-            Text = "Số Lượng (*):",
+            Text = "Size (*):",
             AutoSize = true,
             ForeColor = UITheme.TextSecondary,
             Font = UITheme.RegularFont,
-            Margin = new Padding(0, 6, 8, 0)
+            Margin = new Padding(0, 6, 6, 0)
         };
 
-        var nudSl = new NumericUpDown
+        var cboSize = new ComboBox
         {
-            Width = 100,
+            Width = 140,
             Height = 30,
-            Minimum = 1,
-            Maximum = 1000,
-            Value = 5,
-            Font = UITheme.TabularNumericFont,
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = UITheme.RegularFont,
             Margin = new Padding(0, 2, 0, 0)
         };
 
+        itemRow1.Controls.Add(lblSearchSp);
+        itemRow1.Controls.Add(txtSearchSp);
         itemRow1.Controls.Add(lblSp);
         itemRow1.Controls.Add(cboSp);
-        itemRow1.Controls.Add(lblSl);
-        itemRow1.Controls.Add(nudSl);
+        itemRow1.Controls.Add(lblSize);
+        itemRow1.Controls.Add(cboSize);
 
         var itemRow2 = new FlowLayoutPanel
         {
@@ -595,30 +610,42 @@ public class InventoryInwardView : UserControl
             Margin = new Padding(0)
         };
 
+        var lblSl = new Label
+        {
+            Text = "Số Lượng (*):",
+            AutoSize = true,
+            ForeColor = UITheme.TextSecondary,
+            Font = UITheme.RegularFont,
+            Margin = new Padding(0, 6, 6, 0)
+        };
+
+        var nudSl = new NumericUpDown
+        {
+            Width = 90,
+            Height = 30,
+            Minimum = 1,
+            Maximum = 1000,
+            Value = 1,
+            Font = UITheme.TabularNumericFont,
+            Margin = new Padding(0, 2, 20, 0)
+        };
+
         var lblGiaVon = new Label
         {
             Text = "Đơn Giá Vốn (VND) (*):",
             AutoSize = true,
             ForeColor = UITheme.TextSecondary,
             Font = UITheme.RegularFont,
-            Margin = new Padding(0, 6, 8, 0)
+            Margin = new Padding(0, 6, 6, 0)
         };
 
         var txtGiaVon = new TextBox
         {
-            Width = 230,
+            Width = 200,
             Height = 30,
             Font = UITheme.TabularNumericFont,
-            Text = "12000000",
+            PlaceholderText = "Nhập đơn giá vốn...",
             Margin = new Padding(0, 2, 25, 0)
-        };
-
-        cboSp.SelectedIndexChanged += (s, e) =>
-        {
-            if (cboSp.SelectedItem is ProductComboItem selected)
-            {
-                txtGiaVon.Text = selected.DefaultGiaNhap.ToString("0");
-            }
         };
 
         var btnAddRow = UITheme.CreateFlatButton("+ Thêm Vào Phiếu Nhập", UITheme.DarkHeader, Color.White);
@@ -627,12 +654,147 @@ public class InventoryInwardView : UserControl
         btnAddRow.Padding = new Padding(16, 2, 16, 2);
         btnAddRow.Margin = new Padding(0, 0, 0, 0);
 
+        itemRow2.Controls.Add(lblSl);
+        itemRow2.Controls.Add(nudSl);
         itemRow2.Controls.Add(lblGiaVon);
         itemRow2.Controls.Add(txtGiaVon);
         itemRow2.Controls.Add(btnAddRow);
 
         pnlAddItem.Controls.Add(itemRow1);
         pnlAddItem.Controls.Add(itemRow2);
+
+        // Logic nạp và đồng bộ giữa sản phẩm và size
+        bool isSyncingSelection = false;
+
+        void PopulateProductDropdown(string filterKeyword = "")
+        {
+            var previousSelectedMa = (cboSp.SelectedItem as ProductComboItem)?.MaSP;
+            cboSp.Items.Clear();
+
+            var query = filterKeyword.Trim().ToLowerInvariant();
+            var matches = allProducts.Where(p =>
+                string.IsNullOrWhiteSpace(query) ||
+                p.MaSanPham.ToLowerInvariant().Contains(query) ||
+                p.TenSanPham.ToLowerInvariant().Contains(query)
+            ).ToList();
+
+            foreach (var sp in matches)
+            {
+                cboSp.Items.Add(new ProductComboItem(sp.MaSanPham, sp.TenSanPham, sp.Size ?? "", sp.MaNhom ?? "0", sp.GiaNhap));
+            }
+
+            if (cboSp.Items.Count > 0)
+            {
+                var matchIdx = -1;
+                if (!string.IsNullOrEmpty(previousSelectedMa))
+                {
+                    for (int i = 0; i < cboSp.Items.Count; i++)
+                    {
+                        if ((cboSp.Items[i] as ProductComboItem)?.MaSP == previousSelectedMa)
+                        {
+                            matchIdx = i;
+                            break;
+                        }
+                    }
+                }
+                cboSp.SelectedIndex = matchIdx >= 0 ? matchIdx : 0;
+            }
+            else
+            {
+                cboSize.Items.Clear();
+                txtGiaVon.Text = string.Empty;
+            }
+        }
+
+        void UpdateSizeOptionsForSelectedProduct()
+        {
+            if (isSyncingSelection) return;
+            if (cboSp.SelectedItem is not ProductComboItem currentItem) return;
+
+            isSyncingSelection = true;
+            try
+            {
+                cboSize.Items.Clear();
+
+                if (!string.IsNullOrWhiteSpace(currentItem.MaNhom) && currentItem.MaNhom != "0")
+                {
+                    // Sản phẩm thuộc nhóm: Nạp toàn bộ size của nhóm
+                    var groupMembers = allProducts.Where(p => p.MaNhom == currentItem.MaNhom).ToList();
+                    foreach (var m in groupMembers)
+                    {
+                        var sizeText = string.IsNullOrWhiteSpace(m.Size) ? "Tiêu chuẩn" : m.Size;
+                        if (!cboSize.Items.Contains(sizeText))
+                        {
+                            cboSize.Items.Add(sizeText);
+                        }
+                    }
+
+                    var currentSizeText = string.IsNullOrWhiteSpace(currentItem.Size) ? "Tiêu chuẩn" : currentItem.Size;
+                    var matchIdx = cboSize.Items.IndexOf(currentSizeText);
+                    cboSize.SelectedIndex = matchIdx >= 0 ? matchIdx : 0;
+                }
+                else
+                {
+                    // Sản phẩm không có nhóm: Chỉ hiển thị 1 size của chính nó
+                    var singleSize = string.IsNullOrWhiteSpace(currentItem.Size) ? "Tiêu chuẩn" : currentItem.Size;
+                    cboSize.Items.Add(singleSize);
+                    cboSize.SelectedIndex = 0;
+                }
+
+                txtGiaVon.Text = currentItem.DefaultGiaNhap > 0 ? currentItem.DefaultGiaNhap.ToString("0") : "";
+            }
+            finally
+            {
+                isSyncingSelection = false;
+            }
+        }
+
+        txtSearchSp.TextChanged += (s, e) => PopulateProductDropdown(txtSearchSp.Text);
+
+        cboSp.SelectedIndexChanged += (s, e) =>
+        {
+            UpdateSizeOptionsForSelectedProduct();
+        };
+
+        cboSize.SelectedIndexChanged += (s, e) =>
+        {
+            if (isSyncingSelection) return;
+            if (cboSp.SelectedItem is not ProductComboItem currentItem) return;
+            var selectedSize = cboSize.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSize)) return;
+
+            // Nếu sản phẩm thuộc nhóm, tìm sản phẩm tương ứng với size vừa chọn
+            if (!string.IsNullOrWhiteSpace(currentItem.MaNhom) && currentItem.MaNhom != "0")
+            {
+                var matchSp = allProducts.FirstOrDefault(p =>
+                    p.MaNhom == currentItem.MaNhom &&
+                    string.Equals(string.IsNullOrWhiteSpace(p.Size) ? "Tiêu chuẩn" : p.Size, selectedSize, StringComparison.OrdinalIgnoreCase)
+                );
+
+                if (matchSp != null && matchSp.MaSanPham != currentItem.MaSP)
+                {
+                    isSyncingSelection = true;
+                    try
+                    {
+                        for (int i = 0; i < cboSp.Items.Count; i++)
+                        {
+                            if ((cboSp.Items[i] as ProductComboItem)?.MaSP == matchSp.MaSanPham)
+                            {
+                                cboSp.SelectedIndex = i;
+                                txtGiaVon.Text = matchSp.GiaNhap > 0 ? matchSp.GiaNhap.ToString("0") : "";
+                                break;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        isSyncingSelection = false;
+                    }
+                }
+            }
+        };
+
+        PopulateProductDropdown();
 
         // Bảng các dòng chi tiết tạm
         var dgvTemp = new DataGridView();
@@ -642,20 +804,35 @@ public class InventoryInwardView : UserControl
         tempColMa.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         tempColMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
-        var tempColTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 220, MinimumWidth = 220 };
+        var tempColTen = new DataGridViewTextBoxColumn { Name = "TenSanPham", HeaderText = "TÊN TRANG SỨC", FillWeight = 200, MinimumWidth = 200 };
         tempColTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         tempColTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
-        var tempColSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 85, MinimumWidth = 95, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        var tempColSize = new DataGridViewTextBoxColumn { Name = "Size", HeaderText = "SIZE", FillWeight = 85, MinimumWidth = 90, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter } };
+        tempColSize.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        var tempColSl = new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "SỐ LƯỢNG", FillWeight = 80, MinimumWidth = 85, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
         tempColSl.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-        var tempColGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVon", HeaderText = "GIÁ VỐN (VND)", FillWeight = 120, MinimumWidth = 130, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
+        var tempColGiaVon = new DataGridViewTextBoxColumn { Name = "GiaVon", HeaderText = "GIÁ VỐN (VND)", FillWeight = 115, MinimumWidth = 120, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont } };
         tempColGiaVon.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-        var tempColThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 130, MinimumWidth = 140, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
+        var tempColThanhTien = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "THÀNH TIỀN (VND)", FillWeight = 125, MinimumWidth = 135, DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Font = UITheme.TabularNumericFont, ForeColor = UITheme.PrimaryGold } };
         tempColThanhTien.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-        dgvTemp.Columns.AddRange(tempColMa, tempColTen, tempColSl, tempColGiaVon, tempColThanhTien);
+        var tempColXoa = new DataGridViewButtonColumn
+        {
+            Name = "Xoa",
+            HeaderText = "HÀNH ĐỘNG",
+            Text = "🗑️ Xóa",
+            UseColumnTextForButtonValue = true,
+            Width = 90,
+            FlatStyle = FlatStyle.Flat
+        };
+        tempColXoa.DefaultCellStyle.ForeColor = Color.FromArgb(239, 68, 68);
+        tempColXoa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+        dgvTemp.Columns.AddRange(tempColMa, tempColTen, tempColSize, tempColSl, tempColGiaVon, tempColThanhTien, tempColXoa);
 
         var tempItems = new List<ChiTietNhapKhoDTO>();
         var viVn = new CultureInfo("vi-VN");
@@ -680,6 +857,7 @@ public class InventoryInwardView : UserControl
                 dgvTemp.Rows.Add(
                     item.MaSanPham,
                     p?.TenSanPham ?? item.MaSanPham,
+                    p?.Size ?? "-",
                     item.SoLuong.ToString("N0", viVn),
                     item.GiaVonNhap.ToString("N0", viVn),
                     tt.ToString("N0", viVn)
@@ -689,18 +867,36 @@ public class InventoryInwardView : UserControl
             lblSummary.Text = $"Tổng Số Lượng: {totalQty:N0}  |  Tổng Tiền Nhập: {totalVal:N0} VND";
         }
 
+        dgvTemp.CellContentClick += (s, e) =>
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == dgvTemp.Columns["Xoa"].Index)
+            {
+                if (e.RowIndex < tempItems.Count)
+                {
+                    tempItems.RemoveAt(e.RowIndex);
+                    RefreshTempGrid();
+                }
+            }
+        };
+
         btnAddRow.Click += (s, e) =>
         {
-            if (cboSp.SelectedItem is not ProductComboItem item) return;
+            if (cboSp.SelectedItem is not ProductComboItem item)
+            {
+                MessageBox.Show("Vui lòng chọn sản phẩm cần nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             if (!decimal.TryParse(txtGiaVon.Text.Trim(), out var gv) || gv <= 0)
             {
                 MessageBox.Show("Vui lòng nhập giá vốn hợp lệ (> 0).", "Lỗi nhập giá", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtGiaVon.Focus();
                 return;
             }
 
             var qty = (int)nudSl.Value;
 
-            // Kiểm tra trùng
+            // Kiểm tra trùng mã sản phẩm trong danh sách đã chọn
             var existing = tempItems.FirstOrDefault(x => x.MaSanPham == item.MaSP);
             if (existing != null)
             {
@@ -720,20 +916,6 @@ public class InventoryInwardView : UserControl
 
             RefreshTempGrid();
         };
-
-        // Nạp sẵn 1 mặt hàng đầu tiên làm mẫu
-        if (cboSp.SelectedItem is ProductComboItem firstSp)
-        {
-            decimal.TryParse(txtGiaVon.Text, out var gv);
-            tempItems.Add(new ChiTietNhapKhoDTO
-            {
-                MaSanPham = firstSp.MaSP,
-                SoLuong = 5,
-                GiaVonNhap = gv > 0 ? gv : 15000000,
-                SoChungTu = txtChungTu.Text.Trim()
-            });
-            RefreshTempGrid();
-        }
 
         btnConfirm.Click += (s, e) =>
         {
@@ -793,12 +975,16 @@ public class InventoryInwardView : UserControl
     {
         public string MaSP { get; }
         public string TenSP { get; }
+        public string Size { get; }
+        public string MaNhom { get; }
         public decimal DefaultGiaNhap { get; }
 
-        public ProductComboItem(string maSp, string tenSp, decimal defaultGiaNhap)
+        public ProductComboItem(string maSp, string tenSp, string size, string maNhom, decimal defaultGiaNhap)
         {
             MaSP = maSp;
             TenSP = tenSp;
+            Size = size ?? string.Empty;
+            MaNhom = maNhom ?? "0";
             DefaultGiaNhap = defaultGiaNhap;
         }
 

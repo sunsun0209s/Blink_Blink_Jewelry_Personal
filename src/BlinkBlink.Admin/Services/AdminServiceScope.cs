@@ -47,6 +47,7 @@ public class AdminServiceScope
     }
 
     public ISanPhamRepository SanPhamRepo { get; }
+    public INhomSanPhamRepository NhomSanPhamRepo { get; }
     public IDanhMucRepository DanhMucRepo { get; }
     public IHoaDonRepository HoaDonRepo { get; }
     public IGioHangRepository GioHangRepo { get; }
@@ -60,6 +61,7 @@ public class AdminServiceScope
     public INguoiDungRepository NguoiDungRepo { get; }
 
     public QuanLySanPhamUseCase QuanLySanPham { get; }
+    public QuanLyNhomSanPhamUseCase QuanLyNhomSanPham { get; }
     public XacNhanNhapKhoUseCase XacNhanNhapKho { get; }
     public XuLyDonHangUseCase XuLyDonHang { get; }
     public DatHangUseCase DatHang { get; }
@@ -136,6 +138,7 @@ public class AdminServiceScope
             dbHelper.EnsureSchemaCompatibility();
 
             SanPhamRepo = new SanPhamRepository(dbHelper);
+            NhomSanPhamRepo = new NhomSanPhamRepository(dbHelper);
             DanhMucRepo = new DanhMucRepository(dbHelper);
             HoaDonRepo = new HoaDonRepository(dbHelper);
             GioHangRepo = new GioHangRepository(dbHelper);
@@ -155,6 +158,7 @@ public class AdminServiceScope
             mock.SeedInitialLuxuryData();
 
             SanPhamRepo = mock.SanPhamRepo;
+            NhomSanPhamRepo = mock.NhomSanPhamRepo;
             DanhMucRepo = mock.DanhMucRepo;
             HoaDonRepo = mock.HoaDonRepo;
             GioHangRepo = mock.GioHangRepo;
@@ -170,6 +174,7 @@ public class AdminServiceScope
 
         // Khởi tạo tất cả Use Cases theo Clean Architecture
         QuanLySanPham = new QuanLySanPhamUseCase(SanPhamRepo, DanhMucRepo);
+        QuanLyNhomSanPham = new QuanLyNhomSanPhamUseCase(NhomSanPhamRepo, SanPhamRepo);
         XacNhanNhapKho = new XacNhanNhapKhoUseCase(PhieuNhapKhoRepo, SanPhamRepo);
         XuLyDonHang = new XuLyDonHangUseCase(HoaDonRepo, SanPhamRepo);
         DatHang = new DatHangUseCase(HoaDonRepo, GioHangRepo, SanPhamRepo);

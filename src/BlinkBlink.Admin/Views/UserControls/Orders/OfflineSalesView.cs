@@ -34,6 +34,8 @@ public class OfflineSalesView : UserControl
     // Tìm kiếm và thêm sản phẩm
     private TextBox _txtSearchProduct = null!;
     private ComboBox _cboProducts = null!;
+    private ComboBox _cboProductSize = null!;
+    private bool _isSyncingPosSize;
     private NumericUpDown _numQuantity = null!;
     private Label _lblProductDiscountInfo = null!;
     private Button _btnAddItem = null!;
@@ -197,7 +199,7 @@ public class OfflineSalesView : UserControl
 
         pnlCustomer.Controls.Add(tblCustomer);
 
-        // 2. Panel Chọn Sản Phẩm dùng TableLayoutPanel 2 cột (Ưu đãi lấy tự động từ CSDL)
+        // 2. Panel Chọn Sản Phẩm dùng TableLayoutPanel 2 cột (Ưu đãi lấy tự động từ CSDL, chọn Size thông minh)
         var pnlAddProduct = new GroupBox
         {
             Text = " 💎 THÊM SẢN PHẨM VÀO ĐƠN ",
@@ -205,7 +207,7 @@ public class OfflineSalesView : UserControl
             ForeColor = UITheme.TextPrimary,
             BackColor = Color.White,
             Dock = DockStyle.Top,
-            Height = 265,
+            Height = 300,
             Padding = new Padding(12, 10, 12, 10)
         };
 
@@ -213,11 +215,12 @@ public class OfflineSalesView : UserControl
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
-            RowCount = 5,
+            RowCount = 6,
             BackColor = Color.Transparent
         };
         tblAddProduct.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115f));
         tblAddProduct.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+        tblAddProduct.RowStyles.Add(new RowStyle(SizeType.Absolute, 34f));
         tblAddProduct.RowStyles.Add(new RowStyle(SizeType.Absolute, 34f));
         tblAddProduct.RowStyles.Add(new RowStyle(SizeType.Absolute, 34f));
         tblAddProduct.RowStyles.Add(new RowStyle(SizeType.Absolute, 26f));
@@ -241,7 +244,20 @@ public class OfflineSalesView : UserControl
             DropDownStyle = ComboBoxStyle.DropDownList,
             DropDownWidth = 520
         };
-        _cboProducts.SelectedIndexChanged += (s, e) => UpdateProductDiscountDisplay();
+        _cboProducts.SelectedIndexChanged += (s, e) =>
+        {
+            UpdateProductDiscountDisplay();
+            UpdateProductSizeDisplay();
+        };
+
+        var lblSize = new Label { Text = "Kích Cỡ / Size:", Font = UITheme.RegularFont, ForeColor = UITheme.TextSecondary, AutoSize = true, Anchor = AnchorStyles.Left };
+        _cboProductSize = new ComboBox
+        {
+            Dock = DockStyle.Fill,
+            Font = UITheme.RegularFont,
+            DropDownStyle = ComboBoxStyle.DropDownList
+        };
+        _cboProductSize.SelectedIndexChanged += (s, e) => OnProductSizeChanged();
 
         var lblDiscountTag = new Label { Text = "Ưu Đãi SP:", Font = UITheme.RegularFont, ForeColor = UITheme.TextSecondary, AutoSize = true, Anchor = AnchorStyles.Left };
         _lblProductDiscountInfo = new Label
@@ -273,12 +289,14 @@ public class OfflineSalesView : UserControl
         tblAddProduct.Controls.Add(_txtSearchProduct, 1, 0);
         tblAddProduct.Controls.Add(lblP, 0, 1);
         tblAddProduct.Controls.Add(_cboProducts, 1, 1);
-        tblAddProduct.Controls.Add(lblDiscountTag, 0, 2);
-        tblAddProduct.Controls.Add(_lblProductDiscountInfo, 1, 2);
-        tblAddProduct.Controls.Add(lblQty, 0, 3);
-        tblAddProduct.Controls.Add(_numQuantity, 1, 3);
-        tblAddProduct.Controls.Add(new Panel { Height = 0 }, 0, 4);
-        tblAddProduct.Controls.Add(_btnAddItem, 1, 4);
+        tblAddProduct.Controls.Add(lblSize, 0, 2);
+        tblAddProduct.Controls.Add(_cboProductSize, 1, 2);
+        tblAddProduct.Controls.Add(lblDiscountTag, 0, 3);
+        tblAddProduct.Controls.Add(_lblProductDiscountInfo, 1, 3);
+        tblAddProduct.Controls.Add(lblQty, 0, 4);
+        tblAddProduct.Controls.Add(_numQuantity, 1, 4);
+        tblAddProduct.Controls.Add(new Panel { Height = 0 }, 0, 5);
+        tblAddProduct.Controls.Add(_btnAddItem, 1, 5);
 
         pnlAddProduct.Controls.Add(tblAddProduct);
 
@@ -420,7 +438,7 @@ public class OfflineSalesView : UserControl
 
         foreach (var p in filtered)
         {
-            var display = $"[{p.MaSanPham}] {p.TenSanPham} - {p.GiaBan.ToString("N0", _viVn)} VND (Size: {p.Size}, {p.ChatLieu})";
+            var display = $"[{p.MaSanPham}] {p.TenSanPham}";
             _cboProducts.Items.Add(new ProductComboItem(p.MaSanPham, display));
         }
 
@@ -428,11 +446,13 @@ public class OfflineSalesView : UserControl
         {
             _cboProducts.SelectedIndex = 0;
             UpdateProductDiscountDisplay();
+            UpdateProductSizeDisplay();
         }
         else
         {
             _lblProductDiscountInfo.Text = "Không có SP phù hợp";
             _lblProductDiscountInfo.ForeColor = UITheme.DangerColor;
+            _cboProductSize.Items.Clear();
         }
     }
 
@@ -458,6 +478,94 @@ public class OfflineSalesView : UserControl
                     _lblProductDiscountInfo.Text = "🏷️ Không giảm giá";
                     _lblProductDiscountInfo.ForeColor = UITheme.TextSecondary;
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật ComboBox Size thông minh theo nhóm sản phẩm tại quầy POS.
+    /// Nếu sản phẩm thuộc nhóm, nạp các size của nhóm; nếu không có nhóm, hiển thị 1 size.
+    /// </summary>
+    private void UpdateProductSizeDisplay()
+    {
+        if (_isSyncingPosSize) return;
+        if (_cboProducts.SelectedItem is not ProductComboItem item) return;
+
+        var sp = _allAvailableProducts.FirstOrDefault(p => p.MaSanPham == item.Key)
+                 ?? _services.SanPhamRepo.TimTheoId(item.Key);
+        if (sp == null) return;
+
+        _isSyncingPosSize = true;
+        try
+        {
+            _cboProductSize.Items.Clear();
+            if (!string.IsNullOrWhiteSpace(sp.MaNhom) && sp.MaNhom != "0")
+            {
+                var groupMembers = _services.SanPhamRepo.LayTheoNhom(sp.MaNhom);
+                foreach (var m in groupMembers)
+                {
+                    var sText = string.IsNullOrWhiteSpace(m.Size) ? "Tiêu chuẩn" : m.Size;
+                    if (!_cboProductSize.Items.Contains(sText))
+                    {
+                        _cboProductSize.Items.Add(sText);
+                    }
+                }
+
+                var currentSizeText = string.IsNullOrWhiteSpace(sp.Size) ? "Tiêu chuẩn" : sp.Size;
+                var matchIdx = _cboProductSize.Items.IndexOf(currentSizeText);
+                _cboProductSize.SelectedIndex = matchIdx >= 0 ? matchIdx : 0;
+            }
+            else
+            {
+                var singleSize = string.IsNullOrWhiteSpace(sp.Size) ? "Tiêu chuẩn" : sp.Size;
+                _cboProductSize.Items.Add(singleSize);
+                _cboProductSize.SelectedIndex = 0;
+            }
+        }
+        finally
+        {
+            _isSyncingPosSize = false;
+        }
+    }
+
+    /// <summary>
+    /// Khi nhân viên đổi size trong ComboBox, tự động chuyển đổi sản phẩm trong ComboBox tương ứng với mã SP của size đó.
+    /// </summary>
+    private void OnProductSizeChanged()
+    {
+        if (_isSyncingPosSize) return;
+        if (_cboProducts.SelectedItem is not ProductComboItem item) return;
+
+        var sp = _allAvailableProducts.FirstOrDefault(p => p.MaSanPham == item.Key)
+                 ?? _services.SanPhamRepo.TimTheoId(item.Key);
+        if (sp == null || string.IsNullOrWhiteSpace(sp.MaNhom) || sp.MaNhom == "0") return;
+
+        var selectedSize = _cboProductSize.SelectedItem?.ToString();
+        if (string.IsNullOrWhiteSpace(selectedSize)) return;
+
+        var groupMembers = _services.SanPhamRepo.LayTheoNhom(sp.MaNhom);
+        var matchSp = groupMembers.FirstOrDefault(m =>
+            string.Equals(string.IsNullOrWhiteSpace(m.Size) ? "Tiêu chuẩn" : m.Size, selectedSize, StringComparison.OrdinalIgnoreCase)
+        );
+
+        if (matchSp != null && matchSp.MaSanPham != sp.MaSanPham)
+        {
+            _isSyncingPosSize = true;
+            try
+            {
+                for (int i = 0; i < _cboProducts.Items.Count; i++)
+                {
+                    if ((_cboProducts.Items[i] as ProductComboItem)?.Key == matchSp.MaSanPham)
+                    {
+                        _cboProducts.SelectedIndex = i;
+                        UpdateProductDiscountDisplay();
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                _isSyncingPosSize = false;
             }
         }
     }

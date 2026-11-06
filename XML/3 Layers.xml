@@ -227,8 +227,11 @@
         <mxCell id="Ok9h1dh2SIVgAg3v7FRo-14" parent="G7yYkuvG5_feF9ZhlREz-119" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=1;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" value="- maSanPham: string" vertex="1">
           <mxGeometry height="26" width="260" x="825" y="2441.5" as="geometry" />
         </mxCell>
-        <mxCell id="Ok9h1dh2SIVgAg3v7FRo-15" parent="G7yYkuvG5_feF9ZhlREz-119" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=1;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" value="- tenSanPham: string" vertex="1">
+        <mxCell id="Ok9h1dh2SIVgAg3v7FRo-manhom" parent="G7yYkuvG5_feF9ZhlREz-119" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=1;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" value="- maNhom: string" vertex="1">
           <mxGeometry height="26" width="260" x="825" y="2467.5" as="geometry" />
+        </mxCell>
+        <mxCell id="Ok9h1dh2SIVgAg3v7FRo-15" parent="G7yYkuvG5_feF9ZhlREz-119" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=1;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" value="- tenSanPham: string" vertex="1">
+          <mxGeometry height="26" width="260" x="825" y="2493.5" as="geometry" />
         </mxCell>
         <mxCell id="Ok9h1dh2SIVgAg3v7FRo-16" parent="G7yYkuvG5_feF9ZhlREz-119" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=1;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" value="- giaBan: decimal" vertex="1">
           <mxGeometry height="26" width="260" x="825" y="2493.5" as="geometry" />

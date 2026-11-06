@@ -37,9 +37,11 @@ public class BanHangOfflineUseCaseTests
         public void LuuSanPham(SanPhamTrangSuc sp) => Data[sp.MaSanPham] = sp;
         public SanPhamTrangSuc? TimTheoId(string maSanPham) => Data.TryGetValue(maSanPham, out var sp) ? sp : null;
         public List<SanPhamTrangSuc> LayTatCa() => Data.Values.ToList();
+        public List<SanPhamTrangSuc> LayTheoNhom(string maNhom) => Data.Values.Where(s => s.MaNhom == maNhom).ToList();
         public Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken cancellationToken = default) { Data[sp.MaSanPham] = sp; return Task.CompletedTask; }
         public Task<SanPhamTrangSuc?> TimTheoIdAsync(string maSanPham, CancellationToken cancellationToken = default) => Task.FromResult(TimTheoId(maSanPham));
         public Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken cancellationToken = default) => Task.FromResult(LayTatCa());
+        public Task<List<SanPhamTrangSuc>> LayTheoNhomAsync(string maNhom, CancellationToken cancellationToken = default) => Task.FromResult(LayTheoNhom(maNhom));
     }
 
     private class FakeKhachHangRepository : IKhachHangRepository

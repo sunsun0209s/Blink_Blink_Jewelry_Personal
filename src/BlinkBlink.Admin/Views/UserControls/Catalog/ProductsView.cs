@@ -251,6 +251,15 @@ public class ProductsView : UserControl
         colTen.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
         colTen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
+        var colMaNhom = new DataGridViewTextBoxColumn 
+        { 
+            Name = "MaNhom", 
+            HeaderText = "MÃ NHÓM", 
+            Width = 120,
+            DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+        };
+        colMaNhom.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
         var colDm = new DataGridViewTextBoxColumn 
         { 
             Name = "MaDanhMuc", 
@@ -332,7 +341,7 @@ public class ProductsView : UserControl
         };
         colHinhAnh.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-        _dgvProducts.Columns.AddRange(colMa, colTen, colDm, colChatLieu, colSize, colGiaNhap, colGiaBan, colGiamGia, colTonKho, colTrangThai, colHinhAnh);
+        _dgvProducts.Columns.AddRange(colMa, colTen, colMaNhom, colDm, colChatLieu, colSize, colGiaNhap, colGiaBan, colGiamGia, colTonKho, colTrangThai, colHinhAnh);
     }
 
     public void LoadProductsData()
@@ -419,9 +428,11 @@ public class ProductsView : UserControl
                 }
             }
             var discountText = p.PhanTramGiamGia > 0 ? $"{p.PhanTramGiamGia}%" : "0%";
+            var maNhomText = string.IsNullOrWhiteSpace(p.MaNhom) || p.MaNhom == "0" ? "0" : p.MaNhom;
             var rowIdx = _dgvProducts.Rows.Add(
                 p.MaSanPham,
                 p.TenSanPham,
+                maNhomText,
                 p.MaDanhMuc,
                 p.ChatLieu,
                 p.Size,

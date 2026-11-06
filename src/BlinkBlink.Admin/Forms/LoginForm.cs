@@ -102,7 +102,8 @@ public class LoginForm : Form
             Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             ForeColor = UITheme.TextPrimary,
             Location = new Point(35, 15),
-            AutoSize = true
+            AutoSize = true,
+            TabStop = false
         };
 
         _txtUsername = new TextBox
@@ -111,7 +112,9 @@ public class LoginForm : Form
             Width = 370,
             Height = 30,
             Font = new Font("Segoe UI", 10.5F),
-            PlaceholderText = "Nhập tên đăng nhập..."
+            PlaceholderText = "Nhập tên đăng nhập...",
+            TabIndex = 0,
+            TabStop = true
         };
 
         var lblPassTitle = new Label
@@ -120,7 +123,8 @@ public class LoginForm : Form
             Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             ForeColor = UITheme.TextPrimary,
             Location = new Point(35, 80),
-            AutoSize = true
+            AutoSize = true,
+            TabStop = false
         };
 
         _txtPassword = new TextBox
@@ -130,7 +134,9 @@ public class LoginForm : Form
             Height = 30,
             Font = new Font("Segoe UI", 10.5F),
             UseSystemPasswordChar = true,
-            PlaceholderText = "Nhập mật khẩu..."
+            PlaceholderText = "Nhập mật khẩu...",
+            TabIndex = 1,
+            TabStop = true
         };
 
         _lblError = new Label
@@ -141,7 +147,8 @@ public class LoginForm : Form
             ForeColor = UITheme.DangerColor,
             Font = new Font("Segoe UI", 8.5F, FontStyle.Regular),
             TextAlign = ContentAlignment.MiddleLeft,
-            Visible = false
+            Visible = false,
+            TabStop = false
         };
 
         _btnLogin = new Button
@@ -154,7 +161,9 @@ public class LoginForm : Form
             ForeColor = Color.Black,
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            TabIndex = 2,
+            TabStop = true
         };
         _btnLogin.FlatAppearance.BorderSize = 0;
         _btnLogin.Click += BtnLogin_Click;
@@ -169,18 +178,20 @@ public class LoginForm : Form
             ForeColor = UITheme.TextSecondary,
             Font = new Font("Segoe UI", 9F),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            TabIndex = 3,
+            TabStop = true
         };
         _btnExit.FlatAppearance.BorderSize = 0;
         _btnExit.Click += (s, e) => { this.DialogResult = DialogResult.Cancel; this.Close(); };
 
-        pnlBody.Controls.Add(_btnExit);
-        pnlBody.Controls.Add(_btnLogin);
-        pnlBody.Controls.Add(_lblError);
-        pnlBody.Controls.Add(_txtPassword);
-        pnlBody.Controls.Add(lblPassTitle);
-        pnlBody.Controls.Add(_txtUsername);
         pnlBody.Controls.Add(lblUserTitle);
+        pnlBody.Controls.Add(_txtUsername);
+        pnlBody.Controls.Add(lblPassTitle);
+        pnlBody.Controls.Add(_txtPassword);
+        pnlBody.Controls.Add(_lblError);
+        pnlBody.Controls.Add(_btnLogin);
+        pnlBody.Controls.Add(_btnExit);
 
         this.Controls.Add(pnlBody);
         this.Controls.Add(pnlHeader);

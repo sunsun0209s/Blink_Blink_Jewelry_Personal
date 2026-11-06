@@ -16,12 +16,15 @@ Nhớ là đảm bảo các nội dung được sửa sẽ có đủ khoảng c�
 
 
 
-sau khi đã thực hiện được yêu cầu trên, hãy
+sau khi đã thực hiện được yêu cầu trên, hãy vào phần nhập kho sản phẩm, tôi muốn modal phiếu nhập kho có phần search và combobox chọn sản phẩm thay vì chỉ có comboxbox chọn sản phẩm như hiện tại. Khi người dùng search, nó sẽ hiện sản phẩm tương ứng trong combobox, nội dung trong đó gồm mã sản phẩm và tên sản phẩm, nếu sản phẩm thuộc về một nhóm nào đó, nó sẽ có nhiều size, nên hãy thêm combobox cho chọn size sẽ cho phép đổi size bằng combobox. nếu sản phẩm không có nhóm nó chỉ có 1 size thì combobox hiển thị 1 size đó là được. Giả sử sản phẩm có nhiều size thì khi chọn size nhớ thay đổi lại sản phẩm đang được chọn trong combobox tương ứng với mã sản phẩm của size đó. Phiếu nhập kho vừa mở lên đang có dữ liệu mặc định, xử lý giúp tôi, thêm cho tôi nút xóa kế bên bảng sản phẩm được nhập cho từng sản phẩm được nhập lỡ người dùng chọn nhầm sản phẩm cần nhập.
+
+
+sau đó vào trang quản lý bán hàng tại quầy pos, phần thêm sản phẩm chỗ chọn sản phẩm hiển thị mã sản phẩm với tên sản phẩm là được, phía dưới là combobox cho chọn size. cơ chế tương tự chọn size của nhập kho.
 
 
 
 
-//Đây là phần công việc đã thực hiện được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
+//Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
 
 Trang bảo hành của admin và nhân viên sẽ có nút: Tiếp nhận mới, Đang xử lý, Đã xử lý, Hoàn tất & trả khách, Hủy phiếu
 Bảo hành có 3 trạng thái: Tiếp nhận, Đang xử lý, Đã xử lý, Đã trả khách.

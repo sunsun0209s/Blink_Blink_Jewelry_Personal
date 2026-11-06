@@ -173,8 +173,37 @@ public class OrdersView : UserControl
         _btnApprove.Click += BtnApprove_Click;
 
         _btnShipping = UITheme.CreateFlatButton("🚚 Đang Giao", UITheme.DarkHeader, Color.White);
+        _btnShipping.ForeColor = Color.White;
         _btnShipping.Margin = new Padding(0, 2, 6, 2);
         _btnShipping.Click += (s, e) => UpdateOrderStatus("DangGiao");
+
+        // Đảm bảo chữ và biểu tượng của nút Đang Giao luôn luôn hiển thị màu trắng rõ nét trên nền tối trong mọi trạng thái
+        _btnShipping.Paint += (s, e) =>
+        {
+            var btn = (Button)s!;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+            var bg = btn.Enabled
+                ? (btn.ClientRectangle.Contains(btn.PointToClient(Cursor.Position)) ? Color.FromArgb(45, 55, 72) : UITheme.DarkHeader)
+                : Color.FromArgb(40, 48, 62);
+
+            using (var bgBrush = new SolidBrush(bg))
+            {
+                e.Graphics.FillRectangle(bgBrush, btn.ClientRectangle);
+            }
+
+            var textColor = btn.Enabled ? Color.White : Color.FromArgb(240, 245, 255);
+            using (var textBrush = new SolidBrush(textColor))
+            {
+                using var sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                e.Graphics.DrawString(btn.Text, btn.Font, textBrush, btn.ClientRectangle, sf);
+            }
+        };
+        _btnShipping.EnabledChanged += (s, e) => _btnShipping.Invalidate();
 
         _btnDelivered = UITheme.CreateFlatButton("★ Đã Giao", UITheme.SuccessColor, Color.White);
         _btnDelivered.Margin = new Padding(0, 2, 6, 2);

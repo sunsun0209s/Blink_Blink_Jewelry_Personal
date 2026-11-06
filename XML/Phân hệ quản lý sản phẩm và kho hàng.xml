@@ -11,8 +11,20 @@
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-170" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=350;height=80;" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;&lt;b&gt;Domain Entities&lt;/b&gt;&lt;/font&gt;" vertex="1">
           <mxGeometry height="950" width="2830" x="-10" y="3142" as="geometry" />
         </mxCell>
+        <mxCell id="NhomSanPham_Swimlane" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="NhomSanPham" vertex="1">
+          <mxGeometry height="116" width="190" x="1130" y="3310" as="geometry" />
+        </mxCell>
+        <mxCell id="NhomSanPham_Attr1" parent="NhomSanPham_Swimlane" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _maNhom: string" vertex="1">
+          <mxGeometry height="26" width="190" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="NhomSanPham_Attr2" parent="NhomSanPham_Swimlane" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _tenNhom: string" vertex="1">
+          <mxGeometry height="26" width="190" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="NhomSanPham_Attr3" parent="NhomSanPham_Swimlane" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _moTa: string" vertex="1">
+          <mxGeometry height="26" width="190" y="78" as="geometry" />
+        </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-171" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SanPhamTrangSuc" vertex="1">
-          <mxGeometry height="398" width="190" x="889" y="3310" as="geometry" />
+          <mxGeometry height="424" width="190" x="889" y="3310" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-177" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _maSanPham: string" vertex="1">
           <mxGeometry height="26" width="190" y="26" as="geometry" />
@@ -23,8 +35,11 @@
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-181" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_maDanhMuc: string" vertex="1">
           <mxGeometry height="26" width="190" y="78" as="geometry" />
         </mxCell>
-        <mxCell id="J6PPJE1-1b1ZUSAGWI9q-180" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_chatLieu: string" vertex="1">
+        <mxCell id="J6PPJE1-1b1ZUSAGWI9q-manhom" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_maNhom: string" vertex="1">
           <mxGeometry height="26" width="190" y="104" as="geometry" />
+        </mxCell>
+        <mxCell id="J6PPJE1-1b1ZUSAGWI9q-180" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_chatLieu: string" vertex="1">
+          <mxGeometry height="26" width="190" y="130" as="geometry" />
         </mxCell>
         <mxCell id="J6PPJE1-1b1ZUSAGWI9q-185" parent="J6PPJE1-1b1ZUSAGWI9q-171" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_size: string" vertex="1">
           <mxGeometry height="26" width="190" y="130" as="geometry" />

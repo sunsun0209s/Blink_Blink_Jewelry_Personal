@@ -186,6 +186,23 @@ public class ProductEditDialog : Form
 
         if (_isEditMode)
         {
+            var txtNhom = new TextBox
+            {
+                Height = 30,
+                ReadOnly = true,
+                BackColor = Color.FromArgb(241, 245, 249),
+                ForeColor = UITheme.TextSecondary
+            };
+            if (_targetProduct != null && !string.IsNullOrWhiteSpace(_targetProduct.MaNhom) && _targetProduct.MaNhom != "0")
+            {
+                txtNhom.Text = $"Mã nhóm: {_targetProduct.MaNhom}";
+            }
+            else
+            {
+                txtNhom.Text = "Chưa thuộc về nhóm nào (Mã nhóm: 0)";
+            }
+            AddFormRow("Nhóm Sản Phẩm:", txtNhom);
+
             // Trong chế độ Chỉnh sửa: Hiển thị giá nhập bình quân (chỉ xem), cho phép sửa giá bán và % giảm giá
             _txtGiaNhap = new TextBox 
             { 
@@ -608,6 +625,40 @@ public class ProductEditDialog : Form
 
         if (_isEditMode)
         {
+            // Kiểm tra ràng buộc nhóm sản phẩm theo CONGVIECTIEPTHEO.md
+            if (_targetProduct != null && !string.IsNullOrWhiteSpace(_targetProduct.MaNhom) && _targetProduct.MaNhom != "0")
+            {
+                // 1. Kiểm tra trùng size
+                if (_services.QuanLyNhomSanPham.KiemTraTrungSizeTrongNhom(_targetProduct.MaSanPham, size, out _))
+                {
+                    MessageBox.Show("size của sản phẩm đã bị trùng với sản phẩm khác trong nhóm", "Cảnh báo trùng size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    _txtSize.Text = _targetProduct.Size ?? string.Empty;
+                    return;
+                }
+
+                // 2. Kiểm tra thay đổi tên sản phẩm
+                if (!string.Equals(tenSP, _targetProduct.TenSanPham, StringComparison.OrdinalIgnoreCase))
+                {
+                    var confirm = MessageBox.Show(
+                        "Thay đổi tên sản phẩm sẽ đổi tên các sản phẩm khác trong cùng nhóm và tên nhóm",
+                        "Xác nhận thay đổi tên",
+                        MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (confirm != DialogResult.OK)
+                    {
+                        var nhom = _services.NhomSanPhamRepo.TimTheoId(_targetProduct.MaNhom);
+                        _txtTenSP.Text = nhom?.TenNhom ?? _targetProduct.TenSanPham;
+                        return;
+                    }
+                    else
+                    {
+                        _services.QuanLyNhomSanPham.DoiTenToanBoNhomTheoSanPham(_targetProduct.MaSanPham, tenSP);
+                    }
+                }
+            }
+
             if (!decimal.TryParse(_txtGiaBan.Text.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out var giaBan) &&
                 !decimal.TryParse(_txtGiaBan.Text.Trim(), out giaBan))
             {

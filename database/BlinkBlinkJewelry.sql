@@ -31,6 +31,7 @@ IF OBJECT_ID('dbo.GioHang', 'U') IS NOT NULL DROP TABLE dbo.GioHang;
 IF OBJECT_ID('dbo.ChiTietHoaDon', 'U') IS NOT NULL DROP TABLE dbo.ChiTietHoaDon;
 IF OBJECT_ID('dbo.HoaDon', 'U') IS NOT NULL DROP TABLE dbo.HoaDon;
 IF OBJECT_ID('dbo.SanPhamTrangSuc', 'U') IS NOT NULL DROP TABLE dbo.SanPhamTrangSuc;
+IF OBJECT_ID('dbo.NhomSanPham', 'U') IS NOT NULL DROP TABLE dbo.NhomSanPham;
 IF OBJECT_ID('dbo.DanhMuc', 'U') IS NOT NULL DROP TABLE dbo.DanhMuc;
 IF OBJECT_ID('dbo.NhanVien', 'U') IS NOT NULL DROP TABLE dbo.NhanVien;
 IF OBJECT_ID('dbo.KhachHang', 'U') IS NOT NULL DROP TABLE dbo.KhachHang;
@@ -89,11 +90,20 @@ CREATE TABLE dbo.DanhMuc (
 );
 GO
 
+-- 5.1. Bảng NhomSanPham: Quản lý các nhóm sản phẩm cùng mẫu nhưng khác size
+CREATE TABLE dbo.NhomSanPham (
+    MaNhom NVARCHAR(50) NOT NULL PRIMARY KEY,
+    TenNhom NVARCHAR(255) NOT NULL,
+    MoTa NVARCHAR(500) NULL
+);
+GO
+
 -- 6. Bảng SanPhamTrangSuc: Quản lý sản phẩm trang sức độc bản
 CREATE TABLE dbo.SanPhamTrangSuc (
     MaSanPham VARCHAR(50) NOT NULL PRIMARY KEY,
     TenSanPham NVARCHAR(200) NOT NULL,
     MaDanhMuc VARCHAR(50) NOT NULL,
+    MaNhom NVARCHAR(50) NOT NULL DEFAULT '0',
     ChatLieu NVARCHAR(100) NOT NULL,
     Size NVARCHAR(20) NULL,
     GiaNhap DECIMAL(18, 2) NOT NULL,

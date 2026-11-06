@@ -14,6 +14,7 @@ public static class UITheme
     public static readonly Color PrimaryGold = Color.FromArgb(212, 175, 55);         // Vàng Champagne Gold điểm nhấn
     public static readonly Color DarkSidebar = Color.FromArgb(24, 28, 36);          // Xám than đậm cho thanh điều hướng
     public static readonly Color DarkHeader = Color.FromArgb(32, 38, 48);           // Xám than vừa cho thanh tiêu đề
+    public static readonly Color DarkCard = Color.FromArgb(24, 28, 36);             // Xám than đậm cho khối giao diện tối
     public static readonly Color CanvasBackground = Color.FromArgb(245, 247, 250); // Nền xám ngọc trai dịu mắt
     public static readonly Color CardBackground = Color.FromArgb(255, 255, 255);    // Trắng tinh khiết cho thẻ dữ liệu
     public static readonly Color BorderColor = Color.FromArgb(226, 232, 240);       // Viền thanh mảnh phân tách khối

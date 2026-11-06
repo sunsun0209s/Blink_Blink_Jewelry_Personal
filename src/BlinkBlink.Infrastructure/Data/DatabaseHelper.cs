@@ -169,6 +169,21 @@ public class DatabaseHelper
                         INSERT INTO dbo.KhachHang (MaNguoiDung, MaKhachHang, NgaySinh)
                         VALUES ('0', 'KH_GUEST_POS', '2000-01-01');
                     END
+                END
+
+                -- Tạo bảng NhomSanPham và cột MaNhom cho SanPhamTrangSuc
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'NhomSanPham')
+                BEGIN
+                    CREATE TABLE dbo.NhomSanPham (
+                        MaNhom NVARCHAR(50) PRIMARY KEY,
+                        TenNhom NVARCHAR(255) NOT NULL,
+                        MoTa NVARCHAR(500) NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.SanPhamTrangSuc') AND name = 'MaNhom')
+                BEGIN
+                    ALTER TABLE dbo.SanPhamTrangSuc ADD MaNhom NVARCHAR(50) NOT NULL CONSTRAINT DF_SanPhamTrangSuc_MaNhom DEFAULT '0';
                 END";
 
             ExecuteNonQuery(migrationSql);

@@ -21,6 +21,7 @@ namespace BlinkBlink.Admin.Services;
 public class InMemoryDataContext
 {
     public List<SanPhamTrangSuc> SanPhams { get; } = new();
+    public List<NhomSanPham> NhomSanPhams { get; } = new();
     public List<DanhMuc> DanhMucs { get; } = new();
     public List<HoaDon> HoaDons { get; } = new();
     public List<PhieuBaoHanh> PhieuBaoHanhs { get; } = new();
@@ -31,6 +32,7 @@ public class InMemoryDataContext
     public List<PhieuKiemKe> PhieuKiemKes { get; } = new();
 
     public ISanPhamRepository SanPhamRepo { get; }
+    public INhomSanPhamRepository NhomSanPhamRepo { get; }
     public IDanhMucRepository DanhMucRepo { get; }
     public IHoaDonRepository HoaDonRepo { get; }
     public IGioHangRepository GioHangRepo { get; }
@@ -46,6 +48,7 @@ public class InMemoryDataContext
     public InMemoryDataContext()
     {
         SanPhamRepo = new MemorySanPhamRepository(this);
+        NhomSanPhamRepo = new MemoryNhomSanPhamRepository(this);
         DanhMucRepo = new MemoryDanhMucRepository(this);
         HoaDonRepo = new MemoryHoaDonRepository(this);
         GioHangRepo = new MemoryGioHangRepository();
@@ -83,10 +86,15 @@ public class InMemoryDataContext
         DanhMucs.Add(new DanhMuc("DM03", "Bông Tai Quý Phái", "Bông tai bạch kim và sapphire"));
         DanhMucs.Add(new DanhMuc("DM04", "Lắc Tay & Vòng Tay", "Vòng tay tennis kim cương cao cấp"));
 
+        // 3.1. Nhóm sản phẩm (gom nhóm các sản phẩm cùng mẫu khác size)
+        NhomSanPhams.Clear();
+        NhomSanPhams.Add(new NhomSanPham("NHOM01", "Nhẫn Solitaire Diamond 18K", "Nhẫn kim cương Solitaire các cỡ"));
+
         // 4. Sản phẩm trang sức mẫu
         SanPhams.Clear();
-        SanPhams.Add(new SanPhamTrangSuc("SP001", "Nhẫn Solitaire Diamond 18K", "DM01", "Vàng trắng 18K đính kim cương chủ 5.4 ly", "Size 14", 18000000, 28500000, "SanSang", "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80", 10) { SoLuongTon = 10 });
-        SanPhams.Add(new SanPhamTrangSuc("SP002", "Dây Chuyền Eternal Heart Ruby", "DM02", "Vàng hồng 18K đính đá Ruby huyết bồ câu", "Size 45cm", 12000000, 19200000, "SanSang", "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80", 0) { SoLuongTon = 8 });
+        SanPhams.Add(new SanPhamTrangSuc("SP001", "Nhẫn Solitaire Diamond 18K", "DM01", "Vàng trắng 18K đính kim cương chủ 5.4 ly", "Size 14", 18000000, 28500000, "SanSang", "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80", 10, "NHOM01") { SoLuongTon = 10 });
+        SanPhams.Add(new SanPhamTrangSuc("SP001_15", "Nhẫn Solitaire Diamond 18K", "DM01", "Vàng trắng 18K đính kim cương chủ 5.4 ly", "Size 15", 18000000, 28500000, "SanSang", "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80", 10, "NHOM01") { SoLuongTon = 7 });
+        SanPhams.Add(new SanPhamTrangSuc("SP002", "Dây Chuyền Eternal Heart Ruby", "DM02", "Vàng hồng 18K đính đá Ruby huyết bồ câu", "Size 45cm", 12000000, 19200000, "SanSang", "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80", 0, "0") { SoLuongTon = 8 });
         SanPhams.Add(new SanPhamTrangSuc("SP003", "Bông Tai Royal Blue Sapphire", "DM03", "Bạch kim Platin 950 đính Sapphire Hoàng gia", "Tiêu chuẩn", 22000000, 34000000, "SanSang", "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80", 15) { SoLuongTon = 5 });
         SanPhams.Add(new SanPhamTrangSuc("SP004", "Lắc Tay Tennis Diamond Bracelet", "DM04", "Vàng trắng 18K đính 45 viên kim cương tự nhiên", "Size 17cm", 48000000, 72000000, "SanSang", "https://images.unsplash.com/photo-1611591475152-47354900a359?auto=format&fit=crop&w=800&q=80", 20) { SoLuongTon = 4 });
         SanPhams.Add(new SanPhamTrangSuc("SP005", "Nhẫn Cưới Harmony Eternity", "DM01", "Vàng Ý 750 tinh tế đính kim cương tấm viền", "Size 16", 11000000, 16800000, "SanSang", "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80", 5) { SoLuongTon = 12 });
@@ -148,9 +156,39 @@ public class InMemoryDataContext
         }
         public SanPhamTrangSuc? TimTheoId(string id) => _ctx.SanPhams.FirstOrDefault(s => s.MaSanPham == id);
         public List<SanPhamTrangSuc> LayTatCa() => _ctx.SanPhams.ToList();
+        public List<SanPhamTrangSuc> LayTheoNhom(string maNhom) => _ctx.SanPhams.Where(s => s.MaNhom == maNhom).ToList();
         public Task LuuSanPhamAsync(SanPhamTrangSuc sp, CancellationToken ct = default) { LuuSanPham(sp); return Task.CompletedTask; }
         public Task<SanPhamTrangSuc?> TimTheoIdAsync(string id, CancellationToken ct = default) => Task.FromResult(TimTheoId(id));
         public Task<List<SanPhamTrangSuc>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
+        public Task<List<SanPhamTrangSuc>> LayTheoNhomAsync(string maNhom, CancellationToken ct = default) => Task.FromResult(LayTheoNhom(maNhom));
+    }
+
+    private class MemoryNhomSanPhamRepository : INhomSanPhamRepository
+    {
+        private readonly InMemoryDataContext _ctx;
+        public MemoryNhomSanPhamRepository(InMemoryDataContext ctx) => _ctx = ctx;
+
+        public void LuuNhom(NhomSanPham nhom)
+        {
+            var existing = _ctx.NhomSanPhams.FirstOrDefault(n => n.MaNhom == nhom.MaNhom);
+            if (existing != null) _ctx.NhomSanPhams.Remove(existing);
+            _ctx.NhomSanPhams.Add(nhom);
+        }
+        public void CapNhatNhom(NhomSanPham nhom) => LuuNhom(nhom);
+        public bool XoaNhom(string maNhom)
+        {
+            var existing = _ctx.NhomSanPhams.FirstOrDefault(n => n.MaNhom == maNhom);
+            if (existing == null) return false;
+            return _ctx.NhomSanPhams.Remove(existing);
+        }
+        public NhomSanPham? TimTheoId(string maNhom) => _ctx.NhomSanPhams.FirstOrDefault(n => n.MaNhom == maNhom);
+        public List<NhomSanPham> LayTatCa() => _ctx.NhomSanPhams.ToList();
+
+        public Task LuuNhomAsync(NhomSanPham nhom, CancellationToken ct = default) { LuuNhom(nhom); return Task.CompletedTask; }
+        public Task CapNhatNhomAsync(NhomSanPham nhom, CancellationToken ct = default) { CapNhatNhom(nhom); return Task.CompletedTask; }
+        public Task<bool> XoaNhomAsync(string maNhom, CancellationToken ct = default) => Task.FromResult(XoaNhom(maNhom));
+        public Task<NhomSanPham?> TimTheoIdAsync(string maNhom, CancellationToken ct = default) => Task.FromResult(TimTheoId(maNhom));
+        public Task<List<NhomSanPham>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
     }
 
     private class MemoryDanhMucRepository : IDanhMucRepository
