@@ -24,7 +24,17 @@ public class TaoBaoHanhDTO
     public string LyDoBaoHanh { get; set; } = string.Empty;
 
     /// <summary>
-    /// Chi phí bảo hành ước tính (mặc định 0 khi vừa tiếp nhận)
+    /// Tình trạng sản phẩm khi tiếp nhận (ví dụ: móp méo, trầy xước, rơi đá...)
+    /// </summary>
+    public string TinhTrangTiepNhan { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Ghi chú bổ sung khi lập phiếu bảo hành
+    /// </summary>
+    public string GhiChu { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Chi phí bảo hành ước tính (có thể để trống hoặc 0 khi vừa tiếp nhận)
     /// </summary>
     public decimal ChiPhiBaoHanh { get; set; }
 

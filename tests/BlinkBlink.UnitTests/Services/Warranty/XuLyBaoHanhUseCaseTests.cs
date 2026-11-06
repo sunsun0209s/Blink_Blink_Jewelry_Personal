@@ -141,7 +141,7 @@ public class XuLyBaoHanhUseCaseTests
 
         // Kiểm tra
         Assert.True(result);
-        Assert.Equal("DaHoanTat", phieu.TrangThaiXuLy);
+        Assert.Equal("DaTraKhach", phieu.TrangThaiXuLy);
         Assert.Equal(250000m, phieu.ChiPhiBaoHanh);
         Assert.Equal(250000m, phieu.TinhPhiBaoHanh());
         // Trạng thái sản phẩm được hoàn lại DaBan

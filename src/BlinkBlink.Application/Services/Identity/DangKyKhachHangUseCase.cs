@@ -69,7 +69,7 @@ public class DangKyKhachHangUseCase
         // Tự động đối chiếu SĐT với CSDL hóa đơn mua hàng trước đó, gắn mã khách hàng vào các đơn offline nếu có
         try
         {
-            _hoaDonRepo?.CapNhatKhachHangTheoSoDienThoai(khachHangMoi.SoDienThoai, khachHangMoi.MaNguoiDung);
+            _hoaDonRepo?.CapNhatKhachHangTheoSoDienThoai(khachHangMoi.SoDienThoai, khachHangMoi.MaKhachHang);
         }
         catch
         {

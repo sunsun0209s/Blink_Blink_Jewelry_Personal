@@ -164,7 +164,12 @@ public partial class MainForm : Form
     private OrdersView GetOrdersView() => _ordersView ??= new OrdersView();
     private OfflineSalesView GetOfflineSalesView() => _offlineSalesView ??= new OfflineSalesView();
     private ProductsAndInventoryContainerView GetProductsContainerView() => _productsContainerView ??= new ProductsAndInventoryContainerView();
-    private WarrantyView GetWarrantyView() => _warrantyView ??= new WarrantyView();
+    private WarrantyView GetWarrantyView()
+    {
+        _warrantyView ??= new WarrantyView();
+        _warrantyView.ApplyPermissions(_currentRole);
+        return _warrantyView;
+    }
     private UsersView GetUsersView() => _usersView ??= new UsersView();
     private ReportingView GetReportingView() => _reportingView ??= new ReportingView();
 
@@ -250,6 +255,20 @@ public partial class MainForm : Form
 
                 lblUserRole.ForeColor = Color.FromArgb(56, 189, 248);
                 ShowView(GetProductsContainerView(), "Quản Lý Sản Phẩm, Danh Mục & Kho Hàng", btnProducts);
+                break;
+
+            case "TECHNICIAN":
+                // 4. Nhân viên kỹ thuật: Phụ trách tiếp nhận xử lý, sửa chữa và hoàn thiện bảo hành trang sức
+                btnWarranty.Visible = true; // Phân hệ trọng tâm của kỹ thuật viên
+                btnProducts.Visible = true; // Cho phép xem danh mục sản phẩm, chất liệu
+
+                btnSales.Visible = false;
+                _btnOfflineSales.Visible = false;
+                btnUsers.Visible = false;
+                btnReports.Visible = false;
+
+                lblUserRole.ForeColor = Color.FromArgb(245, 158, 11); // Màu cam hổ phách kỹ thuật
+                ShowView(GetWarrantyView(), "Dịch Vụ & Tiếp Nhận Bảo Hành Kim Hoàn", btnWarranty);
                 break;
         }
     }

@@ -42,6 +42,7 @@ public class OfflineSalesView : UserControl
     private DataGridView _dgvCart = null!;
     private readonly List<ChiTietBanOfflineDTO> _cartItems = new();
     private List<SanPhamTrangSuc> _allAvailableProducts = new();
+    private bool _isUpdatingCartGrid;
 
     // Tóm tắt tiền
     private Label _lblSubTotal = null!;
@@ -395,7 +396,10 @@ public class OfflineSalesView : UserControl
 
     public void LoadProductsList()
     {
-        _allAvailableProducts = _services.SanPhamRepo.LayTatCa().Where(p => p.KiemTraTonKho()).ToList();
+        // Chỉ nạp các sản phẩm được phép kinh doanh (Trạng thái SanSang và tồn kho > 0)
+        _allAvailableProducts = _services.SanPhamRepo.LayTatCa()
+            .Where(p => string.Equals(p.TrangThai, "SanSang", StringComparison.OrdinalIgnoreCase) && p.SoLuongTon > 0)
+            .ToList();
         FilterProductsList(string.Empty);
     }
 
@@ -491,17 +495,52 @@ public class OfflineSalesView : UserControl
         }
 
         var sp = _allAvailableProducts.FirstOrDefault(p => p.MaSanPham == selectedItem.Key) ?? _services.SanPhamRepo.TimTheoId(selectedItem.Key);
-        if (sp == null || !sp.KiemTraTonKho())
+        if (sp == null || !sp.KiemTraTonKho() || sp.SoLuongTon <= 0)
         {
-            MessageBox.Show("Sản phẩm không khả dụng hoặc đã bán.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Sản phẩm không khả dụng hoặc đã hết hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
         var qty = (int)_numQuantity.Value;
+        if (qty <= 0)
+        {
+            MessageBox.Show("Số lượng mua phải lớn hơn 0.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        var existing = _cartItems.FirstOrDefault(c => c.MaSanPham == sp.MaSanPham);
+        var currentInCart = existing?.SoLuong ?? 0;
+        var totalRequested = currentInCart + qty;
+
+        // Ràng buộc tồn kho: Không cho phép vượt quá số lượng tồn hiện có
+        if (totalRequested > sp.SoLuongTon)
+        {
+            var remainingCanAdd = sp.SoLuongTon - currentInCart;
+            if (remainingCanAdd > 0)
+            {
+                MessageBox.Show(
+                    $"Số lượng yêu cầu ({totalRequested}) vượt quá số lượng tồn kho ({sp.SoLuongTon}) của sản phẩm [{sp.MaSanPham}] {sp.TenSanPham}.\n" +
+                    $"Hiện trong đơn đã có {currentInCart} món, bạn chỉ có thể thêm tối đa {remainingCanAdd} món nữa.",
+                    "Cảnh Báo Vượt Tồn Kho",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Sản phẩm [{sp.MaSanPham}] {sp.TenSanPham} chỉ có {sp.SoLuongTon} món trong kho và đơn hàng hiện đã chứa đủ số lượng tối đa này.",
+                    "Hết Tồn Kho Khả Dụng",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
+            return;
+        }
+
         // Mức chiết khấu % giảm giá được lấy tự động 100% từ cấu hình sản phẩm trong CSDL
         var discount = sp.PhanTramGiamGia;
 
-        var existing = _cartItems.FirstOrDefault(c => c.MaSanPham == sp.MaSanPham);
         if (existing != null)
         {
             existing.SoLuong += qty;
@@ -524,35 +563,43 @@ public class OfflineSalesView : UserControl
 
     private void RefreshCartGrid()
     {
-        _dgvCart.Rows.Clear();
-        decimal totalGoc = 0;
-        decimal totalTienGiam = 0;
-        decimal totalThanhTien = 0;
-
-        foreach (var item in _cartItems)
+        _isUpdatingCartGrid = true;
+        try
         {
-            var goc = item.DonGia * item.SoLuong;
-            var thanhTien = item.ThanhTien;
-            var giam = item.TienGiam;
+            _dgvCart.Rows.Clear();
+            decimal totalGoc = 0;
+            decimal totalTienGiam = 0;
+            decimal totalThanhTien = 0;
 
-            totalGoc += goc;
-            totalTienGiam += giam;
-            totalThanhTien += thanhTien;
+            foreach (var item in _cartItems)
+            {
+                var goc = item.DonGia * item.SoLuong;
+                var thanhTien = item.ThanhTien;
+                var giam = item.TienGiam;
 
-            _dgvCart.Rows.Add(
-                item.MaSanPham,
-                item.TenSanPham,
-                item.DonGia.ToString("N0", _viVn),
-                item.SoLuong,
-                item.PhanTramGiamGia,
-                giam.ToString("N0", _viVn),
-                thanhTien.ToString("N0", _viVn)
-            );
+                totalGoc += goc;
+                totalTienGiam += giam;
+                totalThanhTien += thanhTien;
+
+                _dgvCart.Rows.Add(
+                    item.MaSanPham,
+                    item.TenSanPham,
+                    item.DonGia.ToString("N0", _viVn),
+                    item.SoLuong,
+                    item.PhanTramGiamGia,
+                    giam.ToString("N0", _viVn),
+                    thanhTien.ToString("N0", _viVn)
+                );
+            }
+
+            _lblSubTotal.Text = totalGoc.ToString("N0", _viVn) + " VND";
+            _lblTotalDiscount.Text = totalTienGiam.ToString("N0", _viVn) + " VND";
+            _lblGrandTotal.Text = totalThanhTien.ToString("N0", _viVn) + " VND";
         }
-
-        _lblSubTotal.Text = totalGoc.ToString("N0", _viVn) + " VND";
-        _lblTotalDiscount.Text = totalTienGiam.ToString("N0", _viVn) + " VND";
-        _lblGrandTotal.Text = totalThanhTien.ToString("N0", _viVn) + " VND";
+        finally
+        {
+            _isUpdatingCartGrid = false;
+        }
     }
 
     private void DgvCart_CellContentClick(object? sender, DataGridViewCellEventArgs e)
@@ -571,6 +618,7 @@ public class OfflineSalesView : UserControl
 
     private void DgvCart_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
     {
+        if (_isUpdatingCartGrid) return;
         if (e.RowIndex < 0 || e.RowIndex >= _cartItems.Count) return;
 
         var colName = _dgvCart.Columns[e.ColumnIndex].Name;
@@ -581,11 +629,32 @@ public class OfflineSalesView : UserControl
         {
             if (int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out var newQty) && newQty > 0)
             {
+                var sp = _allAvailableProducts.FirstOrDefault(p => p.MaSanPham == item.MaSanPham)
+                         ?? _services.SanPhamRepo.TimTheoId(item.MaSanPham);
+
+                var maxTon = sp?.SoLuongTon ?? 0;
+                if (maxTon > 0 && newQty > maxTon)
+                {
+                    MessageBox.Show(
+                        $"Số lượng nhập ({newQty}) vượt quá số lượng tồn kho ({maxTon}) của sản phẩm [{item.MaSanPham}] {item.TenSanPham}.\nHệ thống sẽ khôi phục lại số lượng trước đó ({item.SoLuong}).",
+                        "Vượt Quá Tồn Kho",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    _isUpdatingCartGrid = true;
+                    row.Cells["SoLuong"].Value = item.SoLuong;
+                    _isUpdatingCartGrid = false;
+                    return;
+                }
+
                 item.SoLuong = newQty;
             }
             else
             {
+                MessageBox.Show("Số lượng phải là số nguyên dương lớn hơn 0.", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                _isUpdatingCartGrid = true;
                 row.Cells["SoLuong"].Value = item.SoLuong;
+                _isUpdatingCartGrid = false;
             }
             RefreshCartGrid();
         }

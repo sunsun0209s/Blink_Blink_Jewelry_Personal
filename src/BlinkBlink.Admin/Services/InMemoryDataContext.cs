@@ -66,6 +66,7 @@ public class InMemoryDataContext
         VaiTros.Add(new VaiTro("ADMIN", "Quản trị viên", "Quản trị toàn quyền hệ thống cửa hàng kim hoàn"));
         VaiTros.Add(new VaiTro("SALE", "Nhân viên bán hàng", "Thu ngân và tư vấn bán hàng tại quầy POS"));
         VaiTros.Add(new VaiTro("WAREHOUSE", "Thủ kho", "Quản lý nhập kho và lập biên bản kiểm kê trang sức"));
+        VaiTros.Add(new VaiTro("TECHNICIAN", "Nhân viên kỹ thuật", "Bảo dưỡng, sửa chữa và quyết toán chi phí bảo hành"));
         VaiTros.Add(new VaiTro("KHACHHANG", "Khách hàng", "Khách hàng mua sắm trực tuyến và tra cứu bảo hành"));
 
         // 2. Tài khoản nhân sự mặc định (Đảm bảo luôn đăng nhập được với admin / 123456789)
@@ -73,6 +74,7 @@ public class InMemoryDataContext
         NhanViens.Add(new NhanVien("USER_ADMIN01", "Trần Minh Hoàng", "0901234567", "admin", "123456789", "ADMIN", "NV_ADMIN", 25000000, true));
         NhanViens.Add(new NhanVien("USER_NV001", "Lê Phương Thảo", "0912345678", "thao.le", "123456789", "SALE", "NV001", 12000000, true));
         NhanViens.Add(new NhanVien("USER_NV002", "Nguyễn Quốc Huy", "0933445566", "huy.nguyen", "123456789", "WAREHOUSE", "NV002", 14000000, true));
+        NhanViens.Add(new NhanVien("USER_NV003", "Trần Kỹ Thuật", "0944556677", "kythuat", "123456789", "TECHNICIAN", "NV003", 13500000, true));
 
         // 3. Danh mục sản phẩm kim hoàn
         DanhMucs.Clear();
@@ -89,6 +91,48 @@ public class InMemoryDataContext
         SanPhams.Add(new SanPhamTrangSuc("SP004", "Lắc Tay Tennis Diamond Bracelet", "DM04", "Vàng trắng 18K đính 45 viên kim cương tự nhiên", "Size 17cm", 48000000, 72000000, "SanSang", "https://images.unsplash.com/photo-1611591475152-47354900a359?auto=format&fit=crop&w=800&q=80", 20) { SoLuongTon = 4 });
         SanPhams.Add(new SanPhamTrangSuc("SP005", "Nhẫn Cưới Harmony Eternity", "DM01", "Vàng Ý 750 tinh tế đính kim cương tấm viền", "Size 16", 11000000, 16800000, "SanSang", "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80", 5) { SoLuongTon = 12 });
         SanPhams.Add(new SanPhamTrangSuc("SP006", "Mặt Dây Chuyền Ngọc Trai South Sea", "DM02", "Vàng vàng 18K đính ngọc trai biển và kim cương", "Size 42cm", 28000000, 42500000, "SanSang", "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80", 0) { SoLuongTon = 6 });
+
+        // 5. Phiếu bảo hành mẫu
+        PhieuBaoHanhs.Clear();
+        PhieuBaoHanhs.Add(new PhieuBaoHanh(
+            soPhieuBH: "PBH_DEMO01",
+            maKhachHang: "KH001",
+            maSanPham: "SP001",
+            lyDoBaoHanh: "Mặt nhẫn trầy nhẹ, cần đánh bóng",
+            chiPhiUocTinh: 0,
+            trangThaiXuLy: "TiepNhan",
+            ngayTiepNhan: DateTime.Now.AddDays(-2),
+            ngayHenTra: DateTime.Now.AddDays(2),
+            chiPhiThucTe: 0,
+            tinhTrangTiepNhan: "Chấu hơi lỏng",
+            ghiChu: "Khách cần gấp trước cuối tuần"
+        ));
+        PhieuBaoHanhs.Add(new PhieuBaoHanh(
+            soPhieuBH: "PBH_DEMO02",
+            maKhachHang: "KH002",
+            maSanPham: "SP003",
+            lyDoBaoHanh: "Rơi viên đá tấm 1.5 ly",
+            chiPhiUocTinh: 150000,
+            trangThaiXuLy: "DangXuLy",
+            ngayTiepNhan: DateTime.Now.AddDays(-3),
+            ngayHenTra: DateTime.Now.AddDays(1),
+            chiPhiThucTe: 0,
+            tinhTrangTiepNhan: "Mất 1 viên tấm bên trái",
+            ghiChu: "Kỹ thuật đang đính lại chấu"
+        ));
+        PhieuBaoHanhs.Add(new PhieuBaoHanh(
+            soPhieuBH: "PBH_DEMO03",
+            maKhachHang: "KH001",
+            maSanPham: "SP004",
+            lyDoBaoHanh: "Xi mạ làm mới bạch kim",
+            chiPhiUocTinh: 200000,
+            trangThaiXuLy: "DaXuLy",
+            ngayTiepNhan: DateTime.Now.AddDays(-5),
+            ngayHenTra: DateTime.Now.AddDays(-1),
+            chiPhiThucTe: 250000,
+            tinhTrangTiepNhan: "Trầy xước do va quẹt",
+            ghiChu: "Đã xi mạ xong, chờ khách đến nhận"
+        ));
     }
 
     private class MemorySanPhamRepository : ISanPhamRepository

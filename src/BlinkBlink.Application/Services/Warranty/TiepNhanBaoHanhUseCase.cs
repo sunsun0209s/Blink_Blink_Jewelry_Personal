@@ -8,8 +8,8 @@ using BlinkBlink.Domain.Interfaces;
 namespace BlinkBlink.Application.Services.Warranty;
 
 /// <summary>
-/// Trường hợp sử dụng Tiếp nhận bảo hành (TiepNhanBaoHanhUseCase) dành cho nhân viên.
-/// Thực hiện tạo phiếu bảo hành mới và chuyển trạng thái món trang sức sang DangBaoHanh.
+/// Trường hợp sử dụng Tiếp nhận bảo hành (TiepNhanBaoHanhUseCase) dành cho nhân viên bán hàng.
+/// Thực hiện tạo phiếu bảo hành mới với trạng thái TiepNhan và ghi nhận tình trạng sản phẩm.
 /// Khớp 100% với Class Diagram kỹ thuật và XML sơ đồ phân hệ bảo hành.
 /// </summary>
 public class TiepNhanBaoHanhUseCase
@@ -73,12 +73,15 @@ public class TiepNhanBaoHanhUseCase
             maSanPham: request.MaSanPham.Trim(),
             lyDoBaoHanh: request.LyDoBaoHanh.Trim(),
             chiPhiUocTinh: Math.Max(0m, request.ChiPhiBaoHanh),
-            trangThaiXuLy: "DangBaoHanh",
+            trangThaiXuLy: "TiepNhan",
             ngayTiepNhan: DateTime.UtcNow,
-            ngayHenTra: request.NgayHenTra
+            ngayHenTra: request.NgayHenTra,
+            chiPhiThucTe: 0m,
+            tinhTrangTiepNhan: request.TinhTrangTiepNhan?.Trim() ?? string.Empty,
+            ghiChu: request.GhiChu?.Trim() ?? string.Empty
         );
 
-        // Chuyển trạng thái vòng đời sản phẩm trang sức sang đang bảo hành để ngăn chặn bán/giao dịch
+        // Chuyển trạng thái vòng đời sản phẩm trang sức kim hoàn sang đang bảo hành
         sanPham.CapNhatTrangThai("DangBaoHanh");
         await _sanPhamRepo.LuuSanPhamAsync(sanPham, cancellationToken);
 

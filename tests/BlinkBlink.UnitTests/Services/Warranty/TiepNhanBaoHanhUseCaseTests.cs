@@ -131,7 +131,7 @@ public class TiepNhanBaoHanhUseCaseTests
         var phieu = baoHanhRepo.Data.Values.First();
         Assert.Equal("KH001", phieu.MaKhachHang);
         Assert.Equal("SP001", phieu.MaSanPham);
-        Assert.Equal("DangBaoHanh", phieu.TrangThaiXuLy);
+        Assert.Equal("TiepNhan", phieu.TrangThaiXuLy);
         Assert.Equal(0m, phieu.ChiPhiBaoHanh);
         // Sản phẩm phải được chuyển sang DangBaoHanh
         Assert.Equal("DangBaoHanh", sp.TrangThai);

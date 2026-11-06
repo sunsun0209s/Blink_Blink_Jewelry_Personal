@@ -397,6 +397,7 @@ public class UsersView : UserControl
         cboRole.Items.Add(new KeyValuePair<string, string>("ADMIN", "👑 Quản trị viên (Toàn quyền)"));
         cboRole.Items.Add(new KeyValuePair<string, string>("SALE", "💼 Nhân viên bán hàng (Đơn hàng & Khách)"));
         cboRole.Items.Add(new KeyValuePair<string, string>("WAREHOUSE", "📦 Nhân viên kho (Sản phẩm & Kho hàng)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("TECHNICIAN", "🔧 Nhân viên kỹ thuật (Bảo dưỡng & Sửa chữa)"));
         cboRole.DisplayMember = "Value";
         cboRole.ValueMember = "Key";
         cboRole.SelectedIndex = 1;
@@ -504,13 +505,16 @@ public class UsersView : UserControl
         cboRole.Items.Add(new KeyValuePair<string, string>("ADMIN", "👑 Quản trị viên (Toàn quyền)"));
         cboRole.Items.Add(new KeyValuePair<string, string>("SALE", "💼 Nhân viên bán hàng (Đơn hàng & Khách)"));
         cboRole.Items.Add(new KeyValuePair<string, string>("WAREHOUSE", "📦 Nhân viên kho (Sản phẩm & Kho hàng)"));
+        cboRole.Items.Add(new KeyValuePair<string, string>("TECHNICIAN", "🔧 Nhân viên kỹ thuật (Bảo dưỡng & Sửa chữa)"));
         cboRole.DisplayMember = "Value";
         cboRole.ValueMember = "Key";
 
         // Chọn vai trò hiện tại
         var currentRoleCode = staff.MaVaiTro?.ToUpperInvariant() ?? "SALE";
         if (currentRoleCode == "VT01" || currentRoleCode == "ADMIN") cboRole.SelectedIndex = 0;
+        else if (currentRoleCode == "VT02" || currentRoleCode == "SALE") cboRole.SelectedIndex = 1;
         else if (currentRoleCode == "VT03" || currentRoleCode == "WAREHOUSE") cboRole.SelectedIndex = 2;
+        else if (currentRoleCode == "VT04" || currentRoleCode == "TECHNICIAN") cboRole.SelectedIndex = 3;
         else cboRole.SelectedIndex = 1;
 
         dialog.Controls.Add(lblRole);

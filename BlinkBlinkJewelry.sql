@@ -213,10 +213,12 @@ CREATE TABLE dbo.PhieuBaoHanh (
     MaKhachHang VARCHAR(50) NOT NULL,
     MaSanPham VARCHAR(50) NOT NULL,
     LyDoBaoHanh NVARCHAR(500) NOT NULL,
+    TinhTrangTiepNhan NVARCHAR(300) NULL,
+    GhiChu NVARCHAR(500) NULL,
     ChiPhiUocTinh DECIMAL(18, 2) NOT NULL DEFAULT 0,
     ChiPhiThucTe DECIMAL(18, 2) NOT NULL DEFAULT 0,
     ChiPhiBaoHanh DECIMAL(18, 2) NOT NULL DEFAULT 0,
-    TrangThaiXuLy NVARCHAR(50) NOT NULL DEFAULT 'DangBaoHanh', -- DangBaoHanh, DaXuLy, DaHoanTat, DaHuy
+    TrangThaiXuLy NVARCHAR(50) NOT NULL DEFAULT 'TiepNhan', -- TiepNhan, DangXuLy, DaXuLy, DaTraKhach, DaHuy
     NgayTiepNhan DATETIME2 NOT NULL DEFAULT GETDATE(),
     NgayHenTra DATETIME2 NULL,
     CONSTRAINT FK_PhieuBaoHanh_KhachHang FOREIGN KEY (MaKhachHang) REFERENCES dbo.NguoiDung(MaNguoiDung),
@@ -233,6 +235,7 @@ INSERT INTO dbo.VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
 ('ADMIN', N'Quản trị viên', N'Quản trị toàn quyền hệ thống cửa hàng kim hoàn'),
 ('SALE', N'Nhân viên bán hàng', N'Thu ngân và tư vấn bán hàng tại quầy POS'),
 ('WAREHOUSE', N'Thủ kho', N'Quản lý nhập kho và lập biên bản kiểm kê trang sức'),
+('TECHNICIAN', N'Nhân viên kỹ thuật', N'Tiếp nhận sửa chữa, gia công và quyết toán chi phí bảo hành trang sức'),
 ('KHACHHANG', N'Khách hàng', N'Khách hàng mua sắm trực tuyến và tra cứu bảo hành');
 GO
 
@@ -242,6 +245,7 @@ INSERT INTO dbo.NguoiDung (MaNguoiDung, HoTen, SoDienThoai, TenDangNhap, MatKhau
 ('USER_ADMIN01', N'Trần Minh Hoàng', '0901234567', 'admin', '123456789', 'ADMIN', 1),
 ('USER_NV001', N'Lê Phương Thảo', '0912345678', 'thao.le', 'pass123', 'SALE', 1),
 ('USER_NV002', N'Nguyễn Quốc Huy', '0933445566', 'huy.nguyen', 'pass123', 'WAREHOUSE', 1),
+('USER_NV003', N'Đỗ Văn Kỹ Thuật', '0944556677', 'kythuat', '123456789', 'TECHNICIAN', 1),
 ('USER_KH001', N'Phạm Bích Ngọc', '0988112233', 'ngoc.pham', 'khach123', 'KHACHHANG', 1),
 ('USER_KH002', N'Hoàng Tuấn Anh', '0977223344', 'anh.hoang', 'khach123', 'KHACHHANG', 1);
 GO
@@ -250,7 +254,8 @@ GO
 INSERT INTO dbo.NhanVien (MaNguoiDung, MaNhanVien, LuongCoBan) VALUES
 ('USER_ADMIN01', 'NV_ADMIN', 25000000),
 ('USER_NV001', 'NV001', 12000000),
-('USER_NV002', 'NV002', 14000000);
+('USER_NV002', 'NV002', 14000000),
+('USER_NV003', 'NV003', 10000000);
 GO
 
 -- 4. Nạp thông tin khách hàng (Bảng con KhachHang)
