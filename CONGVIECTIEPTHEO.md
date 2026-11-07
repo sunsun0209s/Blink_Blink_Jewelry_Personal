@@ -1,9 +1,11 @@
 
-Tôi muốn phần nhập phiếu bảo hành nó cũng sẽ theo cơ chế ô search và combobox, tôi muốn xóa bỏ phần thông tin nhập sẵn trong modal tạo phiếu bảo hành đi, và cũng phải cho khách vãng lai không có tài khoản bảo hành, nhớ ghi nhận lại sdt của khách. Sau này khách tạo tài khoản thì ngoài đơn hàng được liên kết, phiếu bảo hành cũng được liên kết đến.
 
 
+Chức năng bảo hành đang lỗi ngay phần tạo phiếu bảo hành.
 
+Thêm chức năng sửa tên nhóm sẽ thay đổi tên các sản phẩm trong nhóm. Bỏ chức năng thêm sản phẩm vào nhóm sẽ thay đổi tên sản phẩm.
 
+[web] khi sản phẩm có nhóm thì hiện nhóm, sản phẩm không có nhóm thì hiện tên sản phẩm
 
 //Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
 
@@ -52,3 +54,6 @@ Tôi muốn thêm 1 tab là Kiểm kê, trong tab này đối với nhân viên 
 Khi thêm xong, phiếu kiểm kê đó sẽ nằm trong danh sách các phiếu kiểm kê, sẽ hiện theo thứ tự các phiếu mới nhất, phiếu đó sẽ có trạng thái chờ duyệt, tất nhiên cũng có nút xem chi tiết phiếu kiểm kê cạnh nút thêm, nút này sẽ mở lại modal chi tiết của phiếu kiểm kê, phía cuối modal đối với nhân viên kho sẽ có 2 nút là Đóng và nút Lưu thay đổi, cho phép sửa lại phiếu đó nếu phiếu đó chưa được duyệt. Admin khi mở chi tiết phiếu đó lên, thì ngoài 2 nút đó sẽ có thêm nút duyệt phiếu, duyệt sẽ thay đổi trạng thái của phiếu đó, đóng modal, thay đổi trạng thái phiếu trong danh sách hiển thị. Khi xem chi tiết phiếu đó thì chỉ còn nút đóng phiếu chứ không có nút lưu thay đổi nữa. Cũng không cho sửa bất kì chỗ nào. Phiếu đã được duyệt thì tồn kho sản phẩm sẽ thay đổi, chi thay đổi tồn kho thôi là được không cần thay đổi thêm gì khác. Khi mở chi tiết một phiếu đã được duyệt, đối với nhân viên thì cuối modal chỉ có nút đóng, đối với admin sẽ có thêm nút Vô hiệu hóa dùng để vô hiệu hóa phiếu, trả lại số lượng tồn kho ban đầu nếu duyệt nhầm phiếu. Có thêm một nút xóa kế nút xem chi tiết phiếu. Nút này chỉ sáng đối với các phiếu chưa được duyệt, nhân viên và admin đều dùng được.
 
 Tôi muốn bạn lưu ý giả sử có phiếu kiểm kê chồng chéo lên nhau. Thì tôi muốn khi phiếu bị vô hiệu hóa phải có cơ chế trả lại số sản phẩm tồn kho một cách chính xác chứ không phải lấy số lượng được ghi trong phiếu và sửa lại. Ví dụ lỡ như khi duyệt phiếu có sản phẩm thực tế còn 100 cái nhưng hệ thống ghi 105 cái, sau đó khách mua 2 cái thì còn 98 cái, sau đó vô hiệu hóa phiếu, thì không thể nào trả lại số sản phẩm trong tồn kho là 105 được, nó sẽ là 103 cái. Vấn đề ràng buộc, giả sử có 2 phiếu cùng sửa 1 sản phẩm được gửi đến cho admin duyệt giả khi duyệt 1 phiếu, thì số lượng tồn kho thực tế của sản phẩm đã khác so với số lượng tồn kho thực tế trong hệ thống ghi nhận của phiếu còn lại. Lúc này bạn phải kiểm tra và từ chối cho duyệt phiếu đó với lí do là số lượng tồn kho được ghi nhận của phiếu không chính xác. Phiếu kiểm kê không chỉ ghi nhận thâm hụt, mà còn có thể ghi nhận nếu số lượng thực tế nhiều hơn so với số lượng tồn tại trong hệ thống. Giả sử phiếu kiểm kê 1 vào ngày hôm qua ghi nhận 1 sản phẩm đã được duyệt, phiếu kiểm kê 2 vào ngày hôm nay ghi nhận cùng sản phẩm đó và đã được duyệt. Lúc này nếu admin vô hiệu hóa phiếu kiểm kê 1 sẽ không cho. Nó sẽ thông báo chỉ cho vô hiệu hóa phiếu có chỉnh sửa mới nhất đối với sản phẩm. Lúc này admin có 2 lựa chọn là lập phiếu kiểm kê khác để bù lại số lượng. Hoặc là vô hiệu hóa phiếu kiểm kê kia trước.
+
+
+Tôi muốn phần nhập phiếu bảo hành nó cũng sẽ theo cơ chế ô search và combobox, tôi muốn xóa bỏ phần thông tin nhập sẵn trong modal tạo phiếu bảo hành đi, và cũng phải cho khách vãng lai không có tài khoản bảo hành, nhớ ghi nhận lại sdt của khách. Sau này khách tạo tài khoản thì ngoài đơn hàng được liên kết, phiếu bảo hành cũng được liên kết đến.
