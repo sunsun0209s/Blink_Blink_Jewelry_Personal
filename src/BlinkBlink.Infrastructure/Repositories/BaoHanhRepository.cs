@@ -40,7 +40,11 @@ public class BaoHanhRepository : IBaoHanhRepository
             IF EXISTS (SELECT 1 FROM dbo.PhieuBaoHanh WHERE SoPhieuBH = @SoPhieuBH)
             BEGIN
                 UPDATE dbo.PhieuBaoHanh
-                SET MaKhachHang = @MaKhachHang,
+                SET MaKhachHang = CASE 
+                        WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaKhachHang) THEN @MaKhachHang
+                        WHEN EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang)
+                        ELSE @MaKhachHang
+                    END,
                     MaSanPham = @MaSanPham,
                     LyDoBaoHanh = @LyDoBaoHanh,
                     TinhTrangTiepNhan = @TinhTrangTiepNhan,
@@ -57,7 +61,14 @@ public class BaoHanhRepository : IBaoHanhRepository
             ELSE
             BEGIN
                 INSERT INTO dbo.PhieuBaoHanh (SoPhieuBH, MaKhachHang, MaSanPham, LyDoBaoHanh, TinhTrangTiepNhan, GhiChu, ChiPhiUocTinh, ChiPhiThucTe, ChiPhiBaoHanh, TrangThaiXuLy, NgayTiepNhan, NgayHenTra, SoDienThoai)
-                VALUES (@SoPhieuBH, @MaKhachHang, @MaSanPham, @LyDoBaoHanh, @TinhTrangTiepNhan, @GhiChu, @ChiPhiUocTinh, @ChiPhiThucTe, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra, @SoDienThoai);
+                VALUES (
+                    @SoPhieuBH, 
+                    CASE 
+                        WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaKhachHang) THEN @MaKhachHang
+                        WHEN EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHang)
+                        ELSE @MaKhachHang
+                    END, 
+                    @MaSanPham, @LyDoBaoHanh, @TinhTrangTiepNhan, @GhiChu, @ChiPhiUocTinh, @ChiPhiThucTe, @ChiPhiBaoHanh, @TrangThaiXuLy, @NgayTiepNhan, @NgayHenTra, @SoDienThoai);
             END";
 
         var parameters = new[]
@@ -240,7 +251,11 @@ public class BaoHanhRepository : IBaoHanhRepository
 
         const string sql = @"
             UPDATE dbo.PhieuBaoHanh
-            SET MaKhachHang = @MaKhachHangMoi
+            SET MaKhachHang = CASE 
+                    WHEN EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = @MaKhachHangMoi) THEN @MaKhachHangMoi
+                    WHEN EXISTS (SELECT 1 FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHangMoi) THEN (SELECT TOP 1 MaNguoiDung FROM dbo.KhachHang WHERE MaKhachHang = @MaKhachHangMoi)
+                    ELSE @MaKhachHangMoi
+                END
             WHERE SoDienThoai = @SoDienThoai
               AND (MaKhachHang = '0' OR MaKhachHang = 'KH_0' OR MaKhachHang = 'KH_GUEST_POS');";
 

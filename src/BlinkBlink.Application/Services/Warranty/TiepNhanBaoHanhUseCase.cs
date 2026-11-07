@@ -69,11 +69,21 @@ public class TiepNhanBaoHanhUseCase
             var existingKh = _khachHangRepo.TimTheoSoDienThoai(soDienThoai);
             if (existingKh != null)
             {
-                maKhachHang = existingKh.MaKhachHang;
+                maKhachHang = !string.IsNullOrWhiteSpace(existingKh.MaNguoiDung) ? existingKh.MaNguoiDung : existingKh.MaKhachHang;
+            }
+        }
+        else if (maKhachHang != "0" && _khachHangRepo != null)
+        {
+            var existingKh = _khachHangRepo.TimTheoMa(maKhachHang);
+            if (existingKh != null && !string.IsNullOrWhiteSpace(existingKh.MaNguoiDung))
+            {
+                maKhachHang = existingKh.MaNguoiDung;
             }
         }
 
-        // Kiểm tra sản phẩm có tồn tại trong hệ thống hay không
+        try
+        {
+            // Kiểm tra sản phẩm có tồn tại trong hệ thống hay không
         var sanPham = await _sanPhamRepo.TimTheoIdAsync(request.MaSanPham, cancellationToken);
         if (sanPham == null)
         {
@@ -105,6 +115,11 @@ public class TiepNhanBaoHanhUseCase
         // Lưu phiếu bảo hành vào cơ sở dữ liệu
         await _baoHanhRepo.LuuPhieuAsync(phieuBaoHanh, cancellationToken);
 
-        return true;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

@@ -1068,24 +1068,7 @@ public class EditProductGroupModal : Form
             return;
         }
 
-        // Nếu sản phẩm không cùng tên với nhóm: hỏi xác nhận đổi tên
-        var currentGroupName = _txtGroupName.Text.Trim();
-        if (!string.Equals(targetSp.TenSanPham, currentGroupName, StringComparison.OrdinalIgnoreCase))
-        {
-            var confirmRename = MessageBox.Show(
-                $"Thêm sản phẩm này vào nhóm sẽ đổi tên sản phẩm này thành: {currentGroupName}.",
-                "Xác nhận đổi tên",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
-
-            if (confirmRename != DialogResult.Yes)
-            {
-                return;
-            }
-        }
-
-        // Tiến hành thêm vào nhóm
+        // Tiến hành thêm vào nhóm (giữ nguyên tên gốc của sản phẩm, không đổi theo tên nhóm)
         var success = _services.QuanLyNhomSanPham.ThemSanPhamVaoNhom(_maNhom, targetSp.MaSanPham, out var error);
         if (success)
         {
@@ -1106,6 +1089,19 @@ public class EditProductGroupModal : Form
             MessageBox.Show("Tên nhóm không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             _txtGroupName.Focus();
             return;
+        }
+
+        if (_group != null && !string.Equals(_group.TenNhom, newName, StringComparison.OrdinalIgnoreCase))
+        {
+            var confirmSync = MessageBox.Show(
+                $"Thay đổi tên nhóm thành '{newName}' sẽ đồng bộ đổi tên cho toàn bộ các sản phẩm trong nhóm này.\nBạn có chắc chắn muốn lưu thay đổi?",
+                "Xác nhận cập nhật tên nhóm",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (confirmSync != DialogResult.Yes)
+            {
+                return;
+            }
         }
 
         try

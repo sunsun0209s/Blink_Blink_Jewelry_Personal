@@ -212,6 +212,67 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Hiển thị lưới sản phẩm kim hoàn với nhãn giảm giá và giá sau giảm
  * @param {Array} products - Danh sách sản phẩm cần vẽ lên lưới
  */
+/**
+ * Gom nhóm sản phẩm để hiển thị trên Web (Hướng 1):
+ * - Sản phẩm có nhóm (maNhom != "0"): Gom lại thành 1 mục đại diện mang Tên nhóm (tenNhom), kèm danh sách các size.
+ * - Sản phẩm không có nhóm (maNhom == "0"): Giữ nguyên từng sản phẩm riêng lẻ mang Tên sản phẩm (tenSanPham).
+ * @param {Array} products - Danh sách sản phẩm sau lọc
+ * @returns {Array} Danh sách đã gom nhóm hiển thị
+ */
+function groupProductsForDisplay(products) {
+    if (!products || products.length === 0) return [];
+
+    const displayList = [];
+    const groupedMap = new Map();
+
+    products.forEach(p => {
+        const maNhom = p.maNhom || p.MaNhom || '0';
+        if (maNhom && maNhom !== '0') {
+            const groupName = p.tenNhom || p.TenNhom || p.tenSanPham;
+            if (!groupedMap.has(maNhom)) {
+                const groupItem = {
+                    ...p,
+                    isGroup: true,
+                    tenHienThi: groupName,
+                    variants: [p],
+                    allSizes: p.size ? [p.size] : []
+                };
+                groupedMap.set(maNhom, groupItem);
+                displayList.push(groupItem);
+            } else {
+                const groupItem = groupedMap.get(maNhom);
+                groupItem.variants.push(p);
+                if (p.size && !groupItem.allSizes.includes(p.size)) {
+                    groupItem.allSizes.push(p.size);
+                }
+                const stock = p.soLuongTon !== undefined ? p.soLuongTon : (p.SoLuongTon !== undefined ? p.SoLuongTon : 0);
+                if (stock > 0 && p.trangThai === 'SanSang') {
+                    groupItem.conHang = true;
+                    if (groupItem.soLuongTon <= 0 || groupItem.trangThai !== 'SanSang') {
+                        groupItem.maSanPham = p.maSanPham;
+                        groupItem.giaBan = p.giaBan;
+                        groupItem.giaSauGiam = p.giaSauGiam;
+                        groupItem.phanTramGiamGia = p.phanTramGiamGia;
+                        groupItem.hinhAnh = p.hinhAnh || groupItem.hinhAnh;
+                        groupItem.trangThai = p.trangThai;
+                    }
+                }
+                groupItem.soLuongTon = (groupItem.soLuongTon || 0) + stock;
+            }
+        } else {
+            displayList.push({
+                ...p,
+                isGroup: false,
+                tenHienThi: p.tenSanPham,
+                variants: [p],
+                allSizes: p.size ? [p.size] : []
+            });
+        }
+    });
+
+    return displayList;
+}
+
 function initProductGrid(products) {
     const gridContainer = document.getElementById('products-grid');
     if (!gridContainer) return;
@@ -236,6 +297,8 @@ function initProductGrid(products) {
             tagHtml = '<span class="product-status-tag out-of-stock">Tạm Hết Hàng</span>';
         } else if (hasSale) {
             tagHtml = `<span class="product-status-tag sale">-${p.phanTramGiamGia}%</span>`;
+        } else if (p.isGroup) {
+            tagHtml = '<span class="product-status-tag" style="background: rgba(212,175,55,0.18); color: var(--gold-light); border: 1px solid var(--gold-primary);">Theo Nhóm</span>';
         } else {
             tagHtml = '<span class="product-status-tag">Kiệt Tác</span>';
         }
@@ -250,38 +313,50 @@ function initProductGrid(products) {
               `
             : `<span class="product-price-tabular">${formatCurrency(p.giaBan)}</span>`;
 
-        const buyButtonHtml = isOutOfStock
+        const displayName = p.tenHienThi || (p.isGroup ? (p.tenNhom || p.tenSanPham) : p.tenSanPham);
+        const displaySizes = (p.allSizes && p.allSizes.length > 1)
+            ? p.allSizes.join(' • ')
+            : (p.size || 'Tiêu chuẩn');
+
+        const cardBuyButton = isOutOfStock
             ? `
                 <button class="btn-card-addcart is-disabled" disabled title="Kiệt tác hiện đang tạm hết hàng tại showroom">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     Hết Hàng
                 </button>
               `
-            : `
-                <button class="btn-card-addcart" onclick="addToCart('${p.maSanPham}')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                    Chọn Mua
-                </button>
-              `;
+            : (p.isGroup && p.allSizes && p.allSizes.length > 1)
+                ? `
+                    <button class="btn-card-addcart" onclick="openQuickView('${p.maSanPham}')" title="Chọn kích cỡ trong nhóm ${displayName}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        Chọn Size
+                    </button>
+                  `
+                : `
+                    <button class="btn-card-addcart" onclick="addToCart('${p.maSanPham}')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        Chọn Mua
+                    </button>
+                  `;
 
         card.innerHTML = `
             <div class="product-thumb-wrap">
-                <img src="${p.hinhAnh || '/images/hero-jewelry.jpg'}" alt="${p.tenSanPham}" loading="lazy" onerror="this.onerror=null;this.src='/images/hero-jewelry.jpg';" />
+                <img src="${p.hinhAnh || '/images/hero-jewelry.jpg'}" alt="${displayName}" loading="lazy" onerror="this.onerror=null;this.src='/images/hero-jewelry.jpg';" />
                 ${tagHtml}
                 <div class="product-card-actions">
                     <button class="btn-card-quickview" onclick="openQuickView('${p.maSanPham}')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         Xem Nhanh
                     </button>
-                    ${buyButtonHtml}
+                    ${cardBuyButton}
                 </div>
             </div>
             <div class="product-info-body">
                 <span class="product-category-meta">${p.tenDanhMuc || 'Trang Sức Cao Cấp'}</span>
-                <h3 class="product-name-title">${p.tenSanPham}</h3>
+                <h3 class="product-name-title">${displayName}</h3>
                 <p class="product-material-desc">${p.chatLieu}</p>
                 <div class="product-footer-row">
-                    <span class="product-size-badge">${p.size || 'Tiêu chuẩn'}</span>
+                    <span class="product-size-badge" title="${p.isGroup ? 'Kích cỡ sẵn có trong nhóm' : 'Kích cỡ kiệt tác'}">${displaySizes}</span>
                     ${priceHtml}
                 </div>
             </div>
@@ -519,23 +594,27 @@ function applyProductFilters(resetPage = true) {
 
         filtered = filtered.filter(p => {
             const rawTen = (p.tenSanPham || '').toLowerCase();
+            const rawNhom = (p.tenNhom || '').toLowerCase();
             const rawChatLieu = (p.chatLieu || '').toLowerCase();
             const rawMa = (p.maSanPham || '').toLowerCase();
             const rawSize = (p.size || '').toLowerCase();
             const rawDanhMuc = (p.tenDanhMuc || '').toLowerCase();
 
             const normTen = normalizeSearchText(p.tenSanPham);
+            const normNhom = normalizeSearchText(p.tenNhom);
             const normChatLieu = normalizeSearchText(p.chatLieu);
             const normMa = normalizeSearchText(p.maSanPham);
             const normDanhMuc = normalizeSearchText(p.tenDanhMuc);
 
             return (
                 rawTen.includes(rawQuery) ||
+                rawNhom.includes(rawQuery) ||
                 rawChatLieu.includes(rawQuery) ||
                 rawMa.includes(rawQuery) ||
                 rawSize.includes(rawQuery) ||
                 rawDanhMuc.includes(rawQuery) ||
                 normTen.includes(normQuery) ||
+                normNhom.includes(normQuery) ||
                 normChatLieu.includes(normQuery) ||
                 normMa.includes(normQuery) ||
                 normDanhMuc.includes(normQuery)
@@ -583,12 +662,16 @@ function applyProductFilters(resetPage = true) {
     }
 
     // Cập nhật số lượng và render lưới sản phẩm
-    updateFilterStatusCount(filtered.length);
+    // Gom nhóm sản phẩm theo Hướng 1: có nhóm thì hiện nhóm, không có nhóm thì hiện sản phẩm
+    const groupedDisplayList = groupProductsForDisplay(filtered);
+
+    // Cập nhật số lượng và render lưới sản phẩm
+    updateFilterStatusCount(groupedDisplayList.length);
     updateActiveFilterBadges(category, keyword, priceRange, material);
     // Lưu danh sách sản phẩm sau lọc để phân trang
-    currentFilteredProducts = filtered;
+    currentFilteredProducts = groupedDisplayList;
 
-    const totalItems = filtered.length;
+    const totalItems = groupedDisplayList.length;
     const totalPages = Math.ceil(totalItems / currentCatalogPageSize) || 1;
     if (currentCatalogPage > totalPages) {
         currentCatalogPage = totalPages;
@@ -599,7 +682,7 @@ function applyProductFilters(resetPage = true) {
 
     const startIndex = (currentCatalogPage - 1) * currentCatalogPageSize;
     const endIndex = Math.min(startIndex + currentCatalogPageSize, totalItems);
-    const pagedItems = filtered.slice(startIndex, endIndex);
+    const pagedItems = groupedDisplayList.slice(startIndex, endIndex);
 
     initProductGrid(pagedItems);
     renderCatalogPagination(totalItems, currentCatalogPage, currentCatalogPageSize);
@@ -996,8 +1079,12 @@ function openQuickView(maSanPham) {
         modalImg.src = product.hinhAnh || '/images/hero-jewelry.jpg';
         modalImg.onerror = function() { this.onerror = null; this.src = '/images/hero-jewelry.jpg'; };
     }
+    const maNhomModal = product.maNhom || product.MaNhom || '0';
+    const modalDisplayName = (maNhomModal && maNhomModal !== '0' && (product.tenNhom || product.TenNhom))
+        ? (product.tenNhom || product.TenNhom)
+        : product.tenSanPham;
     document.getElementById('modal-cat').textContent = product.tenDanhMuc || 'Trang Sức Cao Cấp';
-    document.getElementById('modal-title').textContent = product.tenSanPham;
+    document.getElementById('modal-title').textContent = modalDisplayName;
 
     const priceContainer = document.getElementById('modal-price');
     if (priceContainer) {

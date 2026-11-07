@@ -65,7 +65,7 @@ public class ProductGroupWorkflowTests
     }
 
     [Fact]
-    public void ThemSanPhamVaoNhom_ThanhCong_DongBoTenVaCapNhatMaNhom()
+    public void ThemSanPhamVaoNhom_ThanhCong_GiuNguyenTenVaCapNhatMaNhom()
     {
         var nhomRepo = new FakeNhomSanPhamRepository();
         var spRepo = new FakeSanPhamRepository();
@@ -84,7 +84,8 @@ public class ProductGroupWorkflowTests
         var updatedSp = spRepo.TimTheoId("SP01");
         Assert.NotNull(updatedSp);
         Assert.Equal("NHOM01", updatedSp.MaNhom);
-        Assert.Equal("Nhẫn Solitaire Diamond 18K", updatedSp.TenSanPham);
+        // Bỏ việc đổi tên sản phẩm khi thêm vào nhóm: giữ nguyên tên gốc
+        Assert.Equal("Tên Gốc Cũ", updatedSp.TenSanPham);
     }
 
     [Fact]

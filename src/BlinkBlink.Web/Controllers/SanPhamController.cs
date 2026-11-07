@@ -132,6 +132,7 @@ public class SanPhamController : ControllerBase
                 HinhAnh = sp.HinhAnh,
                 SoLuongTon = sp.SoLuongTon,
                 MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                TenNhom = sp.NhomSanPham?.TenNhom ?? string.Empty,
                 ConHang = sp.SoLuongTon > 0 && sp.TrangThai == "SanSang"
             };
         });
@@ -173,6 +174,7 @@ public class SanPhamController : ControllerBase
                 MaDanhMuc = sp.MaDanhMuc,
                 TenDanhMuc = sp.DanhMuc?.TenDanhMuc ?? sp.MaDanhMuc,
                 MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                TenNhom = sp.NhomSanPham?.TenNhom ?? string.Empty,
                 ChatLieu = sp.ChatLieu,
                 Size = sp.Size,
                 GiaBan = sp.GiaBan,
@@ -224,6 +226,7 @@ public class SanPhamController : ControllerBase
                 HinhAnh = sp.HinhAnh,
                 SoLuongTon = sp.SoLuongTon,
                 MaNhom = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom,
+                TenNhom = sp.NhomSanPham?.TenNhom ?? string.Empty,
                 ConHang = sp.SoLuongTon > 0 && sp.TrangThai == "SanSang"
             }
         });

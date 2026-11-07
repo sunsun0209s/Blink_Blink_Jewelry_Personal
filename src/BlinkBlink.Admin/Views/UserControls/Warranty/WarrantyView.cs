@@ -966,7 +966,8 @@ public class WarrantyView : UserControl
         {
             Location = new Point(140, top),
             Width = 175,
-            Text = "0",
+            PlaceholderText = "0 (có thể để trống)",
+            Text = "",
             Font = UITheme.TabularNumericFont
         };
 
@@ -1011,7 +1012,7 @@ public class WarrantyView : UserControl
         void PopulateKhach(string filter)
         {
             cboKhach.Items.Clear();
-            cboKhach.Items.Add(new CustomerComboItem("0", "Khách hàng vãng lai (Chưa có tài khoản)", ""));
+            cboKhach.Items.Add(new CustomerComboItem("0", "Khách hàng vãng lai (Chưa có tài khoản)", "", "0"));
 
             var q = filter.Trim().ToLowerInvariant();
             var matches = allCustomers.Where(k =>
@@ -1024,7 +1025,7 @@ public class WarrantyView : UserControl
             foreach (var kh in matches)
             {
                 var phone = string.IsNullOrEmpty(kh.SoDienThoai) ? "" : $" - {kh.SoDienThoai}";
-                cboKhach.Items.Add(new CustomerComboItem(kh.MaKhachHang, $"[{kh.MaKhachHang}] {kh.HoTen}{phone}", kh.SoDienThoai ?? ""));
+                cboKhach.Items.Add(new CustomerComboItem(kh.MaKhachHang, $"[{kh.MaKhachHang}] {kh.HoTen}{phone}", kh.SoDienThoai ?? "", kh.MaNguoiDung));
             }
 
             cboKhach.SelectedIndex = 0;
@@ -1081,7 +1082,9 @@ public class WarrantyView : UserControl
         // Submit Tạo phiếu tiếp nhận
         btnSave.Click += (s, ev) =>
         {
-            if (cboSp.SelectedItem is not ProductComboItem selectedSp)
+            try
+            {
+                if (cboSp.SelectedItem is not ProductComboItem selectedSp)
             {
                 MessageBox.Show("Vui lòng chọn sản phẩm trang sức cần bảo hành.", "Thiếu Thông Tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -1097,7 +1100,7 @@ public class WarrantyView : UserControl
             var maKhachHang = "0";
             if (cboKhach.SelectedItem is CustomerComboItem selectedKh)
             {
-                maKhachHang = selectedKh.MaKhachHang;
+                maKhachHang = !string.IsNullOrWhiteSpace(selectedKh.MaNguoiDung) ? selectedKh.MaNguoiDung : selectedKh.MaKhachHang;
             }
 
             DateTime.TryParseExact(txtHenTra.Text.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var henTraDate);
@@ -1131,6 +1134,11 @@ public class WarrantyView : UserControl
             {
                 MessageBox.Show("Không thể tạo phiếu bảo hành. Vui lòng kiểm tra lại thông tin.", "Lỗi Tạo Phiếu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tạo phiếu bảo hành: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         };
 
         dialog.Controls.Add(pnlBody);
@@ -1146,12 +1154,14 @@ public class WarrantyView : UserControl
     private class CustomerComboItem
     {
         public string MaKhachHang { get; }
+        public string MaNguoiDung { get; }
         public string DisplayText { get; }
         public string SoDienThoai { get; }
 
-        public CustomerComboItem(string maKhachHang, string displayText, string soDienThoai)
+        public CustomerComboItem(string maKhachHang, string displayText, string soDienThoai, string maNguoiDung = "")
         {
             MaKhachHang = maKhachHang;
+            MaNguoiDung = string.IsNullOrWhiteSpace(maNguoiDung) ? maKhachHang : maNguoiDung;
             DisplayText = displayText;
             SoDienThoai = soDienThoai;
         }

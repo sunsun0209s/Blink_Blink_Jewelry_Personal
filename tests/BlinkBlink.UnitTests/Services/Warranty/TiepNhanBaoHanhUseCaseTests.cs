@@ -261,6 +261,38 @@ public class TiepNhanBaoHanhUseCaseTests
     }
 
     [Fact]
+    public async Task TiepNhanBaoHanh_KhachThanhVien_MapSangMaNguoiDung_ThanhCong()
+    {
+        // Sắp đặt
+        var baoHanhRepo = new FakeBaoHanhRepository();
+        var sanPhamRepo = new FakeSanPhamRepository();
+        var khachHangRepo = new FakeKhachHangRepository();
+
+        var kh = new KhachHang { MaKhachHang = "KH001", MaNguoiDung = "USER_KH001", HoTen = "Trần Văn An", SoDienThoai = "0912345678" };
+        khachHangRepo.Data[kh.MaKhachHang] = kh;
+
+        var sp = new SanPhamTrangSuc("SP001", "Nhẫn Kim Cương", "DM01", "Vàng trắng", "14", 10000000m, 15000000m, "DaBan");
+        sanPhamRepo.Data[sp.MaSanPham] = sp;
+
+        var useCase = new TiepNhanBaoHanhUseCase(baoHanhRepo, sanPhamRepo, khachHangRepo);
+        var request = new TaoBaoHanhDTO
+        {
+            MaKhachHang = "KH001", // Truyền mã khách hàng nghiệp vụ
+            MaSanPham = "SP001",
+            LyDoBaoHanh = "Gắn lại chấu đá",
+            SoDienThoai = "0912345678"
+        };
+
+        // Thực thi
+        var result = await useCase.ExecuteAsync(request);
+
+        // Kiểm tra: Đã tự động map sang USER_KH001 để khớp FK NguoiDung
+        Assert.True(result);
+        var ticket = baoHanhRepo.Data.Values.First();
+        Assert.Equal("USER_KH001", ticket.MaKhachHang);
+    }
+
+    [Fact]
     public void DangKyKhachHang_TuDongLienKetPhieuBaoHanhCu_CungSoDienThoai_BoQuaPhieuKhongCoSDT()
     {
         // Sắp đặt: Có 2 phiếu bảo hành khách vãng lai trước đó
