@@ -1,11 +1,11 @@
 
 
 
-Chức năng bảo hành đang lỗi ngay phần tạo phiếu bảo hành.
+// Đã hoàn tất toàn bộ các yêu cầu gần nhất (Sửa lỗi tạo phiếu bảo hành, Sửa tên nhóm đồng bộ SP, Hiển thị web theo nhóm).
 
-Thêm chức năng sửa tên nhóm sẽ thay đổi tên các sản phẩm trong nhóm. Bỏ chức năng thêm sản phẩm vào nhóm sẽ thay đổi tên sản phẩm.
 
-[web] khi sản phẩm có nhóm thì hiện nhóm, sản phẩm không có nhóm thì hiện tên sản phẩm
+
+
 
 //Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
 
