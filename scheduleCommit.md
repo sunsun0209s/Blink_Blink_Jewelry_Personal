@@ -28,9 +28,9 @@
 ## thành viên đã thực hiện:
 - qhy
 - sun
+- anhthy
 
 ## thành viên chưa thực hiện:
-- anhthy
 - tlinh
 
 ---
