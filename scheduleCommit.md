@@ -7,7 +7,7 @@
 
 ---
 ## LƯU Ý TIẾN ĐỘ THỰC HIỆN:
-## Khi thực hiện xong lần 2 hãy đánh dấu thay đổi chữ [chưa thực hiện] thành [đã hoàn thành] khi mà mọi thành viên đều đã thực hiện xong. Nhớ là khi thành viên nhóm thực hiện xong và AI agent đã chỉnh sửa nội dung file theo hướng dẫn hãy up file này lên github.
+## Khi thực hiện xong lần 3 hãy đánh dấu thay đổi chữ [chưa thực hiện] thành [đã hoàn thành] khi mà mọi thành viên đều đã thực hiện xong. Nhớ là khi thành viên nhóm thực hiện xong và AI agent đã chỉnh sửa nội dung file theo hướng dẫn hãy up file này lên github.
 ## Chỉ thực hiện việc commit và sửa thông tin thành viên hoàn thành theo hướng dẫn, không cần tự tạo ra schedule cho lần tiếp theo, việc này sẽ do nhóm trưởng làm khi mọi thành viên thực hiện xong.
 
 ## Lần 1 [đã hoàn thành]: dùng git checkout 7993495 commit này cho lần thực thi này.
@@ -24,33 +24,40 @@
 - tlinh
 - anhthy
 
+## Lần 3 [chưa thực hiện]: dùng git checkout 7c9daac commit này cho lần thực thi này.
+## thành viên đã thực hiện:
+
 ## thành viên chưa thực hiện:
+- qhy
+- sun
+- anhthy
+- tlinh
 
 ---
 
 # ========================================================
-# PHẦN A: KẾ HOẠCH COMMIT ĐỢT 2 (PHASE 2 - HIỆN TẠI ĐANG THỰC HIỆN)
+# PHẦN A: KẾ HOẠCH COMMIT ĐỢT 3 (PHASE 3 - HIỆN TẠI ĐANG THỰC HIỆN)
 # ========================================================
 
-## 1. MỐC ĐỒNG BỘ CƠ SỞ ĐỢT 2 (PHASE 2 BASELINE SNAPSHOT)
+## 1. MỐC ĐỒNG BỘ CƠ SỞ ĐỢT 3 (PHASE 3 BASELINE SNAPSHOT)
 
 > [!IMPORTANT]
-> **MỐC CHỐT ĐỒNG BỘ ĐỢT 2 (PHASE 2 TARGET)**
-> - **Mã Commit Baseline Bắt đầu:** `7993495` *(Mốc kết thúc Đợt 1)*
-> - **Mã Commit Baseline Đích (Personal HEAD):** `4ea7311`
-> - **Thời điểm chốt mốc:** Ngày **30/10/2026**
-> - **Mục đích:** Đưa toàn bộ các bổ sung tính năng mới nhất (Quản lý tồn kho thời gian thực, Khởi tạo tự động CSDL SQL Server, POS bán hàng trực tiếp Offline, Quản lý xóa tài khoản kèm ràng buộc chứng từ, Quy trình chi phí thực tế bảo hành) lên kho dự án chung của nhóm.
+> **MỐC CHỐT ĐỒNG BỘ ĐỢT 3 (PHASE 3 TARGET)**
+> - **Mã Commit Baseline Bắt đầu:** `4ea7311` *(Mốc kết thúc Đợt 2)*
+> - **Mã Commit Baseline Đích (Personal HEAD):** `7c9daac`
+> - **Thời điểm chốt mốc:** Ngày **07/11/2026**
+> - **Mục đích:** Đồng bộ các bổ sung tính năng mới nhất: Quản lý nhóm sản phẩm gộp size (`NhomSanPham`), Quy trình lập biên bản và đối chiếu kiểm kê tồn kho (`PhieuKiemKe`, `ChiTietKiemKe`), Tiếp nhận bảo hành cho khách vãng lai không bắt buộc số điện thoại và quy trình kỹ thuật 5 trạng thái, Tự động nâng cấp cấu trúc CSDL SQL Server qua `DatabaseHelper`, và chuẩn hóa toàn bộ sơ đồ kiến trúc Class Diagram cùng ERD `erm.xml`.
 
-### Cơ Chế Lọc Tệp Đợt 2:
-Toàn bộ 21 tệp mã nguồn sạch sẽ dưới đây được trích xuất thông qua lệnh:
+### Cơ Chế Lọc Tệp Đợt 3:
+Toàn bộ 25 tệp mã nguồn sạch sẽ dưới đây được trích xuất thông qua lệnh:
 ```bash
-git diff --name-only 7993495 4ea7311 -- src/BlinkBlink.Domain src/BlinkBlink.Application src/BlinkBlink.Infrastructure
+git diff --name-only 4ea7311 7c9daac -- src/BlinkBlink.Domain src/BlinkBlink.Application src/BlinkBlink.Infrastructure
 ```
-Những tệp không có chỉnh sửa giữa 2 mốc này được tự động loại bỏ 100%, bảo đảm không trùng lặp mã nguồn với Đợt 1.
+Những tệp không có chỉnh sửa giữa 2 mốc này được tự động loại bỏ 100%, bảo đảm không trùng lặp mã nguồn với Đợt 1 và Đợt 2.
 
 ---
 
-## 2. NGUYÊN TẮC VÀNG KHI COMMIT ĐỢT 2
+## 2. NGUYÊN TẮC VÀNG KHI COMMIT ĐỢT 3
 
 > [!WARNING]
 > **TUYỆT ĐỐI KHÔNG COMMIT BUILD ARTIFACTS / TỆP TẠM BIÊN DỊCH**
@@ -62,48 +69,48 @@ Những tệp không có chỉnh sửa giữa 2 mốc này được tự động
 >   - Chỉ add chính xác tệp cần commit: `git add <đường_dẫn_file>`.
 >   - **Tránh tuyệt đối** việc gõ lệnh `git add .` hoặc `git add -A` một cách cẩu thả.
 
-### Quy ước nhánh & Quy trình hoàn tất Đợt 2
-Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 2 duy nhất**:
-- **Cú pháp nhánh Đợt 2:** `feature/phase2-<tên_phân_hệ>-module`
+### Quy ước nhánh & Quy trình hoàn tất Đợt 3
+Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 3 duy nhất**:
+- **Cú pháp nhánh Đợt 3:** `feature/phase3-<tên_phân_hệ>-module`
 - **Quy trình 5 bước thực hiện:**
   1. Kéo code mới nhất từ main trên kho Team:
      ```bash
      git checkout main
      git pull origin main
      ```
-  2. Tạo và chuyển sang nhánh làm việc Đợt 2:
+  2. Tạo và chuyển sang nhánh làm việc Đợt 3:
      ```bash
-     git checkout -b feature/phase2-<tên_phân_hệ>-module
+     git checkout -b feature/phase3-<tên_phân_hệ>-module
      ```
-  3. Sao chép và add toàn bộ tệp thuộc phân hệ của mình ở Đợt 2.
+  3. Sao chép và add toàn bộ tệp thuộc phân hệ của mình ở Đợt 3.
   4. Thực hiện commit với thông điệp chuẩn Conventional Commit.
   5. Đẩy nhánh lên Remote Repository và mở Pull Request (PR):
      ```bash
-     git push origin feature/phase2-<tên_phân_hệ>-module
+     git push origin feature/phase3-<tên_phân_hệ>-module
      ```
 
 ---
 
-## 3. BẢNG MA TRẬN PHÂN CHIA TRÁCH NHIỆM ĐỢT 2 (21 TỆP)
+## 3. BẢNG MA TRẬN PHÂN CHIA TRÁCH NHIỆM ĐỢT 3 (25 TỆP)
 
-| Thành viên | Phân hệ nghiệp vụ cập nhật Đợt 2 | Thư mục Domain | Thư mục Application | Thư mục Infrastructure | Nhánh Làm Việc Đợt 2 |
+| Thành viên | Phân hệ nghiệp vụ cập nhật Đợt 3 | Thư mục Domain | Thư mục Application | Thư mục Infrastructure | Nhánh Làm Việc Đợt 3 |
 | :--- | :--- | :---: | :---: | :---: | :--- |
-| **`qhy`** | **Identity & Customers** (Tìm kiếm theo SĐT & Xóa tài khoản có ràng buộc chứng từ) | 2 tệp | 3 tệp | 2 tệp | `feature/phase2-identity-module` |
-| **`sun`** | **Catalog** (Bổ sung thuộc tính SoLuongTon & Quản lý tồn kho tự động thời gian thực) | 1 tệp | 0 tệp | 1 tệp | `feature/phase2-catalog-module` |
-| **`anhthy`** | **Cart, Orders & Foundation** (POS Bán hàng Offline, Chiết khấu & Tự khởi tạo CSDL) | 2 tệp | 3 tệp | 3 tệp | `feature/phase2-cart-orders-foundation-module` |
-| **`tlinh`** | **Warranty** (Phân định chi phí ước tính và chi phí thực tế cho quy trình bảo hành) | 1 tệp | 2 tệp | 1 tệp | `feature/phase2-warranty-module` |
+| **`sun`** | **Catalog & Product Groups** (Nhóm sản phẩm gộp size, lọc theo size và nhóm trang sức) | 4 tệp | 2 tệp | 2 tệp | `feature/phase3-catalog-groups-module` |
+| **`anhthy`** | **Inventory & Stock Audit** (Lập biên bản kiểm kê, đối chiếu sổ sách và chênh lệch tồn thực tế) | 4 tệp | 3 tệp | 2 tệp | `feature/phase3-inventory-audit-module` |
+| **`tlinh`** | **Warranty & Services** (Tiếp nhận bảo hành khách vãng lai, xử lý kỹ thuật 5 trạng thái) | 2 tệp | 3 tệp | 1 tệp | `feature/phase3-warranty-walkin-module` |
+| **`qhy`** | **Identity & Migration** (Khách hàng không bắt buộc SĐT & Tự động nâng cấp CSDL) | 0 tệp | 1 tệp | 1 tệp | `feature/phase3-identity-migration-module` |
 
 ---
 
-## 4. KẾ HOẠCH COMMIT CHI TIẾT THEO 4 THÀNH VIÊN ĐỢT 2
+## 4. KẾ HOẠCH COMMIT CHI TIẾT THEO 4 THÀNH VIÊN ĐỢT 3
 
 ```mermaid
 flowchart TD
-    subgraph Phase2Run["Đồng Bộ Mã Nguồn Đợt 2 Lên Dự Án Nhóm"]
-        A["qhy: Identity & Customers (Phase 2)"] -->|7 tệp| A_branch["feature/phase2-identity-module"]
-        B["sun: Catalog & Inventory (Phase 2)"] -->|2 tệp| B_branch["feature/phase2-catalog-module"]
-        C["anhthy: Cart, Orders & Data (Phase 2)"] -->|8 tệp| C_branch["feature/phase2-cart-orders-foundation-module"]
-        D["tlinh: Warranty Real Cost (Phase 2)"] -->|4 tệp| D_branch["feature/phase2-warranty-module"]
+    subgraph Phase3Run["Đồng Bộ Mã Nguồn Đợt 3 Lên Dự Án Nhóm"]
+        A["sun: Catalog & Product Groups (Phase 3)"] -->|8 tệp| A_branch["feature/phase3-catalog-groups-module"]
+        B["anhthy: Inventory & Stock Audit (Phase 3)"] -->|9 tệp| B_branch["feature/phase3-inventory-audit-module"]
+        C["tlinh: Warranty & Services (Phase 3)"] -->|6 tệp| C_branch["feature/phase3-warranty-walkin-module"]
+        D["qhy: Identity & Migration (Phase 3)"] -->|2 tệp| D_branch["feature/phase3-identity-migration-module"]
         A_branch --> PR["Pull Request gộp vào main"]
         B_branch --> PR
         C_branch --> PR
@@ -113,82 +120,182 @@ flowchart TD
 
 ---
 
-### 1. Thành viên `qhy` (Đợt 2)
-- **Phân hệ phụ trách:** **Identity & Khách hàng**
-- **Nghiệp vụ bổ sung:** Tra cứu tài khoản theo số điện thoại; kiểm tra ràng buộc chứng từ nghiệp vụ (hóa đơn, phiếu nhập) trước khi xóa tài khoản khách hàng và nhân viên.
-- **Nhánh làm việc duy nhất:** `feature/phase2-identity-module`
-- **Số lượng:** 7 tệp (Domain: 2, Application: 3, Infrastructure: 2)
+### 1. Thành viên `sun` (Đợt 3)
+- **Phân hệ phụ trách:** **Catalog & Nhóm sản phẩm gộp size**
+- **Nghiệp vụ bổ sung:** Xây dựng thực thể `NhomSanPham`, gom cụm các biến thể size trang sức dưới một mã nhóm chung; bổ sung truy vấn danh sách kích cỡ có sẵn và lọc sản phẩm theo nhóm.
+- **Nhánh làm việc duy nhất:** `feature/phase3-catalog-groups-module`
+- **Số lượng:** 8 tệp (Domain: 4, Application: 2, Infrastructure: 2)
 - **Danh sách tệp kèm ngày commit gốc tại Personal:**
-  - `src/BlinkBlink.Domain/Interfaces/IKhachHangRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Domain/Interfaces/INhanVienRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Identity/QuanLyKhachHangUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Identity/QuanLyNhanVienUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Infrastructure/Repositories/KhachHangRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Infrastructure/Repositories/NhanVienRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
+  - `src/BlinkBlink.Domain/Entities/Catalog/NhomSanPham.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Domain/Interfaces/INhomSanPhamRepository.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Domain/Interfaces/ISanPhamRepository.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Application/DTOs/Catalog/NhomSanPhamDTO.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Application/Services/Catalog/QuanLyNhomSanPhamUseCase.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Infrastructure/Repositories/NhomSanPhamRepository.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
+  - `src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs` *(Gốc: 2026-11-06 | `62e11d3`)*
 - **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase3-catalog-groups-module
+  git add src/BlinkBlink.Domain/Entities/Catalog/NhomSanPham.cs src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs src/BlinkBlink.Domain/Interfaces/INhomSanPhamRepository.cs src/BlinkBlink.Domain/Interfaces/ISanPhamRepository.cs src/BlinkBlink.Application/DTOs/Catalog/NhomSanPhamDTO.cs src/BlinkBlink.Application/Services/Catalog/QuanLyNhomSanPhamUseCase.cs src/BlinkBlink.Infrastructure/Repositories/NhomSanPhamRepository.cs src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs
+  git commit -m "feat(catalog): quan ly nhom san pham gom size va tich hop truy van theo size"
+  git push origin feature/phase3-catalog-groups-module
+  ```
+
+---
+
+### 2. Thành viên `anhthy` (Đợt 3)
+- **Phân hệ phụ trách:** **Kho hàng & Biên bản kiểm kê tồn kho**
+- **Nghiệp vụ bổ sung:** Xây dựng module Kiểm kê kho hàng (`PhieuKiemKe`, `ChiTietKiemKe`) đối chiếu số lượng tồn sổ sách với tồn thực tế; tính toán chênh lệch và cập nhật số liệu tồn kho; tối ưu hóa quy trình nhập kho xác định nhân viên nhập.
+- **Nhánh làm việc duy nhất:** `feature/phase3-inventory-audit-module`
+- **Số lượng:** 9 tệp (Domain: 4, Application: 3, Infrastructure: 2)
+- **Danh sách tệp kèm ngày commit gốc tại Personal:**
+  - `src/BlinkBlink.Domain/Entities/Inventory/PhieuKiemKe.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Domain/Entities/Inventory/PhieuNhapKho.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Domain/Interfaces/IPhieuKiemKeRepository.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Domain/Interfaces/IPhieuNhapKhoRepository.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/DTOs/Inventory/KiemKeDTO.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/Services/Inventory/QuanLyKiemKeUseCase.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/Services/Inventory/XacNhanNhapKhoUseCase.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Infrastructure/Repositories/PhieuKiemKeRepository.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Infrastructure/Repositories/PhieuNhapKhoRepositoryImpl.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase3-inventory-audit-module
+  git add src/BlinkBlink.Domain/Entities/Inventory/PhieuKiemKe.cs src/BlinkBlink.Domain/Entities/Inventory/PhieuNhapKho.cs src/BlinkBlink.Domain/Interfaces/IPhieuKiemKeRepository.cs src/BlinkBlink.Domain/Interfaces/IPhieuNhapKhoRepository.cs src/BlinkBlink.Application/DTOs/Inventory/KiemKeDTO.cs src/BlinkBlink.Application/Services/Inventory/QuanLyKiemKeUseCase.cs src/BlinkBlink.Application/Services/Inventory/XacNhanNhapKhoUseCase.cs src/BlinkBlink.Infrastructure/Repositories/PhieuKiemKeRepository.cs src/BlinkBlink.Infrastructure/Repositories/PhieuNhapKhoRepositoryImpl.cs
+  git commit -m "feat(inventory): tich hop quy trinh kiem ke kho va toi uu nhan vien nhap kho"
+  git push origin feature/phase3-inventory-audit-module
+  ```
+
+---
+
+### 3. Thành viên `tlinh` (Đợt 3)
+- **Phân hệ phụ trách:** **Dịch vụ & Tiếp nhận bảo hành khách vãng lai**
+- **Nghiệp vụ bổ sung:** Mở rộng tiếp nhận bảo hành cho khách hàng vãng lai (không bắt buộc số điện thoại); chuẩn hóa quy trình kỹ thuật viên xử lý bảo hành qua 5 trạng thái với chi phí thực tế minh bạch.
+- **Nhánh làm việc duy nhất:** `feature/phase3-warranty-walkin-module`
+- **Số lượng:** 6 tệp (Domain: 2, Application: 3, Infrastructure: 1)
+- **Danh sách tệp kèm ngày commit gốc tại Personal:**
+  - `src/BlinkBlink.Domain/Entities/Warranty/PhieuBaoHanh.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Domain/Interfaces/IBaoHanhRepository.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/DTOs/Warranty/TaoBaoHanhDTO.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/Services/Warranty/TiepNhanBaoHanhUseCase.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Application/Services/Warranty/XuLyBaoHanhUseCase.cs` *(Gốc: 2026-11-06 | `b03d4b2`)*
+  - `src/BlinkBlink.Infrastructure/Repositories/BaoHanhRepository.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase3-warranty-walkin-module
+  git add src/BlinkBlink.Domain/Entities/Warranty/PhieuBaoHanh.cs src/BlinkBlink.Domain/Interfaces/IBaoHanhRepository.cs src/BlinkBlink.Application/DTOs/Warranty/TaoBaoHanhDTO.cs src/BlinkBlink.Application/Services/Warranty/TiepNhanBaoHanhUseCase.cs src/BlinkBlink.Application/Services/Warranty/XuLyBaoHanhUseCase.cs src/BlinkBlink.Infrastructure/Repositories/BaoHanhRepository.cs
+  git commit -m "feat(warranty): tiep nhan bao hanh vang lai khong bat buoc sdt va quy trinh xu ly 5 trang thai"
+  git push origin feature/phase3-warranty-walkin-module
+  ```
+
+---
+
+### 4. Thành viên `qhy` (Đợt 3)
+- **Phân hệ phụ trách:** **Identity Khách hàng & Tự động Migration CSDL**
+- **Nghiệp vụ bổ sung:** Cho phép đăng ký khách hàng không bắt buộc số điện thoại (phục vụ khách vãng lai bảo hành hoặc mua tại quầy); nâng cấp `DatabaseHelper` tự động bổ sung cột `MaNhomSanPham`, bảng `NhomSanPham`, `PhieuKiemKe`, `ChiTietKiemKe` vào CSDL SQL Server khi khởi chạy.
+- **Nhánh làm việc duy nhất:** `feature/phase3-identity-migration-module`
+- **Số lượng:** 2 tệp (Domain: 0, Application: 1, Infrastructure: 1)
+- **Danh sách tệp kèm ngày commit gốc tại Personal:**
+  - `src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+  - `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs` *(Gốc: 2026-11-06 | `71aac07`)*
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase3-identity-migration-module
+  git add src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs
+  git commit -m "feat(identity-migration): cho phep so dien thoai rong cho khach vang lai va tu dong migration CSDL"
+  git push origin feature/phase3-identity-migration-module
+  ```
+
+---
+
+## 5. BẢNG TRA CỨU MỐC COMMIT GỐC CỦA TOÀN BỘ 25 TỆP ĐỢT 3 (AUDIT TRAIL PHASE 3)
+
+| STT | Tệp Mã Nguồn | Thư Mục | Ngày Commit Gốc | Mã Hash Gốc | Thành Viên Phụ Trách |
+| :---: | :--- | :--- | :---: | :---: | :---: |
+| 1 | `Entities/Catalog/NhomSanPham.cs` | Domain | 2026-11-06 | `62e11d3` | `sun` |
+| 2 | `Entities/Catalog/SanPhamTrangSuc.cs` | Domain | 2026-11-06 | `62e11d3` | `sun` |
+| 3 | `Entities/Inventory/PhieuKiemKe.cs` | Domain | 2026-11-06 | `71aac07` | `anhthy` |
+| 4 | `Entities/Inventory/PhieuNhapKho.cs` | Domain | 2026-11-06 | `71aac07` | `anhthy` |
+| 5 | `Entities/Warranty/PhieuBaoHanh.cs` | Domain | 2026-11-06 | `71aac07` | `tlinh` |
+| 6 | `Interfaces/IBaoHanhRepository.cs` | Domain | 2026-11-06 | `71aac07` | `tlinh` |
+| 7 | `Interfaces/INhomSanPhamRepository.cs` | Domain | 2026-11-06 | `62e11d3` | `sun` |
+| 8 | `Interfaces/IPhieuKiemKeRepository.cs` | Domain | 2026-11-06 | `71aac07` | `anhthy` |
+| 9 | `Interfaces/IPhieuNhapKhoRepository.cs` | Domain | 2026-11-06 | `71aac07` | `anhthy` |
+| 10 | `Interfaces/ISanPhamRepository.cs` | Domain | 2026-11-06 | `62e11d3` | `sun` |
+| 11 | `DTOs/Catalog/NhomSanPhamDTO.cs` | Application | 2026-11-06 | `62e11d3` | `sun` |
+| 12 | `DTOs/Inventory/KiemKeDTO.cs` | Application | 2026-11-06 | `71aac07` | `anhthy` |
+| 13 | `DTOs/Warranty/TaoBaoHanhDTO.cs` | Application | 2026-11-06 | `71aac07` | `tlinh` |
+| 14 | `Services/Catalog/QuanLyNhomSanPhamUseCase.cs` | Application | 2026-11-06 | `62e11d3` | `sun` |
+| 15 | `Services/Identity/DangKyKhachHangUseCase.cs` | Application | 2026-11-06 | `71aac07` | `qhy` |
+| 16 | `Services/Inventory/QuanLyKiemKeUseCase.cs` | Application | 2026-11-06 | `71aac07` | `anhthy` |
+| 17 | `Services/Inventory/XacNhanNhapKhoUseCase.cs` | Application | 2026-11-06 | `71aac07` | `anhthy` |
+| 18 | `Services/Warranty/TiepNhanBaoHanhUseCase.cs` | Application | 2026-11-06 | `71aac07` | `tlinh` |
+| 19 | `Services/Warranty/XuLyBaoHanhUseCase.cs` | Application | 2026-11-06 | `b03d4b2` | `tlinh` |
+| 20 | `Data/DatabaseHelper.cs` | Infrastructure | 2026-11-06 | `71aac07` | `qhy` |
+| 21 | `Repositories/BaoHanhRepository.cs` | Infrastructure | 2026-11-06 | `71aac07` | `tlinh` |
+| 22 | `Repositories/NhomSanPhamRepository.cs` | Infrastructure | 2026-11-06 | `62e11d3` | `sun` |
+| 23 | `Repositories/PhieuKiemKeRepository.cs` | Infrastructure | 2026-11-06 | `71aac07` | `anhthy` |
+| 24 | `Repositories/PhieuNhapKhoRepositoryImpl.cs` | Infrastructure | 2026-11-06 | `71aac07` | `anhthy` |
+| 25 | `Repositories/SanPhamRepository.cs` | Infrastructure | 2026-11-06 | `62e11d3` | `sun` |
+
+---
+
+## 6. CHECKLIST NGHIỆM THU ĐỢT 3
+
+Sau khi cả 4 thành viên hoàn thành commit Đợt 3 và merge nhánh của mình vào `main`:
+- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 3** của `src/BlinkBlink.Domain`.
+- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 3** của `src/BlinkBlink.Application`.
+- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 3** của `src/BlinkBlink.Infrastructure`.
+- [ ] **Không có bất kỳ tệp `bin/`, `obj/`, `.vs/` nào** lọt vào lịch sử commit trên GitHub.
+- [ ] Chạy lệnh `dotnet build` trên giải pháp `BlinkBlinkJewelry.slnx` thành công `0 Error(s), 0 Warning(s)` với Target Framework duy nhất `.NET 8 LTS`.
+- [ ] Chạy `dotnet test` đảm bảo toàn bộ bộ kiểm thử đơn vị và tích hợp đều đạt 100% Pass.
+
+---
+
+# ========================================================
+# PHẦN B: LỊCH SỬ ĐỒNG BỘ ĐỢT 2 (PHASE 2 ARCHIVE & AUDIT TRAIL)
+# ========================================================
+> [!NOTE]
+> Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 2 (Mốc snapshot `4ea7311`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.
+
+### Mốc Đồng Bộ Đợt 2 (Phase 2 Baseline Snapshot)
+- **Mã Commit Baseline Bắt đầu:** `7993495` *(Mốc kết thúc Đợt 1)*
+- **Mã Commit Baseline Đích (Personal):** `4ea7311`
+- **Thời điểm chốt mốc:** Ngày **30/10/2026**
+- **Trạng thái:** ĐÃ HOÀN THÀNH 100% (Cả 4 thành viên: `qhy`, `anhthy`, `sun`, `tlinh`).
+
+### Bảng Ma Trận Phân Chia Trách Nhiệm Đợt 2 (21 Tệp)
+| Thành viên | Phân hệ nghiệp vụ cập nhật Đợt 2 | Thư mục Domain | Thư mục Application | Thư mục Infrastructure | Nhánh Làm Việc Đợt 2 | Trạng Thái |
+| :--- | :--- | :---: | :---: | :---: | :--- | :---: |
+| **`qhy`** | **Identity & Customers** (Tìm kiếm theo SĐT & Xóa tài khoản có ràng buộc chứng từ) | 2 tệp | 3 tệp | 2 tệp | `feature/phase2-identity-module` | **Đã xong** |
+| **`sun`** | **Catalog** (Bổ sung thuộc tính SoLuongTon & Quản lý tồn kho tự động thời gian thực) | 1 tệp | 0 tệp | 1 tệp | `feature/phase2-catalog-module` | **Đã xong** |
+| **`anhthy`** | **Cart, Orders & Foundation** (POS Bán hàng Offline, Chiết khấu & Tự khởi tạo CSDL) | 2 tệp | 3 tệp | 3 tệp | `feature/phase2-cart-orders-foundation-module` | **Đã xong** |
+| **`tlinh`** | **Warranty** (Phân định chi phí ước tính và chi phí thực tế cho quy trình bảo hành) | 1 tệp | 2 tệp | 1 tệp | `feature/phase2-warranty-module` | **Đã xong** |
+
+### Lệnh Thực Hiện Đợt 2 Đã Dùng:
+- **`qhy` (Nhánh: `feature/phase2-identity-module`):**
   ```bash
   git checkout -b feature/phase2-identity-module
   git add src/BlinkBlink.Domain/Interfaces/IKhachHangRepository.cs src/BlinkBlink.Domain/Interfaces/INhanVienRepository.cs src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs src/BlinkBlink.Application/Services/Identity/QuanLyKhachHangUseCase.cs src/BlinkBlink.Application/Services/Identity/QuanLyNhanVienUseCase.cs src/BlinkBlink.Infrastructure/Repositories/KhachHangRepository.cs src/BlinkBlink.Infrastructure/Repositories/NhanVienRepository.cs
   git commit -m "feat(identity): cap nhat tim kiem theo sdt va xoa tai khoan kiem tra rang buoc chung tu"
   git push origin feature/phase2-identity-module
   ```
-
----
-
-### 2. Thành viên `sun` (Đợt 2)
-- **Phân hệ phụ trách:** **Catalog & Tồn kho sản phẩm**
-- **Nghiệp vụ bổ sung:** Thêm thuộc tính `SoLuongTon` vào thực thể sản phẩm và tích hợp câu truy vấn tự động tính tồn kho thời gian thực từ chênh lệch Nhập kho trừ Bán hàng.
-- **Nhánh làm việc duy nhất:** `feature/phase2-catalog-module`
-- **Số lượng:** 2 tệp (Domain: 1, Application: 0, Infrastructure: 1)
-- **Danh sách tệp kèm ngày commit gốc tại Personal:**
-  - `src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-- **Lệnh thực hiện 1 lần duy nhất:**
+- **`sun` (Nhánh: `feature/phase2-catalog-module`):**
   ```bash
   git checkout -b feature/phase2-catalog-module
   git add src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs
   git commit -m "feat(catalog): bo sung thuoc tinh SoLuongTon va truy van ton kho tu dong thoi gian thuc"
   git push origin feature/phase2-catalog-module
   ```
-
----
-
-### 3. Thành viên `anhthy` (Đợt 2)
-- **Phân hệ phụ trách:** **Giỏ hàng, Đơn hàng & Nền tảng Tự động CSDL**
-- **Nghiệp vụ bổ sung:** Bổ sung DTO và UseCase bán hàng trực tiếp POS Offline (`BanHangOfflineUseCase`), ghi nhận chiết khấu giảm giá tại thời điểm mua (`PhanTramGiamGia`), tích hợp cơ chế tự động khởi tạo CSDL SQL Server và tài khoản Admin mặc định khi chạy ứng dụng.
-- **Nhánh làm việc duy nhất:** `feature/phase2-cart-orders-foundation-module`
-- **Số lượng:** 8 tệp (Domain: 2, Application: 3, Infrastructure: 3)
-- **Danh sách tệp kèm ngày commit gốc tại Personal:**
-  - `src/BlinkBlink.Domain/Entities/Orders/ChiTietHoaDon.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Domain/Interfaces/IHoaDonRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/DTOs/Orders/TaoHoaDonOfflineDTO.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Orders/BanHangOfflineUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Orders/DatHangUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj` *(Gốc: 2026-10-26 | `db07c62`)*
-  - `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs` *(Gốc: 2026-10-26 | `db07c62`)*
-  - `src/BlinkBlink.Infrastructure/Repositories/HoaDonRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-- **Lệnh thực hiện 1 lần duy nhất:**
+- **`anhthy` (Nhánh: `feature/phase2-cart-orders-foundation-module`):**
   ```bash
   git checkout -b feature/phase2-cart-orders-foundation-module
   git add src/BlinkBlink.Domain/Entities/Orders/ChiTietHoaDon.cs src/BlinkBlink.Domain/Interfaces/IHoaDonRepository.cs src/BlinkBlink.Application/DTOs/Orders/TaoHoaDonOfflineDTO.cs src/BlinkBlink.Application/Services/Orders/BanHangOfflineUseCase.cs src/BlinkBlink.Application/Services/Orders/DatHangUseCase.cs src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs src/BlinkBlink.Infrastructure/Repositories/HoaDonRepository.cs
   git commit -m "feat(orders-data): tich hop UseCase ban hang POS offline va co che tu dong khoi tao CSDL"
   git push origin feature/phase2-cart-orders-foundation-module
   ```
-
----
-
-### 4. Thành viên `tlinh` (Đợt 2)
-- **Phân hệ phụ trách:** **Kho hàng & Dịch vụ Bảo hành**
-- **Nghiệp vụ bổ sung:** Chuẩn hóa quy trình bảo hành hai bước: Phân định rõ ràng giữa chi phí ước tính khi tiếp nhận và chi phí thực tế phát sinh khi kỹ thuật viên xử lý hoàn tất.
-- **Nhánh làm việc duy nhất:** `feature/phase2-warranty-module`
-- **Số lượng:** 4 tệp (Domain: 1, Application: 2, Infrastructure: 1)
-- **Danh sách tệp kèm ngày commit gốc tại Personal:**
-  - `src/BlinkBlink.Domain/Entities/Warranty/PhieuBaoHanh.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Warranty/TiepNhanBaoHanhUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Application/Services/Warranty/XuLyBaoHanhUseCase.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-  - `src/BlinkBlink.Infrastructure/Repositories/BaoHanhRepository.cs` *(Gốc: 2026-10-25 | `2f17bed`)*
-- **Lệnh thực hiện 1 lần duy nhất:**
+- **`tlinh` (Nhánh: `feature/phase2-warranty-module`):**
   ```bash
   git checkout -b feature/phase2-warranty-module
   git add src/BlinkBlink.Domain/Entities/Warranty/PhieuBaoHanh.cs src/BlinkBlink.Application/Services/Warranty/TiepNhanBaoHanhUseCase.cs src/BlinkBlink.Application/Services/Warranty/XuLyBaoHanhUseCase.cs src/BlinkBlink.Infrastructure/Repositories/BaoHanhRepository.cs
@@ -196,10 +303,7 @@ flowchart TD
   git push origin feature/phase2-warranty-module
   ```
 
----
-
-## 5. BẢNG TRA CỨU MỐC COMMIT GỐC CỦA TOÀN BỘ 21 TỆP ĐỢT 2 (AUDIT TRAIL PHASE 2)
-
+### Bảng Tra Cứu Mốc Commit Gốc Đợt 2 (Audit Trail 21 Tệp)
 | STT | Tệp Mã Nguồn | Thư Mục | Ngày Commit Gốc | Mã Hash Gốc | Thành Viên Phụ Trách |
 | :---: | :--- | :--- | :---: | :---: | :---: |
 | 1 | `Interfaces/IKhachHangRepository.cs` | Domain | 2026-10-25 | `2f17bed` | `qhy` |
@@ -226,20 +330,8 @@ flowchart TD
 
 ---
 
-## 6. CHECKLIST NGHIỆM THU ĐỢT 2
-
-Sau khi cả 4 thành viên hoàn thành commit Đợt 2 và merge nhánh của mình vào `main`:
-- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 2** của `src/BlinkBlink.Domain`.
-- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 2** của `src/BlinkBlink.Application`.
-- [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 2** của `src/BlinkBlink.Infrastructure`.
-- [ ] **Không có bất kỳ tệp `bin/`, `obj/`, `.vs/` nào** lọt vào lịch sử commit trên GitHub.
-- [ ] Chạy lệnh `dotnet build` trên giải pháp `BlinkBlinkJewelry.slnx` thành công `0 Error(s), 0 Warning(s)` với Target Framework duy nhất `.NET 8 LTS`.
-- [ ] Chạy `dotnet test` đảm bảo toàn bộ bộ kiểm thử đơn vị và tích hợp (35/35 test cases) đều đạt 100% Pass.
-
----
-
 # ========================================================
-# PHẦN B: LỊCH SỬ ĐỒNG BỘ ĐỢT 1 (PHASE 1 ARCHIVE & AUDIT TRAIL)
+# PHẦN C: LỊCH SỬ ĐỒNG BỘ ĐỢT 1 (PHASE 1 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 > [!NOTE]
 > Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 1 (Mốc snapshot `7993495`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.
