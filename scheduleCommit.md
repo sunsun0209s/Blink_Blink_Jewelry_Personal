@@ -26,9 +26,9 @@
 
 ## Lần 3 [chưa thực hiện]: dùng git checkout 7c9daac commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
+- qhy
 
 ## thành viên chưa thực hiện:
-- qhy
 - sun
 - anhthy
 - tlinh
