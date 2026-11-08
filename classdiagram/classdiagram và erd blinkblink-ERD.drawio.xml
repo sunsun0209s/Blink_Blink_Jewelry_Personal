@@ -33,7 +33,7 @@
           <mxGeometry height="23" width="245" y="72" as="geometry" />
         </mxCell>
         <mxCell id="ent_SanPhamTrangSuc" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#000000;fontFamily=Times New Roman;fontSize=12;fontColor=#000000;" value="dbo.SanPhamTrangSuc" vertex="1">
-          <mxGeometry height="333" width="285" x="200" as="geometry" />
+          <mxGeometry height="302" width="285" x="200" as="geometry" />
         </mxCell>
         <mxCell id="VfEEA_SSo6guztGJQfwj-10" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaSanPham: VARCHAR(50) [PK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="26" as="geometry" />
@@ -44,16 +44,16 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-12" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaDanhMuc: VARCHAR(50) [FK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="72" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-13" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ChatLieu: NVARCHAR(100) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-21" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaNhom: NVARCHAR(50) [NOT NULL, DEFAULT &#39;0&#39;]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="95" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-14" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ Size: NVARCHAR(20) [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-13" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ChatLieu: NVARCHAR(100) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="118" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-15" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ GiaNhap: DECIMAL(18,2) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-14" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ Size: NVARCHAR(20) [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="141" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-15_tyLeLoiNhuan" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TyLeLoiNhuan: DECIMAL(5,2) [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-15" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ GiaNhap: DECIMAL(18,2) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="164" as="geometry" />
         </mxCell>
         <mxCell id="VfEEA_SSo6guztGJQfwj-16" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ GiaBan: DECIMAL(18,2) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
@@ -68,11 +68,8 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-19" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ PhanTramGiamGia: INT [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="256" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-21" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaNhom: NVARCHAR(50) [FK, NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-15_tyLeLoiNhuan" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TyLeLoiNhuan: DECIMAL(5,2) [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="285" y="279" as="geometry" />
-        </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-20" parent="ent_SanPhamTrangSuc" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ SoLuongTon: INT [NOT NULL]&lt;/span&gt;&lt;/font&gt;" vertex="1">
-          <mxGeometry height="23" width="285" y="302" as="geometry" />
         </mxCell>
         <mxCell id="pkg_cart" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=1.5;verticalAlign=top;fontStyle=1;fontSize=14;fontFamily=Times New Roman;fontColor=#000000;spacingTop=6;" value="&lt;b&gt;Phân hệ Giỏ hàng trực tuyến&lt;/b&gt;" vertex="1">
           <mxGeometry height="220" width="650" x="700" y="40" as="geometry" />
@@ -110,7 +107,7 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-47" parent="ent_PhieuNhapKho" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaPhieuNhap: VARCHAR(50) [PK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="26" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-53" parent="ent_PhieuNhapKho" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayNhap: DATETIME [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-53" parent="ent_PhieuNhapKho" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayNhap: DATETIME2 [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="49" as="geometry" />
         </mxCell>
         <mxCell id="VfEEA_SSo6guztGJQfwj-54" parent="ent_PhieuNhapKho" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NhaCungCap: NVARCHAR(200) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
@@ -152,25 +149,25 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-63" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaPhieuKiemKe: VARCHAR(50) [PK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="26" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-64" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayKiemKe: DATETIME [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-64" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayKiemKe: DATETIME2 [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="49" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-65" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ViTriKiemKe: NVARCHAR(200) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-65" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ViTriKiemKe: NVARCHAR(150) [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="72" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-66" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TrangThai: NVARCHAR(50) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-67" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaNhanVienKho: VARCHAR(50) [FK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="95" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-67" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NguoiTao: VARCHAR(50) [FK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-66" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TrangThai: NVARCHAR(50) [NOT NULL, DEFAULT &#39;ChoDuyet&#39;]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="118" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-70" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NguoiDuyet: VARCHAR(50) [FK, NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-70" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TrangThaiDuyet: BIT [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="141" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-69" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayDuyet: DATETIME [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-68" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ GhiChu: NVARCHAR(500) [NULL]&lt;/span&gt;&lt;/font&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="164" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-68" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ GhiChu: NVARCHAR(500) [NULL]&lt;/span&gt;&lt;/font&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-69" parent="ent_PhieuKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayDuyet: DATETIME2 [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="235" y="187" as="geometry" />
         </mxCell>
         <mxCell id="ent_ChiTietKiemKe" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#000000;fontFamily=Times New Roman;fontSize=12;fontColor=#000000;" value="dbo.ChiTietKiemKe" vertex="1">
@@ -182,16 +179,16 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-72" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaSanPham: VARCHAR(50) [PK, FK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="265" y="49" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-73" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TonHeThong: INT [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-73" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TonSoSach: INT [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="265" y="72" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-74" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TonThucTe: INT [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-74" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ TonThucTe: INT [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="265" y="95" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-76" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ChenhLech: INT [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-76" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ ChenhLech: INT [NOT NULL, DEFAULT 0]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="265" y="118" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-75" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ LyDoChenhLech: NVARCHAR(500) [NULL]&lt;/span&gt;&lt;/font&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-75" parent="ent_ChiTietKiemKe" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ LyDoChenhLech: NVARCHAR(300) [NULL]&lt;/span&gt;&lt;/font&gt;" vertex="1">
           <mxGeometry height="23" width="265" y="141" as="geometry" />
         </mxCell>
         <mxCell id="pkg_access" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;verticalAlign=top;fontStyle=1;fontSize=14;fontFamily=Times New Roman;fontColor=#000000;spacingTop=6;" value="&lt;b&gt;Phân hệ Kiểm soát truy cập &amp;amp; Phân quyền&lt;/b&gt;" vertex="1">
@@ -266,7 +263,7 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-78" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaHoaDon: VARCHAR(50) [PK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="275" y="26" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-79" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayLap: DATETIME [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-79" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ NgayLap: DATETIME2 [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="275" y="49" as="geometry" />
         </mxCell>
         <mxCell id="VfEEA_SSo6guztGJQfwj-80" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaKhachHang: VARCHAR(50) [FK, NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
@@ -275,10 +272,10 @@
         <mxCell id="VfEEA_SSo6guztGJQfwj-81" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ MaNhanVien: VARCHAR(50) [FK, NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="275" y="95" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-89" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ DiaChiGiaoHang: NVARCHAR(500) [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-89" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ DiaChiGiaoHang: NVARCHAR(500) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="275" y="118" as="geometry" />
         </mxCell>
-        <mxCell id="VfEEA_SSo6guztGJQfwj-82" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ SoDienThoaiNhan: VARCHAR(20) [NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="VfEEA_SSo6guztGJQfwj-82" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ SoDienThoaiNhan: VARCHAR(20) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="23" width="275" y="141" as="geometry" />
         </mxCell>
         <mxCell id="VfEEA_SSo6guztGJQfwj-84" parent="ent_HoaDon" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=11;" value="&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;+ PhuongThucThanhToan: NVARCHAR(50) [NOT NULL]&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
