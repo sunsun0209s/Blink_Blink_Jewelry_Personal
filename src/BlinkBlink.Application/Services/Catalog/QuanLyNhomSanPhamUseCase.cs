@@ -65,7 +65,7 @@ public class QuanLyNhomSanPhamUseCase
 
     /// <summary>
     /// Cập nhật tên nhóm sản phẩm.
-    /// Quy ước: Thay đổi tên nhóm sẽ tự động cập nhật tên của tất cả sản phẩm trong nhóm.
+    /// Cho phép quản trị viên tùy chỉnh tên nhóm độc lập, không ghi đè tên riêng của các sản phẩm trong nhóm.
     /// </summary>
     public bool CapNhatTenNhom(string maNhom, string tenNhomMoi, string moTaMoi = "")
     {
@@ -77,14 +77,6 @@ public class QuanLyNhomSanPhamUseCase
         nhom.TenNhom = tenNhomMoi.Trim();
         if (!string.IsNullOrEmpty(moTaMoi)) nhom.MoTa = moTaMoi.Trim();
         _nhomRepo.CapNhatNhom(nhom);
-
-        // Đồng bộ tên của toàn bộ sản phẩm trong nhóm
-        var sanPhams = _sanPhamRepo.LayTheoNhom(maNhom);
-        foreach (var sp in sanPhams)
-        {
-            sp.TenSanPham = nhom.TenNhom;
-            _sanPhamRepo.LuuSanPham(sp);
-        }
 
         return true;
     }

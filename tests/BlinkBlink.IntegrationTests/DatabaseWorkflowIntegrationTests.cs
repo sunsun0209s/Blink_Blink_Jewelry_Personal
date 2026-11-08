@@ -162,14 +162,18 @@ public class DatabaseWorkflowIntegrationTests
             Assert.Equal(maNhomTest, spSauThem.MaNhom);
             Assert.Equal(tenSpGoc, spSauThem.TenSanPham); // Tên gốc KHÔNG được thay đổi
 
-            // 4. Sửa tên nhóm -> BẮT BUỘC đổi tên toàn bộ sản phẩm trong nhóm (theo dòng 6 CONGVIECTIEPTHEO.md)
+            // 4. Sửa tên nhóm -> Tùy chỉnh tên nhóm độc lập, giữ nguyên tên riêng của sản phẩm trong nhóm
             var tenNhomMoi = "Nhẫn Cưới Kim Cương Hoàng Gia Diamond Luxury";
             var okSuaTen = useCase.CapNhatTenNhom(maNhomTest, tenNhomMoi);
             Assert.True(okSuaTen, "Sửa tên nhóm phải thành công.");
 
+            var nhomDb = nhomRepo.TimTheoId(maNhomTest);
+            Assert.NotNull(nhomDb);
+            Assert.Equal(tenNhomMoi, nhomDb.TenNhom);
+
             var spSauSuaTen = await sanPhamRepo.TimTheoIdAsync(maSpTest);
             Assert.NotNull(spSauSuaTen);
-            Assert.Equal(tenNhomMoi, spSauSuaTen.TenSanPham); // Sản phẩm đã được đồng bộ đổi tên theo nhóm
+            Assert.Equal(tenSpGoc, spSauSuaTen.TenSanPham); // Tên sản phẩm được bảo toàn độc lập, không bị ghi đè
 
             // 5. Loại sản phẩm khỏi nhóm -> Mã nhóm trở về "0"
             var okLoai = useCase.LoaiSanPhamKhoiNhom(maSpTest);

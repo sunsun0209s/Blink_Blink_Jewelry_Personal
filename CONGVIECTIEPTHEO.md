@@ -1,10 +1,6 @@
 
 
 
-// Đã hoàn tất toàn bộ các yêu cầu gần nhất (Sửa lỗi tạo phiếu bảo hành, Sửa tên nhóm đồng bộ SP, Hiển thị web theo nhóm).
-
-
-
 
 
 //Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
@@ -57,3 +53,18 @@ Tôi muốn bạn lưu ý giả sử có phiếu kiểm kê chồng chéo lên n
 
 
 Tôi muốn phần nhập phiếu bảo hành nó cũng sẽ theo cơ chế ô search và combobox, tôi muốn xóa bỏ phần thông tin nhập sẵn trong modal tạo phiếu bảo hành đi, và cũng phải cho khách vãng lai không có tài khoản bảo hành, nhớ ghi nhận lại sdt của khách. Sau này khách tạo tài khoản thì ngoài đơn hàng được liên kết, phiếu bảo hành cũng được liên kết đến.
+
+
+// Đã hoàn tất toàn bộ các yêu cầu gần nhất (Sửa lỗi tạo phiếu bảo hành, Sửa tên nhóm đồng bộ SP, Hiển thị web theo nhóm).
+
+
+
+// Đã hoàn tất:
+// 1. Tùy chỉnh tên nhóm độc lập, bỏ việc đổi tên nhóm/các SP khác khi sửa 1 sản phẩm trong nhóm, hiển thị tên nhóm trên Web.
+// 2. ChiTietHoaDon ghi nhận % giảm giá tại thời điểm mua, đơn giá lưu giá gốc chưa giảm; chuẩn hóa HoaDon.TinhTongTien() và luồng bán Offline POS & Online Web.
+
+
+Phiếu nhập bây giờ tài khoản nhân viên kho chỉ có thể tạo phiếu nhập xong chờ admin duyệt phiếu thì mới tính vào tồn kho, thay đổi giá nhập bình quân. Để hủy một phiếu nhập đã được admin duyệt, phiếu nhập đó phải đáp ứng điều kiện, khi tồn kho trừ đi số lượng sản phẩm của phiếu nhập đó, tồn kho của sản phẩm bất kỳ trong phiếu nhập đó sau khi trừ không được âm.
+Thêm nút xóa phiếu tồn kho, điều kiện là phiếu đó chưa được admin phê duyệt, cả nhân viên và admin đều xài được.[yêu cầu mới]
+Bỏ đi tính năng chỉnh sửa phiếu kiểm kê chưa được phê duyệt đi, phiếu kiểm kê nếu lỗi thì xóa tạo lại chứ không cho sửa trên đó.[yêu cầu mới]
+Thay đổi cơ chế giá bán, tại trang sản phẩm, chi tiết sẩn phẩm, tùy chỉnh giá bằng %lợi nhuận thay vì nhập tay giá bán, mặc định khi tạo sản phẩm % lợi nhuận là 0%, ô giá bán sẽ bị khóa không cho nhập. giá bán sẽ được tính lại khi thay đổi tỉ lệ lợi nhuận, hoặc có phiếu nhập kho cho sản phẩm đó làm thay đổi giá nhập bình quân của sản phẩm, hoặc khi phiếu nhập kho bị vô hiệu hóa. Giá bán được tính theo công thức: Giá bán = giá nhập bình quân * (1 + tỷ lệ lợi nhuận). Vậy SanPhamTrangSuc cần bổ sung thêm TyLeLoiNhuan trong csdl.

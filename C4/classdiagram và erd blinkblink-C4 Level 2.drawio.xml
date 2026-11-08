@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="bqEW0iACZHuUooZwteZc" name="C4 Level 2">
+    <mxGraphModel dx="1949" dy="671" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" value="&lt;b&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;C4 - LEVEL 2: CONTAINER&lt;/font&gt;&lt;/b&gt;&lt;br&gt;Hệ thống Quản lý Bán và Kinh doanh Trang sức Blink Blink Jewelry" vertex="1">
+          <mxGeometry height="50" width="380" x="480" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="system_boundary" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;dashed=1;strokeWidth=2;fillColor=none;strokeColor=#1168BD;align=left;verticalAlign=top;spacingLeft=15;spacingTop=10;fontStyle=2;fontColor=#1168BD;" value=" " vertex="1">
+          <mxGeometry height="590" width="1050" x="260" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_customer" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052d54;fontColor=#ffffff;align=center;" value="&lt;b&gt;Khách hàng&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;Khách hàng duyệt xem bộ sưu tập và mua hàng online." vertex="1">
+          <mxGeometry height="110" width="180" x="-60" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_staff" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052d54;fontColor=#ffffff;align=center;" value="&lt;b&gt;Nhân viên &amp; Thu ngân&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;Nhân viên thu ngân bán hàng trực tiếp tại quầy và quản trị viên." vertex="1">
+          <mxGeometry height="110" width="180" x="-60" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_web" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;Web Storefront&lt;/b&gt;&lt;br&gt;[Container: Single-Page Application]&lt;br&gt;&lt;br&gt;Giao diện web bán lẻ phục vụ khách hàng duyệt xem sản phẩm, chọn size ni tay, quản lý giỏ hàng và đặt đơn trực tuyến.&lt;br&gt;&lt;i&gt;(HTML5, CSS3, JavaScript)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="150" width="240" x="290" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_api" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0b4884;fontColor=#ffffff;align=center;" value="&lt;b&gt;Backend RESTful API&lt;/b&gt;&lt;br&gt;[Container: ASP.NET Core Web API]&lt;br&gt;&lt;br&gt;Cung cấp các cổng giao tiếp API cho ứng dụng Web: xác thực, quản lý giỏ hàng, tra cứu sản phẩm và tiếp nhận đơn hàng online.&lt;br&gt;&lt;i&gt;(C#, .NET 8 LTS)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="150" width="240" x="740" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_winforms" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;Ứng dụng WinForms POS &amp; Quản trị&lt;/b&gt;&lt;br&gt;[Container: Windows Forms Desktop]&lt;br&gt;&lt;br&gt;Màn hình quản trị cho nhân viên: bán lẻ tại quầy POS, quét sản phẩm, quản lý danh mục, kho hàng và bảo hành.&lt;br&gt;&lt;i&gt;(C#, .NET 8 LTS Windows Forms)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="150" width="240" x="290" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_core" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0b4884;fontColor=#ffffff;align=center;" value="&lt;b&gt;Nghiệp vụ cốt lõi (Core Domain &amp;amp; Application)&lt;/b&gt;&lt;br&gt;[Container: C# Class Library]&lt;br&gt;&lt;br&gt;Chứa các Use Cases nghiệp vụ, Entity miền trang sức, tính toán giảm giá, snapshot đơn giá và tồn kho dùng chung cho cả Web API và WinForms.&lt;br&gt;&lt;i&gt;(Clean Architecture, .NET 8)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="150" width="240" x="740" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_db" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#2D882D;strokeColor=#1e5d1e;fontColor=#ffffff;align=center;" value="&lt;b&gt;Cơ sở dữ liệu Quan hệ&lt;/b&gt;&lt;br&gt;[Container: Microsoft SQL Server]&lt;br&gt;&lt;br&gt;Lưu trữ toàn bộ dữ liệu: Sản phẩm, tồn kho, đơn hàng, chi tiết hóa đơn, giỏ hàng, thông tin khách hàng và tài khoản nhân viên.&lt;br&gt;&lt;i&gt;(SQL Server, T-SQL, ADO.NET)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="200" width="160" x="1120" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_c_web" edge="1" parent="1" source="actor_customer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#08427B;" target="cont_web" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-1" connectable="0" parent="rel_c_web" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Truy cập và mua sắm&lt;/div&gt;&lt;div&gt;[HTTPS]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.1263" y="3" as="geometry">
+            <mxPoint x="-27" y="-42" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_web_api" edge="1" parent="1" source="cont_web" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#438DD5;" target="cont_api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-3" connectable="0" parent="rel_web_api" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="Gửi yêu cầu RESTful JSON&lt;br&gt;[JSON / HTTPS]" vertex="1">
+          <mxGeometry relative="1" x="0.0512" y="-2" as="geometry">
+            <mxPoint x="-5" y="-27" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_s_win" edge="1" parent="1" source="actor_staff" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#08427B;" target="cont_winforms" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-2" connectable="0" parent="rel_s_win" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Thao tác nghiệp vụ quầy&lt;/div&gt;&lt;div&gt;[Giao diện Windows UI]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.0013" y="4" as="geometry">
+            <mxPoint x="-15" y="-21" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_win_core" edge="1" parent="1" source="cont_winforms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#438DD5;" target="cont_core" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-4" connectable="0" parent="rel_win_core" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Gọi thực thi Use Case nội bộ&lt;/div&gt;&lt;div&gt;[In-process Method Calls]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.065" y="-1" as="geometry">
+            <mxPoint y="-26" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_api_core" edge="1" parent="1" source="cont_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="cont_core" value="Ủy quyền xử lý nghiệp vụ ca sử dụng&lt;br&gt;[In-process DI Method Calls]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_core_db" edge="1" parent="1" source="cont_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="cont_db" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-6" connectable="0" parent="rel_core_db" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Đọc và ghi dữ liệu giao dịch&lt;/div&gt;&lt;div&gt;[ADO.NET / SQL Client Port 1433]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0126" y="5" as="geometry">
+            <mxPoint x="25" y="69" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_api_db" edge="1" parent="1" source="cont_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="cont_db" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tbMfnKv5siFAmAeOCVis-5" connectable="0" parent="rel_api_db" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Truy vấn dữ liệu qua Repositories&lt;/div&gt;&lt;div&gt;[ADO.NET / SQL Client Port 1433]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0656" y="4" as="geometry">
+            <mxPoint x="26" y="-76" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

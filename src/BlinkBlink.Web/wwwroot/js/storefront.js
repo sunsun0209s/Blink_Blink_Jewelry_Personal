@@ -1610,6 +1610,16 @@ function renderCheckoutSummary() {
 
     container.innerHTML = cart.map(item => {
         const itemImg = (item.hinhAnh && item.hinhAnh.trim()) ? item.hinhAnh.trim() : '/images/hero-jewelry.jpg';
+        const hasDiscount = item.phanTramGiamGia && item.phanTramGiamGia > 0;
+        const origPrice = item.giaGoc || item.giaBan;
+        const priceDisplay = hasDiscount
+            ? `<div class="checkout-mini-price">
+                   <span style="text-decoration: line-through; font-size: 0.75rem; color: var(--text-muted); margin-right: 4px;">${formatCurrency(origPrice * item.soLuong)}</span>
+                   <span>${formatCurrency(item.giaBan * item.soLuong)}</span>
+                   <span class="product-status-tag sale" style="font-size: 0.65rem; padding: 1px 4px; margin-left: 4px; position: static;">-${item.phanTramGiamGia}%</span>
+               </div>`
+            : `<div class="checkout-mini-price">${formatCurrency(item.giaBan * item.soLuong)}</div>`;
+
         return `
         <div class="checkout-mini-item">
             <img src="${itemImg}" 
@@ -1619,9 +1629,9 @@ function renderCheckoutSummary() {
                  onerror="this.onerror=null; this.src='/images/hero-jewelry.jpg';" />
             <div class="checkout-mini-info">
                 <div class="checkout-mini-title">${item.tenSanPham}</div>
-                <div class="checkout-mini-meta">Số lượng: ${item.soLuong} • Size: ${item.kichCo || 'Tiêu chuẩn'}</div>
+                <div class="checkout-mini-meta">Số lượng: ${item.soLuong} • Size: ${item.size || item.kichCo || 'Tiêu chuẩn'}</div>
             </div>
-            <div class="checkout-mini-price">${formatCurrency(item.giaBan * item.soLuong)}</div>
+            ${priceDisplay}
         </div>
     `;
     }).join('');
@@ -2487,7 +2497,20 @@ function renderCustomerOrders(orders, user) {
             const rawImg = (sp.hinhAnh || sp.HinhAnh || ct.hinhAnh || ct.HinhAnh || '').trim();
             const img = rawImg !== '' ? rawImg : '/images/hero-jewelry.jpg';
             const qty = ct.soLuong || ct.SoLuong || 1;
-            const price = ct.donGia || ct.DonGia || 0;
+            const origPrice = ct.donGia || ct.DonGia || 0;
+            const discountPercent = ct.phanTramGiamGia !== undefined ? ct.phanTramGiamGia : (ct.PhanTramGiamGia || 0);
+            const discountedPrice = discountPercent > 0 ? (origPrice * (100 - discountPercent) / 100) : origPrice;
+
+            const priceDisplay = discountPercent > 0
+                ? `<div style="font-size: 0.78rem; color: var(--gold-hover); margin-top: 2px;">
+                       <span style="text-decoration: line-through; color: var(--text-muted); margin-right: 4px;">${formatCurrency(origPrice)}</span>
+                       <span style="font-weight: 600;">${formatCurrency(discountedPrice)}</span>
+                       <span class="product-status-tag sale" style="font-size: 0.65rem; padding: 1px 4px; margin-left: 4px; position: static; display: inline-block;">-${discountPercent}%</span>
+                       <span style="color: var(--text-muted);"> × ${qty}</span>
+                   </div>`
+                : `<div style="font-size: 0.78rem; color: var(--gold-hover); margin-top: 2px;">
+                       ${formatCurrency(origPrice)} × ${qty}
+                   </div>`;
 
             return `
                 <div class="order-mini-product">
@@ -2495,15 +2518,14 @@ function renderCustomerOrders(orders, user) {
                     <div class="order-mini-info">
                         <div style="font-weight: 600; color: var(--dark-obsidian);">${prodName}</div>
                         <div style="font-size: 0.75rem; color: var(--text-muted);">${material}</div>
-                        <div style="font-size: 0.78rem; color: var(--gold-hover); margin-top: 2px;">
-                            ${formatCurrency(price)} × ${qty}
-                        </div>
+                        ${priceDisplay}
                     </div>
                 </div>
             `;
         }).join('');
 
         const finalTotal = order.tongThanhToan !== undefined ? order.tongThanhToan : (order.tongTien || 0);
+        const origTotal = order.tongTienHang !== undefined ? order.tongTienHang : (finalTotal + (order.tienGiamGia || 0));
         const discount = order.tienGiamGia || 0;
         const address = order.diaChiGiaoHang || order.diaChi || 'Nhận tại xưởng Blink Blink';
         const phone = order.soDienThoaiNhan || order.soDienThoai || '';
@@ -2526,7 +2548,8 @@ function renderCustomerOrders(orders, user) {
                 <div><strong>Nơi nhận:</strong> ${address}</div>
                 ${phone ? `<div><strong>Điện thoại:</strong> ${phone}</div>` : ''}
                 <div><strong>Phương thức:</strong> ${payment}</div>
-                ${discount > 0 ? `<div style="color: #2E7D32;"><strong>Ưu đãi:</strong> -${formatCurrency(discount)}</div>` : ''}
+                ${origTotal > finalTotal ? `<div><strong>Tổng tiền gốc:</strong> ${formatCurrency(origTotal)}</div>` : ''}
+                ${discount > 0 ? `<div style="color: #2E7D32;"><strong>Ưu đãi giảm giá SP:</strong> -${formatCurrency(discount)}</div>` : ''}
             </div>
 
             <div class="order-foot-row">

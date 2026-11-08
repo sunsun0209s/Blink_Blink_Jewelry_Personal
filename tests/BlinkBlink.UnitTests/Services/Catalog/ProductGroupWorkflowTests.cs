@@ -154,7 +154,7 @@ public class ProductGroupWorkflowTests
     }
 
     [Fact]
-    public void CapNhatNhom_DongBoTenToanBoSanPhamTrongNhom()
+    public void CapNhatNhom_TuyChinhTenNhomDocLap_KhongGhiDeTenSanPhamTrongNhom()
     {
         var nhomRepo = new FakeNhomSanPhamRepository();
         var spRepo = new FakeSanPhamRepository();
@@ -163,16 +163,19 @@ public class ProductGroupWorkflowTests
         var nhom = new NhomSanPham("NHOM01", "Tên Nhóm Cũ", "");
         nhomRepo.LuuNhom(nhom);
 
-        var sp1 = new SanPhamTrangSuc("SP01", "Tên Nhóm Cũ", "DM01", "Vàng 18K", "Size 14", 1000m, 2000m, "SanSang", "", 0, "NHOM01");
-        var sp2 = new SanPhamTrangSuc("SP02", "Tên Nhóm Cũ", "DM01", "Vàng 18K", "Size 15", 1000m, 2000m, "SanSang", "", 0, "NHOM01");
+        var sp1 = new SanPhamTrangSuc("SP01", "Nhẫn Kim Cương Size 14", "DM01", "Vàng 18K", "Size 14", 1000m, 2000m, "SanSang", "", 0, "NHOM01");
+        var sp2 = new SanPhamTrangSuc("SP02", "Nhẫn Kim Cương Size 15", "DM01", "Vàng 18K", "Size 15", 1000m, 2000m, "SanSang", "", 0, "NHOM01");
         spRepo.LuuSanPham(sp1);
         spRepo.LuuSanPham(sp2);
 
+        // Cập nhật tên nhóm tùy chỉnh mới
         useCase.CapNhatTenNhom("NHOM01", "Tên Nhóm Mới Thượng Hạng");
 
+        // Nhóm đổi tên thành công
         Assert.Equal("Tên Nhóm Mới Thượng Hạng", nhomRepo.TimTheoId("NHOM01")?.TenNhom);
-        Assert.Equal("Tên Nhóm Mới Thượng Hạng", spRepo.TimTheoId("SP01")?.TenSanPham);
-        Assert.Equal("Tên Nhóm Mới Thượng Hạng", spRepo.TimTheoId("SP02")?.TenSanPham);
+        // Tên của các sản phẩm con được giữ nguyên độc lập, không bị ghi đè
+        Assert.Equal("Nhẫn Kim Cương Size 14", spRepo.TimTheoId("SP01")?.TenSanPham);
+        Assert.Equal("Nhẫn Kim Cương Size 15", spRepo.TimTheoId("SP02")?.TenSanPham);
     }
 
     [Fact]

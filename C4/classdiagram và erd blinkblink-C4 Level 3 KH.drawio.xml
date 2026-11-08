@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="lSNAmi18w-6pYJhF8_gL" name="C4 Level 3 KH">
+    <mxGraphModel dx="1760" dy="558" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;C4 - LEVEL 3: COMPONENT DIAGRAM&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;b&gt;Quy trình nghiệp vụ Khách hàng: Đặt hàng trực tuyến (Online Ordering)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="430" x="370" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_web" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;Web Storefront (SPA)&lt;/b&gt;&lt;br&gt;[Container: JavaScript/HTML]&lt;br&gt;&lt;br&gt;Màn hình Modal Đặt hàng &amp; Thanh toán gửi JSON request chứa thông tin người nhận và giỏ hàng." vertex="1">
+          <mxGeometry height="130" width="200" x="-135" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary_api" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;dashed=1;strokeWidth=2;fillColor=none;strokeColor=#1168BD;align=center;verticalAlign=top;spacingLeft=15;spacingTop=10;fontStyle=2;fontColor=#1168BD;" value="Backend RESTful API &amp;amp; Application Core [Container: ASP.NET Core &amp;amp; Clean Architecture .NET 8]" vertex="1">
+          <mxGeometry height="630" width="730" x="270" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="comp_ctrl" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;BanHangController&lt;/b&gt;&lt;br&gt;[Component: ASP.NET Core Controller]&lt;br&gt;&lt;br&gt;Nhận request HTTP POST /api/BanHang/DatHang, bind dữ liệu vào DatHangDTO, chuyển giao xử lý cho DatHangUseCase và trả về HTTP response." vertex="1">
+          <mxGeometry height="140" width="230" x="310" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="comp_usecase" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0b4884;fontColor=#ffffff;align=center;" value="&lt;b&gt;DatHangUseCase&lt;/b&gt;&lt;br&gt;[Component: Application Use Case]&lt;br&gt;&lt;br&gt;Thực thi quy tắc nghiệp vụ đặt hàng online: khởi tạo mã hóa đơn tự sinh, bóc tách danh sách sản phẩm từ giỏ hàng, áp dụng giảm giá, gọi tính tổng tiền và điều phối lưu hóa đơn." vertex="1">
+          <mxGeometry height="140" width="250" x="720" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="comp_repo_gh" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;GioHangRepository&lt;/b&gt;&lt;br&gt;[Component: Infrastructure Repository]&lt;br&gt;&lt;br&gt;Hiện thực IGioHangRepository: đọc nội dung giỏ hàng của khách hàng từ CSDL và thực hiện dọn dẹp giỏ hàng sau khi đặt hàng thành công." vertex="1">
+          <mxGeometry height="120" width="250" x="310" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="comp_repo_hd" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2e6295;fontColor=#ffffff;align=center;" value="&lt;b&gt;HoaDonRepository&lt;/b&gt;&lt;br&gt;[Component: Infrastructure Repository]&lt;br&gt;&lt;br&gt;Hiện thực IHoaDonRepository: lưu thông tin đơn hàng mới vào bảng HoaDon và các dòng snapshot sản phẩm vào ChiTietHoaDon." vertex="1">
+          <mxGeometry height="120" width="250" x="610" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="comp_dbhelper" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#85B8DC;strokeColor=#438DD5;fontColor=#000000;align=center;" value="&lt;b&gt;DatabaseHelper&lt;/b&gt;&lt;br&gt;[Component: Data Access Helper]&lt;br&gt;&lt;br&gt;Quản lý kết nối SqlConnection, SqlTransaction, thực thi các câu lệnh T-SQL với tham số an toàn (Parameters) chống tấn công SQL Injection." vertex="1">
+          <mxGeometry height="100" width="230" x="470" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_db" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#2D882D;strokeColor=#1e5d1e;fontColor=#ffffff;align=center;" value="&lt;b&gt;Cơ sở dữ liệu Quan hệ&lt;/b&gt;&lt;br&gt;[Container: SQL Server]&lt;br&gt;&lt;br&gt;Các bảng: HoaDon, ChiTietHoaDon, GioHang, ChiTietGioHang, SanPhamTrangSuc." vertex="1">
+          <mxGeometry height="230" width="180" x="1061" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" edge="1" parent="1" source="cont_web" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#08427B;" target="comp_ctrl" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-1" connectable="0" parent="rel1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;HTTP POST /api/BanHang/DatHang&lt;/div&gt;&lt;div&gt;[JSON / HTTPS]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.0131" y="-5" as="geometry">
+            <mxPoint x="-16" y="-30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2" edge="1" parent="1" source="comp_ctrl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="comp_usecase" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-2" connectable="0" parent="rel2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Gọi Execute(DatHangDTO)&lt;/div&gt;&lt;div&gt;[In-process Call]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.0933" y="1" as="geometry">
+            <mxPoint x="-1" y="-29" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel3" edge="1" parent="1" source="comp_usecase" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="comp_repo_gh" value="">
+          <mxGeometry relative="1" x="-0.0011" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="375" />
+              <mxPoint x="710" y="422.5" />
+              <mxPoint x="435" y="422.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-4" connectable="0" parent="rel3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;LayGioHang(maKH),&lt;/div&gt;&lt;div&gt;CapNhatGioHang(gh)&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.1474" y="-2" as="geometry">
+            <mxPoint x="4" y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel4" edge="1" parent="1" source="comp_usecase" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="comp_repo_hd" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-3" connectable="0" parent="rel4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;LuuHoaDon(HoaDon)&lt;/div&gt;&lt;div&gt;kèm danh sách ChiTiet&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0771" y="-3" as="geometry">
+            <mxPoint y="21" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel5" edge="1" parent="1" source="comp_repo_gh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#438DD5;" target="comp_dbhelper" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-5" connectable="0" parent="rel5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="Thực thi T-SQL" vertex="1">
+          <mxGeometry relative="1" x="-0.0551" y="1" as="geometry">
+            <mxPoint x="-46" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel6" edge="1" parent="1" source="comp_repo_hd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1.004;entryY=0.205;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#438DD5;entryPerimeter=0;" target="comp_dbhelper" value="">
+          <mxGeometry relative="1" x="0.3004" as="geometry">
+            <Array as="points">
+              <mxPoint x="735" y="660.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-6" connectable="0" parent="rel6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="Thực thi T-SQL" vertex="1">
+          <mxGeometry relative="1" x="-0.1968" y="-5" as="geometry">
+            <mxPoint x="50" y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel7" edge="1" parent="1" source="comp_dbhelper" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#2D882D;" target="cont_db" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QpvATt2iWNcB2xX5VYGe-7" connectable="0" parent="rel7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="&lt;div&gt;Ghi nhận đơn và dọn giỏ hàng&lt;/div&gt;&lt;div&gt;[T-SQL / TCP Port 1433]&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0228" y="-2" as="geometry">
+            <mxPoint x="-74" y="-22" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

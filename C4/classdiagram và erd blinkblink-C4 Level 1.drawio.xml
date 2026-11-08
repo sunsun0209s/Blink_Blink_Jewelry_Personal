@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="Ejx4sojzqN0a-cgwEvNT" name="C4 Level 1">
+    <mxGraphModel dx="1334" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" value="&lt;b&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;C4 - LEVEL 1: SYSTEM CONTEXT&lt;/font&gt;&lt;/b&gt;&lt;br&gt;Hệ thống Quản lý Bán và Kinh doanh Trang sức Blink Blink Jewelry" vertex="1">
+          <mxGeometry height="50" width="380" x="680" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_customer" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052d54;fontColor=#ffffff;align=center;" value="&lt;b&gt;Khách hàng&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;Người tiêu dùng có nhu cầu tìm kiếm, tham khảo thông tin sản phẩm và đặt mua trang sức trực tuyến." vertex="1">
+          <mxGeometry height="130" width="220" x="80" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_staff" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052d54;fontColor=#ffffff;align=center;" value="&lt;b&gt;Nhân viên &amp; Quản trị viên&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;Nhân viên thu ngân, thủ kho và quản lý cửa hàng vận hành bán lẻ tại quầy, quản lý danh mục và kho hàng." vertex="1">
+          <mxGeometry height="130" width="220" x="80" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="system_blinkblink" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0b4884;fontColor=#ffffff;align=center;" value="&lt;b&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Hệ thống Quản lý Bán Trang sức Blink Blink Jewelry&lt;/font&gt;&lt;/b&gt;&lt;br&gt;[Software System]&lt;br&gt;&lt;br&gt;Cung cấp đầy đủ tính năng tra cứu danh mục, mua sắm trực tuyến, bán hàng tại quầy POS, quản lý xuất nhập tồn kho và chăm sóc khách hàng hậu mãi." vertex="1">
+          <mxGeometry height="195" width="300" x="720" y="307.5" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_payment" parent="1" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#ffffff;align=center;" value="&lt;b&gt;Hệ thống Thanh toán Ngân hàng / VietQR&lt;/b&gt;&lt;br&gt;[External System]&lt;br&gt;&lt;br&gt;Dịch vụ bên ngoài hỗ trợ quét mã QR chuyển khoản và đối soát thanh toán giao dịch." vertex="1">
+          <mxGeometry height="130" width="220" x="1370" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_cust_sys" edge="1" parent="1" source="actor_customer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;strokeWidth=2;" target="system_blinkblink" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-ab9QXFMqMOCvv_Ch2Mj-1" connectable="0" parent="rel_cust_sys" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontStyle,textOpacity,labelBorderWidth,labelPadding;fontColor=default;labelBorderColor=none;labelBackgroundColor=none;" value="Xem danh mục sản phẩm, quản lý giỏ hàng, đặt mua trang sức&lt;br&gt;[HTTPS]" vertex="1">
+          <mxGeometry relative="1" x="0.0107" y="-1" as="geometry">
+            <mxPoint x="-29" y="-53" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_staff_sys" edge="1" parent="1" source="actor_staff" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#08427B;" target="system_blinkblink" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-ab9QXFMqMOCvv_Ch2Mj-2" connectable="0" parent="rel_staff_sys" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="Lập hóa đơn POS tại quầy, quản lý danh mục, kiểm kê kho&lt;br&gt;[TCP / Mạng nội bộ]" vertex="1">
+          <mxGeometry relative="1" x="-0.0086" y="2" as="geometry">
+            <mxPoint x="-28" y="58" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_sys_pay" edge="1" parent="1" source="system_blinkblink" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1168BD;" target="ext_payment" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-ab9QXFMqMOCvv_Ch2Mj-3" connectable="0" parent="rel_sys_pay" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=fontFamily,fontSize,fontColor,fontStyle,textOpacity,labelBorderColor,labelBorderWidth,labelPadding;labelBackgroundColor=none;" value="Hiển thị mã QR thanh toán và xác nhận trạng thái chuyển khoản&lt;br&gt;[HTTPS / API]" vertex="1">
+          <mxGeometry relative="1" x="-0.0298" as="geometry">
+            <mxPoint x="14" y="-35" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

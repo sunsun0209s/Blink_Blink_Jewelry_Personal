@@ -76,14 +76,14 @@ GO
 
 -- 8. Nạp hóa đơn bán hàng thực tế
 INSERT INTO dbo.HoaDon (MaHoaDon, NgayLap, MaKhachHang, MaNhanVien, DiaChiGiaoHang, SoDienThoaiNhan, PhuongThucThanhToan, TrangThaiDonHang, TongTienHang, TienGiamGia, TongThanhToan, GhiChu) VALUES
-('HD1001', '2026-03-10 14:15:00', 'USER_KH001', 'USER_NV001', N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'DaGiao', 28500000, 1000000, 27500000, N'Khách mua kỷ niệm ngày cưới, đóng gói hộp nhung cao cấp'),
+('HD1001', '2026-03-10 14:15:00', 'USER_KH001', 'USER_NV001', N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'DaGiao', 28500000, 2850000, 25650000, N'Khách mua kỷ niệm ngày cưới, đóng gói hộp nhung cao cấp'),
 ('HD1002', '2026-03-15 16:45:00', 'USER_KH002', 'USER_NV001', N'128 Hai Bà Trưng, Phường Đa Kao, Quận 1, TP.HCM', '0977223344', N'TheNganHang', N'DaGiao', 19200000, 0, 19200000, N'Giao hàng hỏa tốc trong ngày'),
-('HD1003', '2026-03-20 10:20:00', 'USER_KH001', NULL, N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'ChoDuyet', 34000000, 0, 34000000, N'Khách đặt trực tuyến qua cổng Web khách hàng');
+('HD1003', '2026-03-20 10:20:00', 'USER_KH001', NULL, N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'ChoDuyet', 34000000, 5100000, 28900000, N'Khách đặt trực tuyến qua cổng Web khách hàng');
 
-INSERT INTO dbo.ChiTietHoaDon (SoHoaDon, MaSanPham, DonGia, SoLuong) VALUES
-('HD1001', 'SP001', 28500000, 1),
-('HD1002', 'SP002', 19200000, 1),
-('HD1003', 'SP003', 34000000, 1);
+INSERT INTO dbo.ChiTietHoaDon (SoHoaDon, MaSanPham, DonGia, SoLuong, PhanTramGiamGia) VALUES
+('HD1001', 'SP001', 28500000, 1, 10),
+('HD1002', 'SP002', 19200000, 1, 0),
+('HD1003', 'SP003', 34000000, 1, 15);
 GO
 
 -- 9. Nạp giỏ hàng trực tuyến mẫu cho khách hàng

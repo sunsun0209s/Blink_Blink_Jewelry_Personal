@@ -46,13 +46,14 @@ public class SanPhamRepository : ISanPhamRepository
                     TrangThai = @TrangThai,
                     HinhAnh = @HinhAnh,
                     PhanTramGiamGia = @PhanTramGiamGia,
-                    MaNhom = @MaNhom
+                    MaNhom = @MaNhom,
+                    TyLeLoiNhuan = @TyLeLoiNhuan
                 WHERE MaSanPham = @MaSanPham;
             END
             ELSE
             BEGIN
-                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia, MaNhom)
-                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai, @HinhAnh, @PhanTramGiamGia, @MaNhom);
+                INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia, MaNhom, TyLeLoiNhuan)
+                VALUES (@MaSanPham, @TenSanPham, @MaDanhMuc, @ChatLieu, @Size, @GiaNhap, @GiaBan, @TrangThai, @HinhAnh, @PhanTramGiamGia, @MaNhom, @TyLeLoiNhuan);
             END";
 
         var parameters = new[]
@@ -67,7 +68,8 @@ public class SanPhamRepository : ISanPhamRepository
             new SqlParameter("@TrangThai", SqlDbType.NVarChar, 50) { Value = sp.TrangThai },
             new SqlParameter("@HinhAnh", SqlDbType.NVarChar, 500) { Value = (object?)sp.HinhAnh ?? DBNull.Value },
             new SqlParameter("@PhanTramGiamGia", SqlDbType.Int) { Value = sp.PhanTramGiamGia },
-            new SqlParameter("@MaNhom", SqlDbType.NVarChar, 50) { Value = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom }
+            new SqlParameter("@MaNhom", SqlDbType.NVarChar, 50) { Value = string.IsNullOrWhiteSpace(sp.MaNhom) ? "0" : sp.MaNhom },
+            new SqlParameter("@TyLeLoiNhuan", SqlDbType.Decimal) { Precision = 5, Scale = 2, Value = sp.TyLeLoiNhuan }
         };
 
         _dbHelper.ExecuteNonQuery(sql, parameters);
@@ -81,10 +83,10 @@ public class SanPhamRepository : ISanPhamRepository
         }
 
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom, s.TyLeLoiNhuan,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc,
                    n.TenNhom, n.MoTa AS MoTaNhom,
-                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk WHERE nk.MaSanPham = s.MaSanPham), 0)
+                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk INNER JOIN dbo.PhieuNhapKho pn ON nk.MaPhieuNhap = pn.MaPhieuNhap WHERE nk.MaSanPham = s.MaSanPham AND (pn.TrangThai = 'DaDuyet' OR pn.TrangThai = '1')), 0)
                     - ISNULL((SELECT SUM(chd.SoLuong) FROM dbo.ChiTietHoaDon chd INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon WHERE chd.MaSanPham = s.MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'), 0)) AS SoLuongTonKho
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -108,10 +110,10 @@ public class SanPhamRepository : ISanPhamRepository
     {
         var list = new List<SanPhamTrangSuc>();
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom, s.TyLeLoiNhuan,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc,
                    n.TenNhom, n.MoTa AS MoTaNhom,
-                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk WHERE nk.MaSanPham = s.MaSanPham), 0)
+                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk INNER JOIN dbo.PhieuNhapKho pn ON nk.MaPhieuNhap = pn.MaPhieuNhap WHERE nk.MaSanPham = s.MaSanPham AND (pn.TrangThai = 'DaDuyet' OR pn.TrangThai = '1')), 0)
                     - ISNULL((SELECT SUM(chd.SoLuong) FROM dbo.ChiTietHoaDon chd INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon WHERE chd.MaSanPham = s.MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'), 0)) AS SoLuongTonKho
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -136,10 +138,10 @@ public class SanPhamRepository : ISanPhamRepository
         if (string.IsNullOrWhiteSpace(maNhom)) return list;
 
         const string sql = @"
-            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom,
+            SELECT s.MaSanPham, s.TenSanPham, s.MaDanhMuc, s.ChatLieu, s.Size, s.GiaNhap, s.GiaBan, s.TrangThai, s.HinhAnh, s.PhanTramGiamGia, s.MaNhom, s.TyLeLoiNhuan,
                    d.TenDanhMuc, d.MoTa AS MoTaDanhMuc,
                    n.TenNhom, n.MoTa AS MoTaNhom,
-                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk WHERE nk.MaSanPham = s.MaSanPham), 0)
+                   (ISNULL((SELECT SUM(nk.SoLuong) FROM dbo.ChiTietNhapKho nk INNER JOIN dbo.PhieuNhapKho pn ON nk.MaPhieuNhap = pn.MaPhieuNhap WHERE nk.MaSanPham = s.MaSanPham AND (pn.TrangThai = 'DaDuyet' OR pn.TrangThai = '1')), 0)
                     - ISNULL((SELECT SUM(chd.SoLuong) FROM dbo.ChiTietHoaDon chd INNER JOIN dbo.HoaDon hd ON chd.SoHoaDon = hd.MaHoaDon WHERE chd.MaSanPham = s.MaSanPham AND hd.TrangThaiDonHang != 'DaHuy'), 0)) AS SoLuongTonKho
             FROM dbo.SanPhamTrangSuc s
             LEFT JOIN dbo.DanhMuc d ON s.MaDanhMuc = d.MaDanhMuc
@@ -211,6 +213,20 @@ public class SanPhamRepository : ISanPhamRepository
             // Tránh lỗi nếu truy vấn không select cột PhanTramGiamGia
         }
 
+        var tyLeLoiNhuan = 0m;
+        try
+        {
+            var ordMargin = reader.GetOrdinal("TyLeLoiNhuan");
+            if (!reader.IsDBNull(ordMargin))
+            {
+                tyLeLoiNhuan = reader.GetDecimal(ordMargin);
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            // Tránh lỗi nếu truy vấn không select cột TyLeLoiNhuan
+        }
+
         var sp = new SanPhamTrangSuc(
             maSanPham: reader.GetString(reader.GetOrdinal("MaSanPham")),
             tenSanPham: reader.GetString(reader.GetOrdinal("TenSanPham")),
@@ -221,7 +237,9 @@ public class SanPhamRepository : ISanPhamRepository
             giaBan: reader.GetDecimal(reader.GetOrdinal("GiaBan")),
             trangThai: reader.GetString(reader.GetOrdinal("TrangThai")),
             hinhAnh: hinhAnh,
-            phanTramGiamGia: phanTramGiamGia
+            phanTramGiamGia: phanTramGiamGia,
+            maNhom: "0",
+            tyLeLoiNhuan: tyLeLoiNhuan
         );
 
         var maNhom = "0";

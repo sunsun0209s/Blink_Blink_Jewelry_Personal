@@ -88,13 +88,27 @@ public class StockAuditWorkflowTests
         {
             if (Data.TryGetValue(maPhieuNhap, out var p))
             {
-                p.TrangThai = false;
+                p.TrangThai = "DaHuy";
             }
+        }
+        public void DuyetPhieuNhap(string maPhieuNhap)
+        {
+            if (Data.TryGetValue(maPhieuNhap, out var p))
+            {
+                p.TrangThai = "DaDuyet";
+            }
+        }
+        public void XoaPhieuNhap(string maPhieuNhap)
+        {
+            Data.Remove(maPhieuNhap);
         }
 
         public Task LuuPhieuNhapAsync(PhieuNhapKho phieu, CancellationToken ct = default) { LuuPhieuNhap(phieu); return Task.CompletedTask; }
         public Task<PhieuNhapKho?> TimTheoIdAsync(string maPhieu, CancellationToken ct = default) => Task.FromResult(TimTheoId(maPhieu));
         public Task<List<PhieuNhapKho>> LayTatCaAsync(CancellationToken ct = default) => Task.FromResult(LayTatCa());
+        public Task DuyetPhieuNhapAsync(string maPhieuNhap, CancellationToken ct = default) { DuyetPhieuNhap(maPhieuNhap); return Task.CompletedTask; }
+        public Task XoaPhieuNhapAsync(string maPhieuNhap, CancellationToken ct = default) { XoaPhieuNhap(maPhieuNhap); return Task.CompletedTask; }
+        public Task VoHieuHoaPhieuNhapAsync(string maPhieuNhap, CancellationToken ct = default) { VoHieuHoaPhieuNhap(maPhieuNhap); return Task.CompletedTask; }
     }
 
     [Fact]
@@ -320,7 +334,7 @@ public class StockAuditWorkflowTests
         var sp = new SanPhamTrangSuc("SP_INWARD", "Nhẫn Solitaire", "DM01", "Vàng 18K", "Size 14", 10000000, 16000000, "SanSang", "", 20) { SoLuongTon = 20 };
         spRepo.LuuSanPham(sp);
 
-        var phieuNhap = new PhieuNhapKho("PNK_TEST", "NCC PNJ", "NV_ADMIN", DateTime.UtcNow, true)
+        var phieuNhap = new PhieuNhapKho("PNK_TEST", "NCC PNJ", "NV_ADMIN", DateTime.UtcNow, "DaDuyet")
         {
             TongSoSanPham = 5,
             TongGiaTri = 50000000
@@ -333,12 +347,104 @@ public class StockAuditWorkflowTests
         Assert.True(ok);
         Assert.Empty(error);
 
-        // Phiếu nhập bị đánh dấu TrangThai = false
+        // Phiếu nhập bị đánh dấu TrangThai = DaHuy
         var phieuCheck = nhapKhoRepo.TimTheoId("PNK_TEST");
-        Assert.False(phieuCheck!.TrangThai);
+        Assert.Equal("DaHuy", phieuCheck!.TrangThai);
 
         // Tồn kho bị trừ 5 món (20 - 5 = 15)
         var spCheck = spRepo.TimTheoId("SP_INWARD");
         Assert.Equal(15, spCheck!.SoLuongTon);
+    }
+
+    [Fact]
+    public void DuyetPhieuNhap_CapNhatTonKho_GiaNhapBinhQuan_VaGiaBanTheoTyLeLoiNhuan()
+    {
+        var spRepo = new FakeSanPhamRepository();
+        var nhapKhoRepo = new FakePhieuNhapKhoRepository();
+        var useCase = new XacNhanNhapKhoUseCase(nhapKhoRepo, spRepo);
+
+        // Ban đầu SP có giá nhập 10,000,000, tỷ lệ lợi nhuận 20%, tồn kho 0
+        var sp = new SanPhamTrangSuc("SP_DUYET", "Nhẫn Ruby", "DM01", "Vàng 18K", "Size 14", 0, 0, "HetHang", "", 0)
+        {
+            TyLeLoiNhuan = 20
+        };
+        spRepo.LuuSanPham(sp);
+
+        // Tạo phiếu nhập ở trạng thái ChoDuyet
+        var request = new NhapKhoDTO
+        {
+            MaPhieuNhap = "PNK_DUYET_01",
+            NhaCungCap = "NCC Ruby",
+            MaNhanVien = "NV_KHO",
+            DanhSachSanPham = new List<ChiTietNhapKhoDTO>
+            {
+                new() { MaSanPham = "SP_DUYET", SoLuong = 10, GiaVonNhap = 10000000 }
+            }
+        };
+        useCase.Execute(request);
+
+        // Phiếu vừa tạo phải ở trạng thái ChoDuyet, tồn kho vẫn là 0
+        var phieuChuaDuyet = nhapKhoRepo.TimTheoId("PNK_DUYET_01");
+        Assert.NotNull(phieuChuaDuyet);
+        Assert.Equal("ChoDuyet", phieuChuaDuyet.TrangThai);
+        Assert.Equal(0, spRepo.TimTheoId("SP_DUYET")!.SoLuongTon);
+
+        // Admin duyệt phiếu
+        var ok = useCase.DuyetPhieuNhap("PNK_DUYET_01", "ADMIN", out var error);
+        Assert.True(ok);
+        Assert.Empty(error);
+
+        // Sau khi duyệt: phiếu thành DaDuyet, tồn kho = 10, giá vốn = 10,000,000, giá bán = 12,000,000 (lãi 20%)
+        var phieuDaDuyet = nhapKhoRepo.TimTheoId("PNK_DUYET_01");
+        Assert.Equal("DaDuyet", phieuDaDuyet!.TrangThai);
+
+        var spCapNhat = spRepo.TimTheoId("SP_DUYET");
+        Assert.Equal(10, spCapNhat!.SoLuongTon);
+        Assert.Equal(10000000, spCapNhat.GiaNhap);
+        Assert.Equal(12000000, spCapNhat.GiaBan);
+    }
+
+    [Fact]
+    public void XoaPhieuNhap_ThanhCong_KhiPhieuChoDuyet()
+    {
+        var spRepo = new FakeSanPhamRepository();
+        var nhapKhoRepo = new FakePhieuNhapKhoRepository();
+        var useCase = new XacNhanNhapKhoUseCase(nhapKhoRepo, spRepo);
+
+        var phieu = new PhieuNhapKho("PNK_XOA", "NCC Test", "NV01", DateTime.UtcNow, "ChoDuyet");
+        nhapKhoRepo.LuuPhieuNhap(phieu);
+
+        var ok = useCase.XoaPhieuNhap("PNK_XOA", out var error);
+        Assert.True(ok);
+        Assert.Empty(error);
+        Assert.Null(nhapKhoRepo.TimTheoId("PNK_XOA"));
+    }
+
+    [Fact]
+    public void VoHieuHoaPhieuNhap_ThatBai_KhiTonKhoTruDiBiAm()
+    {
+        var spRepo = new FakeSanPhamRepository();
+        var nhapKhoRepo = new FakePhieuNhapKhoRepository();
+        var useCase = new XacNhanNhapKhoUseCase(nhapKhoRepo, spRepo);
+
+        // SP hiện tại chỉ còn tồn 2 cái (do đã bán mất 8 cái)
+        var sp = new SanPhamTrangSuc("SP_AM", "Dây Chuyền", "DM01", "Bạc 925", "45cm", 2000000, 3000000, "SanSang", "", 0)
+        {
+            SoLuongTon = 2
+        };
+        spRepo.LuuSanPham(sp);
+
+        // Phiếu nhập đã duyệt trước đó có số lượng 10 cái
+        var phieu = new PhieuNhapKho("PNK_AM", "NCC Bạc", "ADMIN", DateTime.UtcNow, "DaDuyet");
+        phieu.ChiTietNhapKhos.Add(new ChiTietNhapKho("PNK_AM", "SP_AM", 10, 2000000, "CT_AM"));
+        nhapKhoRepo.LuuPhieuNhap(phieu);
+
+        // Hủy phiếu nhập -> Tồn kho sau trừ là 2 - 10 = -8 (< 0) -> Phải từ chối!
+        var ok = useCase.VoHieuHoaPhieuNhap("PNK_AM", "ADMIN", out var error);
+        Assert.False(ok);
+        Assert.Contains("âm", error, StringComparison.OrdinalIgnoreCase);
+
+        // Tồn kho không bị thay đổi
+        Assert.Equal(2, spRepo.TimTheoId("SP_AM")!.SoLuongTon);
     }
 }
