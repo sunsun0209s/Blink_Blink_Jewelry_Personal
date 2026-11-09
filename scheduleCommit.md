@@ -1,4 +1,4 @@
-﻿# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
+# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
 **Dành cho nhóm 4 thành viên:** `qhy`, `sun`, `anhthy`, `tlinh`  
 **Phạm vi 4 thư mục cốt lõi hệ thống:**  
 - `src/BlinkBlink.Domain` (Clean Architecture - Domain Layer)
@@ -34,12 +34,12 @@
 
 ## Lần 4 [chưa thực hiện]: dùng git checkout a142559 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
+- qhy
 
 ## thành viên chưa thực hiện:
 - sun
 - anhthy
 - tlinh
-- qhy
 
 ---
 
