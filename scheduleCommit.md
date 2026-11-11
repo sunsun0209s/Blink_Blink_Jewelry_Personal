@@ -35,10 +35,10 @@
 ## Lần 4 [chưa thực hiện]: dùng git checkout a142559 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
+- anhthy
 
 ## thành viên chưa thực hiện:
 - sun
-- anhthy
 - tlinh
 
 ---
