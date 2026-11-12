@@ -1,7 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.DTOs.Identity;
 using BlinkBlink.Application.Services.Identity;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -18,15 +20,18 @@ public class XacThucController : ControllerBase
     private readonly DangNhapUseCase _dangNhapUseCase;
     private readonly INguoiDungRepository _nguoiDungRepo;
     private readonly IKhachHangRepository _khachHangRepo;
+    private readonly IAppLogger _logger;
 
     public XacThucController(
         DangNhapUseCase dangNhapUseCase,
         INguoiDungRepository nguoiDungRepo,
-        IKhachHangRepository khachHangRepo)
+        IKhachHangRepository khachHangRepo,
+        IAppLogger? logger = null)
     {
         _dangNhapUseCase = dangNhapUseCase ?? throw new ArgumentNullException(nameof(dangNhapUseCase));
         _nguoiDungRepo = nguoiDungRepo ?? throw new ArgumentNullException(nameof(nguoiDungRepo));
         _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -40,18 +45,20 @@ public class XacThucController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.TenDangNhap) || string.IsNullOrWhiteSpace(request.MatKhau))
         {
-            return BadRequest(new { Success = false, Message = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", _logger);
         }
 
         var userId = _dangNhapUseCase.Execute(request);
         if (string.IsNullOrEmpty(userId))
         {
-            return Unauthorized(new { Success = false, Message = "Tên đăng nhập hoặc mật khẩu không chính xác, hoặc tài khoản đã bị tạm khóa." });
+            return ApiResponseHelper.Fail(this, 401, ErrorCodes.InvalidCredentials, "Tên đăng nhập hoặc mật khẩu không chính xác, hoặc tài khoản đã bị tạm khóa.", _logger);
         }
 
         // Lấy thông tin tài khoản người dùng và hồ sơ khách hàng
         var user = _nguoiDungRepo.TimTheoTenDangNhap(request.TenDangNhap.Trim());
         var khachHang = _khachHangRepo.TimTheoMa(userId);
+
+        _logger.LogInfo(nameof(XacThucController), $"Người dùng '{request.TenDangNhap.Trim()}' đăng nhập thành công.");
 
         return Ok(new
         {

@@ -28,8 +28,11 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(string? traceId = null)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var requestId = !string.IsNullOrWhiteSpace(traceId)
+            ? traceId
+            : (Activity.Current?.Id ?? HttpContext.TraceIdentifier);
+        return View(new ErrorViewModel { RequestId = requestId });
     }
 }

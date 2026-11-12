@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.DTOs.Catalog;
 using BlinkBlink.Application.Services.Catalog;
-
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -19,13 +21,16 @@ public class SanPhamController : ControllerBase
 {
     private readonly QuanLySanPhamUseCase _quanLySanPhamUseCase;
     private readonly ISanPhamRepository _sanPhamRepository;
+    private readonly IAppLogger _logger;
 
     public SanPhamController(
         QuanLySanPhamUseCase quanLySanPhamUseCase,
-        ISanPhamRepository sanPhamRepository)
+        ISanPhamRepository sanPhamRepository,
+        IAppLogger? logger = null)
     {
         _quanLySanPhamUseCase = quanLySanPhamUseCase ?? throw new ArgumentNullException(nameof(quanLySanPhamUseCase));
         _sanPhamRepository = sanPhamRepository ?? throw new ArgumentNullException(nameof(sanPhamRepository));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -40,13 +45,13 @@ public class SanPhamController : ControllerBase
     {
         if (request == null)
         {
-            return BadRequest(new { Message = "Dữ liệu sản phẩm không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu sản phẩm không hợp lệ.", _logger);
         }
 
         var result = await _quanLySanPhamUseCase.ThemSanPhamMoiAsync(request, cancellationToken);
         if (!result)
         {
-            return BadRequest(new { Message = "Không thể tạo sản phẩm. Kiểm tra lại thông tin hoặc mã sản phẩm đã tồn tại." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.DuplicateKey, "Không thể tạo sản phẩm. Kiểm tra lại thông tin hoặc mã sản phẩm đã tồn tại.", _logger);
         }
 
         return Ok(new { Success = true, Message = "Tạo mới sản phẩm trang sức thành công." });
@@ -65,15 +70,16 @@ public class SanPhamController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maSanPham) || request == null || request.GiaMoi <= 0)
         {
-            return BadRequest(new { Message = "Mã sản phẩm hoặc giá bán mới không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidPriceOrQuantity, "Mã sản phẩm hoặc giá bán mới không hợp lệ.", _logger);
         }
 
         var result = await _quanLySanPhamUseCase.CapNhatGiaBanAsync(maSanPham, request.GiaMoi, cancellationToken);
         if (!result)
         {
-            return NotFound(new { Message = $"Không tìm thấy sản phẩm mã '{maSanPham}' để điều chỉnh giá." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.ProductNotFound, $"Không tìm thấy sản phẩm mã '{maSanPham}' để điều chỉnh giá.", _logger);
         }
 
+        _logger.LogInfo(nameof(SanPhamController), $"Đã điều chỉnh giá bán sản phẩm '{maSanPham}' thành {request.GiaMoi:N0} VNĐ.");
         return Ok(new { Success = true, Message = $"Đã cập nhật giá bán mới thành {request.GiaMoi:N0} VNĐ cho sản phẩm '{maSanPham}'." });
     }
 
@@ -89,13 +95,13 @@ public class SanPhamController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.MaSanPham))
         {
-            return BadRequest(new { Message = "Thông tin cập nhật sản phẩm không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Thông tin cập nhật sản phẩm không hợp lệ.", _logger);
         }
 
         var result = await _quanLySanPhamUseCase.CapNhatThongTinAsync(request, cancellationToken);
         if (!result)
         {
-            return NotFound(new { Message = $"Không tìm thấy sản phẩm mã '{request.MaSanPham}' để cập nhật thông tin." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.ProductNotFound, $"Không tìm thấy sản phẩm mã '{request.MaSanPham}' để cập nhật thông tin.", _logger);
         }
 
         return Ok(new { Success = true, Message = $"Cập nhật thông tin sản phẩm '{request.MaSanPham}' thành công." });
@@ -195,13 +201,13 @@ public class SanPhamController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maSanPham))
         {
-            return BadRequest(new { Message = "Mã sản phẩm không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã sản phẩm không hợp lệ.", _logger);
         }
 
         var sp = await _sanPhamRepository.TimTheoIdAsync(maSanPham, cancellationToken);
         if (sp == null)
         {
-            return NotFound(new { Message = $"Không tìm thấy sản phẩm mã '{maSanPham}'." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.ProductNotFound, $"Không tìm thấy sản phẩm mã '{maSanPham}'.", _logger);
         }
 
         decimal giaSauGiam = sp.PhanTramGiamGia > 0

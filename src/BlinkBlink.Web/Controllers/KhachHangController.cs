@@ -1,7 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.DTOs.Identity;
 using BlinkBlink.Application.Services.Identity;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -18,15 +20,18 @@ public class KhachHangController : ControllerBase
     private readonly DangKyKhachHangUseCase _dangKyUseCase;
     private readonly QuanLyKhachHangUseCase _quanLyKhachHangUseCase;
     private readonly IKhachHangRepository _khachHangRepo;
+    private readonly IAppLogger _logger;
 
     public KhachHangController(
         DangKyKhachHangUseCase dangKyUseCase,
         QuanLyKhachHangUseCase quanLyKhachHangUseCase,
-        IKhachHangRepository khachHangRepo)
+        IKhachHangRepository khachHangRepo,
+        IAppLogger? logger = null)
     {
         _dangKyUseCase = dangKyUseCase ?? throw new ArgumentNullException(nameof(dangKyUseCase));
         _quanLyKhachHangUseCase = quanLyKhachHangUseCase ?? throw new ArgumentNullException(nameof(quanLyKhachHangUseCase));
         _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -40,7 +45,7 @@ public class KhachHangController : ControllerBase
     {
         if (request == null)
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu đăng ký không được để trống." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu đăng ký không được để trống.", _logger);
         }
 
         if (string.IsNullOrWhiteSpace(request.HoTen) ||
@@ -48,7 +53,7 @@ public class KhachHangController : ControllerBase
             string.IsNullOrWhiteSpace(request.TenDangNhap) ||
             string.IsNullOrWhiteSpace(request.MatKhau))
         {
-            return BadRequest(new { Success = false, Message = "Vui lòng nhập đầy đủ các thông tin bắt buộc." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Vui lòng nhập đầy đủ các thông tin bắt buộc.", _logger);
         }
 
         try
@@ -56,8 +61,10 @@ public class KhachHangController : ControllerBase
             var result = _dangKyUseCase.Execute(request);
             if (!result)
             {
-                return BadRequest(new { Success = false, Message = "Không thể đăng ký tài khoản. Thông tin không hợp lệ." });
+                return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Không thể đăng ký tài khoản. Thông tin không hợp lệ.", _logger);
             }
+
+            _logger.LogInfo(nameof(KhachHangController), $"Đăng ký tài khoản khách hàng mới '{request.TenDangNhap}' thành công.");
 
             return Ok(new
             {
@@ -73,11 +80,7 @@ public class KhachHangController : ControllerBase
         }
         catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
         {
-            return BadRequest(new { Success = false, Message = "Tên đăng nhập này đã được sử dụng. Quý khách vui lòng chọn tên đăng nhập khác." });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { Success = false, Message = "Lỗi khi đăng ký tài khoản: " + ex.Message });
+            return ApiResponseHelper.Fail(this, 409, ErrorCodes.DuplicateUsername, "Tên đăng nhập này đã được sử dụng. Quý khách vui lòng chọn tên đăng nhập khác.", _logger);
         }
     }
 
@@ -92,24 +95,24 @@ public class KhachHangController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.MaKhachHang))
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu cập nhật không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu cập nhật không hợp lệ.", _logger);
         }
 
         var khHienTai = _khachHangRepo.TimTheoMa(request.MaKhachHang);
         if (khHienTai == null)
         {
-            return NotFound(new { Success = false, Message = "Không tìm thấy hồ sơ khách hàng để cập nhật." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.CustomerNotFound, "Không tìm thấy hồ sơ khách hàng để cập nhật.", _logger);
         }
 
         if (!khHienTai.TrangThai)
         {
-            return StatusCode(403, new { Success = false, Message = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng." });
+            return ApiResponseHelper.Fail(this, 403, ErrorCodes.AccountLocked, "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng.", _logger);
         }
 
         var result = _quanLyKhachHangUseCase.CapNhatThongTin(request);
         if (!result)
         {
-            return BadRequest(new { Success = false, Message = "Không thể cập nhật hồ sơ khách hàng. Vui lòng kiểm tra lại thông tin." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Không thể cập nhật hồ sơ khách hàng. Vui lòng kiểm tra lại thông tin.", _logger);
         }
 
         var khMoi = _khachHangRepo.TimTheoMa(request.MaKhachHang);
@@ -140,13 +143,13 @@ public class KhachHangController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maKh))
         {
-            return BadRequest(new { Success = false, Message = "Mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã khách hàng không hợp lệ.", _logger);
         }
 
         var khachHang = _khachHangRepo.TimTheoMa(maKh);
         if (khachHang == null)
         {
-            return NotFound(new { Success = false, Message = "Không tìm thấy hồ sơ khách hàng." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.CustomerNotFound, "Không tìm thấy hồ sơ khách hàng.", _logger);
         }
 
         return Ok(new

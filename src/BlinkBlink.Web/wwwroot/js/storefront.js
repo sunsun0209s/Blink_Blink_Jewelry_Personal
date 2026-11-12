@@ -15,6 +15,34 @@ let currentCatalogPageSize = 8;
 let currentFilteredProducts = [];
 
 /**
+ * Hàm gọi RESTful API tập trung với cơ chế xử lý lỗi và mã truy vết thích ứng.
+ * @param {string} url - Đường dẫn API
+ * @param {RequestInit} [options] - Cấu hình Fetch
+ * @returns {Promise<{ok: boolean, status: number, data: any, traceId: string}>}
+ */
+async function apiRequest(url, options = {}) {
+    const headers = new Headers(options.headers || {});
+    if (!headers.has('Accept')) headers.set('Accept', 'application/json');
+    if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+
+    const response = await fetch(url, { ...options, headers });
+    const data = await response.json().catch(() => ({}));
+    const traceId = data.traceId || data.TraceId || response.headers.get('X-Correlation-Id') || '';
+
+    if (response.status === 403 || data.code === 'AUTH_ACCOUNT_LOCKED') {
+        showToast(data.message || 'Tài khoản của quý khách hiện đang bị tạm khóa.', 'error');
+        setTimeout(() => {
+            if (typeof logoutUser === 'function') logoutUser();
+        }, 1200);
+    } else if (!response.ok) {
+        const code = data.code || data.Code || 'HTTP_' + response.status;
+        console.error(`[BlinkBlink.Web] API lỗi (${url}) | Status=${response.status} | Code=${code} | TraceId=${traceId}`, data.message || '');
+    }
+
+    return { ok: response.ok, status: response.status, data, traceId };
+}
+
+/**
  * Tải toàn bộ danh mục sản phẩm từ CSDL SQL Server qua API
  */
 async function fetchCatalogFromApi() {
@@ -151,12 +179,8 @@ async function saveCart() {
 
         try {
             const customerId = currentUser.maKhachHang || currentUser.maNguoiDung;
-            const res = await fetch('/api/GioHang/cap-nhat', {
+            await apiRequest('/api/GioHang/cap-nhat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
                 body: JSON.stringify({
                     maKhachHang: customerId,
                     danhSachSanPham: cart.map(item => ({
@@ -165,13 +189,6 @@ async function saveCart() {
                     }))
                 })
             });
-
-            if (res.status === 403) {
-                const errJson = await res.json().catch(() => ({}));
-                showToast(errJson.message || 'Tài khoản của quý khách hiện đang bị tạm khóa.', 'error');
-                setTimeout(() => logoutUser(), 1200);
-                return;
-            }
         } catch (e) {
             console.error('Không thể đồng bộ giỏ hàng lên máy chủ:', e);
         }
@@ -1672,12 +1689,8 @@ async function handleCheckoutSubmit(event) {
         const customerId = currentUser.maKhachHang || currentUser.maNguoiDung;
         const total = cart.reduce((sum, item) => sum + item.giaBan * item.soLuong, 0);
 
-        const response = await fetch('/api/BanHang/dat-hang', {
+        const { ok, status, data: result, traceId } = await apiRequest('/api/BanHang/dat-hang', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
             body: JSON.stringify({
                 MaKhachHang: customerId,
                 DiaChiGiaoHang: address,
@@ -1687,16 +1700,12 @@ async function handleCheckoutSubmit(event) {
             })
         });
 
-        const result = await response.json();
-
-        if (response.status === 403) {
+        if (status === 403) {
             closeCheckoutModal();
-            showToast(result.message || 'Tài khoản của quý khách hiện đang bị tạm khóa.', 'error');
-            setTimeout(() => logoutUser(), 1200);
             return;
         }
 
-        if (response.ok && result.success) {
+        if (ok && result.success) {
             closeCheckoutModal();
 
             // Dọn sạch giỏ hàng trên client và server
@@ -1720,7 +1729,8 @@ async function handleCheckoutSubmit(event) {
             openSuccessModal(orderCertificate);
             showToast('Kiệt tác kim hoàn của Quý khách đã được tiếp nhận thành công!', 'success');
         } else {
-            const msg = result.message || 'Không thể tạo đơn hàng. Quý khách vui lòng thử lại sau.';
+            const baseMsg = result.message || 'Không thể tạo đơn hàng. Quý khách vui lòng thử lại sau.';
+            const msg = status >= 500 && traceId ? `${baseMsg} (Mã tra cứu: ${traceId})` : baseMsg;
             if (errorBanner && errorText) {
                 errorText.textContent = msg;
                 errorBanner.style.display = 'flex';

@@ -8,6 +8,7 @@ using BlinkBlink.Application.Services.Orders;
 using BlinkBlink.Domain.Entities.Cart;
 using BlinkBlink.Domain.Entities.Catalog;
 using BlinkBlink.Domain.Entities.Orders;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 using Xunit;
 
@@ -238,9 +239,31 @@ public class DatHangUseCaseTests
 
         // Thực thi
         var result = await useCase.ExecuteAsync(request);
+        var detailedResult = await useCase.ExecuteWithResultAsync(request);
 
         // Kiểm tra
         Assert.False(result);
+        Assert.False(detailedResult.IsSuccess);
+        Assert.Equal(ErrorCodes.OutOfStock, detailedResult.ErrorCode);
         Assert.Empty(hoaDonRepo.Data);
+    }
+
+    [Fact]
+    public async Task DatHang_TraVeMaLoiGioHangRong_KhiKhongCoSanPham()
+    {
+        var useCase = new DatHangUseCase(
+            new FakeHoaDonRepository(),
+            new FakeGioHangRepository(),
+            new FakeSanPhamRepository());
+
+        var result = await useCase.ExecuteWithResultAsync(new DatHangDTO
+        {
+            MaKhachHang = "KH_EMPTY",
+            DiaChiGiaoHang = "123 Lê Lợi",
+            SoDienThoaiNhan = "0909123456"
+        });
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(ErrorCodes.CartEmpty, result.ErrorCode);
     }
 }

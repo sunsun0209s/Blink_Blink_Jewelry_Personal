@@ -2,8 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.DTOs.Warranty;
 using BlinkBlink.Application.Services.Warranty;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -20,15 +22,18 @@ public class BaoHanhController : ControllerBase
     private readonly TiepNhanBaoHanhUseCase _tiepNhanUseCase;
     private readonly XuLyBaoHanhUseCase _xuLyUseCase;
     private readonly IBaoHanhRepository _baoHanhRepo;
+    private readonly IAppLogger _logger;
 
     public BaoHanhController(
         TiepNhanBaoHanhUseCase tiepNhanUseCase,
         XuLyBaoHanhUseCase xuLyUseCase,
-        IBaoHanhRepository baoHanhRepo)
+        IBaoHanhRepository baoHanhRepo,
+        IAppLogger? logger = null)
     {
         _tiepNhanUseCase = tiepNhanUseCase ?? throw new ArgumentNullException(nameof(tiepNhanUseCase));
         _xuLyUseCase = xuLyUseCase ?? throw new ArgumentNullException(nameof(xuLyUseCase));
         _baoHanhRepo = baoHanhRepo ?? throw new ArgumentNullException(nameof(baoHanhRepo));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -43,13 +48,13 @@ public class BaoHanhController : ControllerBase
     {
         if (request == null)
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu yêu cầu bảo hành không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu yêu cầu bảo hành không hợp lệ.", _logger);
         }
 
         var result = await _tiepNhanUseCase.ExecuteAsync(request, cancellationToken);
         if (!result)
         {
-            return BadRequest(new { Success = false, Message = "Không thể tiếp nhận bảo hành. Kiểm tra mã sản phẩm hoặc thông tin khách hàng." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Không thể tiếp nhận bảo hành. Kiểm tra mã sản phẩm hoặc thông tin khách hàng.", _logger);
         }
 
         return Ok(new { Success = true, Message = "Tiếp nhận bảo hành thành công." });
@@ -68,7 +73,7 @@ public class BaoHanhController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(soPhieu) || request == null)
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu cập nhật không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu cập nhật không hợp lệ.", _logger);
         }
 
         bool result;
@@ -83,7 +88,7 @@ public class BaoHanhController : ControllerBase
 
         if (!result)
         {
-            return BadRequest(new { Success = false, Message = "Không thể cập nhật phiếu bảo hành. Phiếu không tồn tại hoặc lỗi trạng thái." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidStateTransition, "Không thể cập nhật phiếu bảo hành. Phiếu không tồn tại hoặc lỗi trạng thái.", _logger);
         }
 
         return Ok(new { Success = true, Message = "Cập nhật tiến độ bảo hành thành công." });
@@ -101,7 +106,7 @@ public class BaoHanhController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maKH))
         {
-            return BadRequest(new { Success = false, Message = "Mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã khách hàng không hợp lệ.", _logger);
         }
 
         var danhSach = await _baoHanhRepo.LayTheoKhachHangAsync(maKH, cancellationToken);
@@ -119,13 +124,13 @@ public class BaoHanhController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(soPhieu))
         {
-            return BadRequest(new { Success = false, Message = "Số phiếu bảo hành không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Số phiếu bảo hành không hợp lệ.", _logger);
         }
 
         var phieu = await _baoHanhRepo.TimTheoSoPhieuAsync(soPhieu, cancellationToken);
         if (phieu == null)
         {
-            return NotFound(new { Success = false, Message = "Không tìm thấy thông tin phiếu bảo hành." });
+            return ApiResponseHelper.Fail(this, 404, ErrorCodes.WarrantyNotFound, "Không tìm thấy thông tin phiếu bảo hành.", _logger);
         }
 
         return Ok(new

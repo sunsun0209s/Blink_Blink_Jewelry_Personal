@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.DTOs.Orders;
 using BlinkBlink.Application.Services.Orders;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -21,17 +24,20 @@ public class BanHangController : ControllerBase
     private readonly XuLyDonHangUseCase _xuLyDonHangUseCase;
     private readonly IHoaDonRepository _hoaDonRepo;
     private readonly IKhachHangRepository _khachHangRepo;
+    private readonly IAppLogger _logger;
 
     public BanHangController(
         DatHangUseCase datHangUseCase,
         XuLyDonHangUseCase xuLyDonHangUseCase,
         IHoaDonRepository hoaDonRepo,
-        IKhachHangRepository khachHangRepo)
+        IKhachHangRepository khachHangRepo,
+        IAppLogger? logger = null)
     {
         _datHangUseCase = datHangUseCase ?? throw new ArgumentNullException(nameof(datHangUseCase));
         _xuLyDonHangUseCase = xuLyDonHangUseCase ?? throw new ArgumentNullException(nameof(xuLyDonHangUseCase));
         _hoaDonRepo = hoaDonRepo ?? throw new ArgumentNullException(nameof(hoaDonRepo));
         _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -46,23 +52,24 @@ public class BanHangController : ControllerBase
     {
         if (request == null)
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu đặt hàng không được để trống." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu đặt hàng không được để trống.", _logger);
         }
 
         // Kiểm tra quyền truy cập: Chặn khách hàng bị quản trị viên khóa tài khoản
         var khach = _khachHangRepo.TimTheoMa(request.MaKhachHang);
         if (khach != null && !khach.TrangThai)
         {
-            return StatusCode(403, new { Success = false, Message = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng Blink Blink." });
+            return ApiResponseHelper.Fail(this, 403, ErrorCodes.AccountLocked, "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng Blink Blink.", _logger);
         }
 
-        var result = await _datHangUseCase.ExecuteAsync(request, cancellationToken);
-        if (!result)
+        var result = await _datHangUseCase.ExecuteWithResultAsync(request, cancellationToken);
+        if (!result.IsSuccess)
         {
-            return BadRequest(new { Success = false, Message = "Không thể tạo đơn hàng. Giỏ hàng rỗng hoặc sản phẩm không khả dụng." });
+            return ApiResponseHelper.Fail(this, 400, result.ErrorCode ?? ErrorCodes.InvalidInput, result.Message, _logger);
         }
 
         var donMoi = (await _hoaDonRepo.LayTheoKhachHangAsync(request.MaKhachHang, cancellationToken)).FirstOrDefault();
+        _logger.LogInfo(nameof(BanHangController), $"Khách hàng '{request.MaKhachHang}' đặt hàng trực tuyến thành công (Mã đơn: {result.Data}).");
 
         return Ok(new { 
             Success = true, 
@@ -83,7 +90,7 @@ public class BanHangController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maKH))
         {
-            return BadRequest(new { Success = false, Message = "Mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã khách hàng không hợp lệ.", _logger);
         }
 
         var danhSach = await _hoaDonRepo.LayTheoKhachHangAsync(maKH, cancellationToken);
@@ -115,13 +122,13 @@ public class BanHangController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.MaHoaDon))
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu cập nhật đơn hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu cập nhật đơn hàng không hợp lệ.", _logger);
         }
 
         var result = await _xuLyDonHangUseCase.CapNhatTrangThaiAsync(request.MaHoaDon, request.TrangThaiMoi, request.MaNhanVien, cancellationToken);
         if (!result)
         {
-            return BadRequest(new { Success = false, Message = "Không thể cập nhật trạng thái đơn hàng. Kiểm tra mã đơn hoặc trạng thái chuyển đổi." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidStateTransition, "Không thể cập nhật trạng thái đơn hàng. Kiểm tra mã đơn hoặc trạng thái chuyển đổi.", _logger);
         }
 
         return Ok(new { Success = true, Message = "Cập nhật trạng thái đơn hàng thành công." });
@@ -139,13 +146,13 @@ public class BanHangController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maHoaDon))
         {
-            return BadRequest(new { Success = false, Message = "Mã hóa đơn không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã hóa đơn không hợp lệ.", _logger);
         }
 
         var result = await _xuLyDonHangUseCase.HuyDonHangAsync(maHoaDon, cancellationToken);
         if (!result)
         {
-            return BadRequest(new { Success = false, Message = "Không thể hủy đơn hàng. Đơn có thể đã hoàn tất hoặc không tồn tại." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidStateTransition, "Không thể hủy đơn hàng. Đơn có thể đã hoàn tất hoặc không tồn tại.", _logger);
         }
 
         return Ok(new { Success = true, Message = "Hủy đơn hàng thành công." });

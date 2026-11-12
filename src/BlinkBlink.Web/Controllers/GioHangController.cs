@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Domain.Entities.Cart;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 
 namespace BlinkBlink.Web.Controllers;
@@ -21,15 +23,18 @@ public class GioHangController : ControllerBase
     private readonly IGioHangRepository _gioHangRepo;
     private readonly ISanPhamRepository _sanPhamRepo;
     private readonly IKhachHangRepository _khachHangRepo;
+    private readonly IAppLogger _logger;
 
     public GioHangController(
         IGioHangRepository gioHangRepo,
         ISanPhamRepository sanPhamRepo,
-        IKhachHangRepository khachHangRepo)
+        IKhachHangRepository khachHangRepo,
+        IAppLogger? logger = null)
     {
         _gioHangRepo = gioHangRepo ?? throw new ArgumentNullException(nameof(gioHangRepo));
         _sanPhamRepo = sanPhamRepo ?? throw new ArgumentNullException(nameof(sanPhamRepo));
         _khachHangRepo = khachHangRepo ?? throw new ArgumentNullException(nameof(khachHangRepo));
+        _logger = logger ?? NullAppLogger.Instance;
     }
 
     /// <summary>
@@ -44,55 +49,48 @@ public class GioHangController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maKhachHang))
         {
-            return BadRequest(new { Success = false, Message = "Mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã khách hàng không hợp lệ.", _logger);
         }
 
-        try
+        var maUser = ResolveMaNguoiDung(maKhachHang);
+        var gh = await _gioHangRepo.LayGioHangAsync(maUser, cancellationToken);
+        if (gh == null || gh.DanhSachSanPham == null || gh.DanhSachSanPham.Count == 0)
         {
-            var maUser = ResolveMaNguoiDung(maKhachHang);
-            var gh = await _gioHangRepo.LayGioHangAsync(maUser, cancellationToken);
-            if (gh == null || gh.DanhSachSanPham == null || gh.DanhSachSanPham.Count == 0)
-            {
-                return Ok(new
-                {
-                    Success = true,
-                    Data = new
-                    {
-                        MaGioHang = "GH_" + maUser,
-                        MaKhachHang = maKhachHang.Trim(),
-                        SoLuong = 0,
-                        DanhSachSanPham = new List<object>()
-                    }
-                });
-            }
-
-            var items = gh.DanhSachSanPham.Select(item => new
-            {
-                MaSanPham = item.MaSanPham,
-                TenSanPham = item.SanPham?.TenSanPham ?? item.MaSanPham,
-                ChatLieu = item.SanPham?.ChatLieu ?? string.Empty,
-                Size = item.SanPham?.Size ?? string.Empty,
-                GiaBan = item.SanPham?.GiaBan ?? 0,
-                SoLuong = item.SoLuongSanPham,
-                HinhAnh = GetProductImage(item.MaSanPham)
-            }).ToList();
-
             return Ok(new
             {
                 Success = true,
                 Data = new
                 {
-                    MaGioHang = gh.MaGioHang,
-                    MaKhachHang = gh.MaKhachHang,
-                    SoLuong = gh.SoLuong,
-                    DanhSachSanPham = items
+                    MaGioHang = "GH_" + maUser,
+                    MaKhachHang = maKhachHang.Trim(),
+                    SoLuong = 0,
+                    DanhSachSanPham = new List<object>()
                 }
             });
         }
-        catch (Exception ex)
+
+        var items = gh.DanhSachSanPham.Select(item => new
         {
-            return StatusCode(500, new { Success = false, Message = "Lỗi khi nạp giỏ hàng từ máy chủ: " + ex.Message });
-        }
+            MaSanPham = item.MaSanPham,
+            TenSanPham = item.SanPham?.TenSanPham ?? item.MaSanPham,
+            ChatLieu = item.SanPham?.ChatLieu ?? string.Empty,
+            Size = item.SanPham?.Size ?? string.Empty,
+            GiaBan = item.SanPham?.GiaBan ?? 0,
+            SoLuong = item.SoLuongSanPham,
+            HinhAnh = GetProductImage(item.MaSanPham)
+        }).ToList();
+
+        return Ok(new
+        {
+            Success = true,
+            Data = new
+            {
+                MaGioHang = gh.MaGioHang,
+                MaKhachHang = gh.MaKhachHang,
+                SoLuong = gh.SoLuong,
+                DanhSachSanPham = items
+            }
+        });
     }
 
     /// <summary>
@@ -107,50 +105,43 @@ public class GioHangController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.MaKhachHang))
         {
-            return BadRequest(new { Success = false, Message = "Dữ liệu giỏ hàng hoặc mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Dữ liệu giỏ hàng hoặc mã khách hàng không hợp lệ.", _logger);
         }
 
         // Kiểm tra quyền truy cập: Chặn khách hàng bị quản trị viên khóa tài khoản
         var khach = _khachHangRepo.TimTheoMa(request.MaKhachHang);
         if (khach != null && !khach.TrangThai)
         {
-            return StatusCode(403, new { Success = false, Message = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng Blink Blink." });
+            return ApiResponseHelper.Fail(this, 403, ErrorCodes.AccountLocked, "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ bộ phận hỗ trợ khách hàng Blink Blink.", _logger);
         }
 
-        try
+        var maUser = ResolveMaNguoiDung(request.MaKhachHang);
+        var existingCart = await _gioHangRepo.LayGioHangAsync(maUser, cancellationToken);
+        var maGh = existingCart?.MaGioHang ?? (!string.IsNullOrWhiteSpace(request.MaGioHang) ? request.MaGioHang.Trim() : "GH_" + maUser);
+
+        var gh = new GioHang(maGh, maUser);
+
+        if (request.DanhSachSanPham != null && request.DanhSachSanPham.Count > 0)
         {
-            var maUser = ResolveMaNguoiDung(request.MaKhachHang);
-            var existingCart = await _gioHangRepo.LayGioHangAsync(maUser, cancellationToken);
-            var maGh = existingCart?.MaGioHang ?? (!string.IsNullOrWhiteSpace(request.MaGioHang) ? request.MaGioHang.Trim() : "GH_" + maUser);
-
-            var gh = new GioHang(maGh, maUser);
-
-            if (request.DanhSachSanPham != null && request.DanhSachSanPham.Count > 0)
+            foreach (var item in request.DanhSachSanPham)
             {
-                foreach (var item in request.DanhSachSanPham)
+                if (!string.IsNullOrWhiteSpace(item.MaSanPham) && item.SoLuong > 0)
                 {
-                    if (!string.IsNullOrWhiteSpace(item.MaSanPham) && item.SoLuong > 0)
-                    {
-                        gh.DanhSachSanPham.Add(new ChiTietGioHang(maGh, item.MaSanPham.Trim(), item.SoLuong));
-                    }
+                    gh.DanhSachSanPham.Add(new ChiTietGioHang(maGh, item.MaSanPham.Trim(), item.SoLuong));
                 }
             }
-
-            gh.DatHang(); // Đồng bộ tổng số lượng
-
-            await _gioHangRepo.CapNhatGioHangAsync(gh, cancellationToken);
-
-            return Ok(new
-            {
-                Success = true,
-                Message = "Đồng bộ giỏ hàng với máy chủ thành công.",
-                TongSoLuong = gh.SoLuong
-            });
         }
-        catch (Exception ex)
+
+        gh.DatHang(); // Đồng bộ tổng số lượng
+
+        await _gioHangRepo.CapNhatGioHangAsync(gh, cancellationToken);
+
+        return Ok(new
         {
-            return StatusCode(500, new { Success = false, Message = "Lỗi khi lưu giỏ hàng vào cơ sở dữ liệu: " + ex.Message });
-        }
+            Success = true,
+            Message = "Đồng bộ giỏ hàng với máy chủ thành công.",
+            TongSoLuong = gh.SoLuong
+        });
     }
 
     /// <summary>
@@ -164,22 +155,15 @@ public class GioHangController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(maKhachHang))
         {
-            return BadRequest(new { Success = false, Message = "Mã khách hàng không hợp lệ." });
+            return ApiResponseHelper.Fail(this, 400, ErrorCodes.InvalidInput, "Mã khách hàng không hợp lệ.", _logger);
         }
 
-        try
-        {
-            var maUser = ResolveMaNguoiDung(maKhachHang);
-            var gh = new GioHang("GH_" + maUser, maUser);
-            gh.DonDepGioHang();
-            await _gioHangRepo.CapNhatGioHangAsync(gh, cancellationToken);
+        var maUser = ResolveMaNguoiDung(maKhachHang);
+        var gh = new GioHang("GH_" + maUser, maUser);
+        gh.DonDepGioHang();
+        await _gioHangRepo.CapNhatGioHangAsync(gh, cancellationToken);
 
-            return Ok(new { Success = true, Message = "Đã dọn sạch giỏ hàng trên máy chủ." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Success = false, Message = "Lỗi khi dọn giỏ hàng: " + ex.Message });
-        }
+        return Ok(new { Success = true, Message = "Đã dọn sạch giỏ hàng trên máy chủ." });
     }
 
     /// <summary>

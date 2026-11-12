@@ -1,18 +1,37 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using BlinkBlink.Application.Common.Logging;
 using BlinkBlink.Application.Services.Catalog;
 using BlinkBlink.Application.Services.Identity;
 using BlinkBlink.Application.Services.Inventory;
 using BlinkBlink.Application.Services.Orders;
 using BlinkBlink.Application.Services.Warranty;
 using BlinkBlink.Application.Services.Reporting;
+using BlinkBlink.Domain.Exceptions;
 using BlinkBlink.Domain.Interfaces;
 using BlinkBlink.Infrastructure.Data;
+using BlinkBlink.Infrastructure.Logging;
 using BlinkBlink.Infrastructure.Repositories;
+using BlinkBlink.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Khởi tạo bộ ghi nhật ký thích ứng cho kênh Web theo môi trường Development/Production
+var webLogDirectory = Path.Combine(builder.Environment.ContentRootPath, "logs");
+var appLogger = new AdaptiveFileLogger(
+    new AppLogContext
+    {
+        Channel = "Web",
+        EnvironmentName = builder.Environment.EnvironmentName,
+        DataMode = "SqlServer"
+    },
+    preferredDirectory: webLogDirectory,
+    filePrefix: "web",
+    writeToConsole: builder.Environment.IsDevelopment());
+builder.Services.AddSingleton<IAppLogger>(appLogger);
 
 // Cấu hình chuỗi kết nối và tiện ích truy xuất CSDL ADO.NET thuần (Tự động dò tìm SQL Server cục bộ)
 var candidateConnections = new[]
@@ -29,15 +48,20 @@ foreach (var connStr in candidateConnections)
 {
     try
     {
-        var helper = new DatabaseHelper(connStr!);
+        var helper = new DatabaseHelper(connStr!, appLogger);
         if (helper.TestConnection())
         {
             dbHelper = helper;
-            Console.WriteLine($"[BlinkBlink.Web] Da ket noi thanh cong co so du lieu SQL Server: {connStr}");
+            var maskedConn = AdaptiveFileLogger.MaskConnectionString(connStr);
+            appLogger.LogInfo("WebStartup", $"Đã kết nối thành công cơ sở dữ liệu SQL Server: {maskedConn}");
+            Console.WriteLine($"[BlinkBlink.Web] Da ket noi thanh cong co so du lieu SQL Server: {maskedConn}");
             break;
         }
     }
-    catch { }
+    catch (Exception ex)
+    {
+        appLogger.LogWarning("WebStartup", $"Thử kết nối SQL Server thất bại ({AdaptiveFileLogger.MaskConnectionString(connStr)}).", ErrorCodes.DatabaseUnavailable, ex);
+    }
 }
 
 // Nếu chưa có CSDL, kích hoạt cơ chế tự động tạo CSDL và nạp dữ liệu mẫu
@@ -47,18 +71,29 @@ if (dbHelper == null)
     {
         try
         {
-            if (DatabaseHelper.TryProvisionDatabase(connStr!, out var provisionedHelper) && provisionedHelper != null)
+            if (DatabaseHelper.TryProvisionDatabase(connStr!, out var provisionedHelper, appLogger) && provisionedHelper != null)
             {
                 dbHelper = provisionedHelper;
-                Console.WriteLine($"[BlinkBlink.Web] Da tu dong khoi tao thanh cong co so du lieu SQL Server: {connStr}");
+                var maskedConn = AdaptiveFileLogger.MaskConnectionString(connStr);
+                appLogger.LogInfo("WebStartup", $"Đã tự động khởi tạo thành công cơ sở dữ liệu SQL Server: {maskedConn}");
+                Console.WriteLine($"[BlinkBlink.Web] Da tu dong khoi tao thanh cong co so du lieu SQL Server: {maskedConn}");
                 break;
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            appLogger.LogWarning("WebStartup", $"Tự động khởi tạo CSDL thất bại ({AdaptiveFileLogger.MaskConnectionString(connStr)}).", ErrorCodes.DatabaseUnavailable, ex);
+        }
     }
 }
 
-dbHelper ??= new DatabaseHelper("Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
+if (dbHelper == null)
+{
+    appLogger.DefaultContext.DataMode = "SqlServerUnavailable";
+    appLogger.LogError("WebStartup", "Không thể kết nối tới bất kỳ SQL Server instance nào khi khởi động Web.", ErrorCodes.DatabaseUnavailable);
+}
+
+dbHelper ??= new DatabaseHelper("Server=(localdb)\\mssqllocaldb;Database=BlinkBlinkJewelryDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True", appLogger);
 dbHelper.EnsureSchemaCompatibility();
 builder.Services.AddSingleton(dbHelper);
 
@@ -114,6 +149,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Kích hoạt middleware bắt lỗi và ghi nhật ký thích ứng ở đầu pipeline
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 // Cấu hình HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -125,7 +163,6 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
