@@ -46,9 +46,9 @@
 ## Lần 5 [chưa thực hiện]: dùng git checkout fb1ebe8 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
+- anhthy
 
 ## thành viên chưa thực hiện:
-- anhthy
 - tlinh
 - sun
 
