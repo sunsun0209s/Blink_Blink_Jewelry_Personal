@@ -65,15 +65,18 @@
 > - **Mã Commit Baseline Bắt đầu:** `77fc8b1` *(Mốc kết thúc tài liệu Đợt 4, mã nguồn chốt tại `a142559`)*
 > - **Mã Commit Baseline Đích (Personal HEAD):** `fb1ebe8`
 > - **Thời điểm lập lịch:** Ngày **12/11/2026**
-> - **Mục đích:** Triển khai đồng bộ kiến trúc **Log & Error thích ứng** trên toàn bộ hệ thống (`Domain`, `Application`, `Infrastructure`, `Web`, `Admin`) và bộ kiểm thử (`UnitTests`, `IntegrationTests`), bao gồm: chuẩn hóa mã lỗi `ErrorCodes` & phân cấp `DomainException`, mẫu kết quả nghiệp vụ `AppResult`, giao diện nhật ký `IAppLogger` & bộ ghi tệp thích ứng `AdaptiveFileLogger`, bộ phiên dịch lỗi SQL `SqlExceptionTranslator`, đồng nhất vỏ bọc phản hồi API + `GlobalExceptionMiddleware` cho Web (`ApiResponseHelper`, `storefront.js`), cơ chế xử lý lỗi tập trung cho WinForms (`AdminErrorHandler`, `AdminServiceScope`) và bộ kiểm thử tự động 74/74 bài test.
+> - **Mục đích:** Đồng bộ trọn vẹn kiến trúc **Log & Error thích ứng** trên toàn bộ hệ thống **kèm toàn bộ phần mã nguồn `BlinkBlink.Web`, `.resx` Admin và `tests/` còn thiếu giữa kho Personal (`fb1ebe8`) với kho Team (`2058cc0`)**, bảo đảm sau Đợt 5 kho Team biên dịch xanh và đạt **74/74 tests**.
 
 > [!NOTE]
-> **Ghi chú về tệp tài liệu tại thư mục gốc:** Các tệp đặc tả `loganderror.md`, `temp.md` và `TODO.md` là tài liệu thiết kế và theo dõi tiến độ trên kho Personal, do trưởng nhóm quản lý đồng bộ riêng, không đưa vào bảng phân công mã nguồn của 4 thành viên.
+> **Ghi chú đối soát Personal ↔ Team & tệp ngoại lệ:**
+> - **Tài liệu gốc:** `loganderror.md`, `temp.md`, `TODO.md` nằm trên kho Personal để tra cứu kiến trúc, không đưa vào phân công 4 thành viên.
+> - **3 tệp giữ nguyên bản kho Team:** `src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj` (đang chứa cấu hình loại trừ `Data/AppDbContext.cs` và `Data/Configurations/**` còn tồn trên kho Team nên không ghi đè để tránh gãy build), cùng `TiepNhanBaoHanhUseCase.cs` và `BaoHanhRepository.cs` (chỉ khác đúng dòng comment tóm tắt Đợt 4, không khác mã xử lý).
 
-### Cơ Chế Lọc Tệp Đợt 5:
-Toàn bộ **28 tệp mã nguồn** sạch sẽ dưới đây được rà soát từ thay đổi thực tế trên 5 thư mục `src/` và thư mục `tests/`:
+### Cơ Chế Đối Soát Tệp Đợt 5:
+Toàn bộ **57 tệp** dưới đây được đối chiếu trực tiếp cây thư mục `src/` và `tests/` giữa `Blink_Blink_Jewelry_Personal` (`fb1ebe8`) và `Blink_Blink_Jewelry` (`2058cc0`):
+- **`src/` (38 tệp):** 25 tệp còn thiếu + 13 tệp khác nội dung thực tế (`Domain`: 2, `Application`: 4, `Infrastructure`: 3, `Admin`: 7 gồm 2 tệp `.resx` thiếu, `Web`: 22 gồm `.csproj`, `launchSettings.json`, Middleware/Helper, 9 Controllers, Views và `wwwroot`).
+- **`tests/` (19 tệp):** 18 tệp kiểm thử còn thiếu + 1 tệp `BlinkBlink.IntegrationTests.csproj` (thêm `net8.0-windows`, `UseWindowsForms` và tham chiếu `BlinkBlink.Admin`).
 - **Đã loại trừ tuyệt đối:** `bin/`, `obj/`, `.vs/`, `logs/`, `*.log`, `*.user`.
-- **Phạm vi mở rộng Đợt 5:** Lần đầu tiên đồng bộ song song cả `src/BlinkBlink.Web` (API + `storefront.js`) và `tests/` cùng với 4 thư mục cốt lõi trước đó (`Domain`, `Application`, `Infrastructure`, `Admin`).
 
 ---
 
@@ -83,15 +86,15 @@ Toàn bộ **28 tệp mã nguồn** sạch sẽ dưới đây được rà soát
 > **TUYỆT ĐỐI KHÔNG COMMIT BUILD ARTIFACTS / TỆP NHẬT KÝ TẠM**
 > - **CẤM** commit các thư mục: `bin/`, `obj/`, `.vs/`, `.vscode/`, `TestResults/`, `logs/`.
 > - **CẤM** commit các tệp cấu hình cá nhân hoặc tệp nhật ký sinh lúc chạy: `*.user`, `*.suo`, `*.log`, `*.cache`.
-> - **CHỈ COMMIT** chính xác các tệp mã nguồn được phân công (`.cs`, `.js`), bảo đảm chuẩn mã hóa `UTF-8` để giữ nguyên thông báo tiếng Việt có dấu.
+> - **CHỈ COMMIT** chính xác các tệp mã nguồn, cấu hình dự án, `.resx` và tài nguyên tĩnh được phân công, bảo đảm chuẩn mã hóa `UTF-8` để giữ nguyên tiếng Việt có dấu.
 > - **Tránh tuyệt đối** việc gõ lệnh `git add .` hoặc `git add -A` một cách cẩu thả.
 
 ### Thứ Tự Merge Pull Request Khuyến Nghị (Bắt Buộc Để Giữ Build Xanh)
-Do tầng trên phụ thuộc vào hợp đồng lỗi và `DatabaseHelper` ở tầng dưới, các thành viên vẫn có thể tạo nhánh và đẩy code song song từ mốc `<CHO_COMMIT_MOC_5>`, nhưng khi **Merge PR vào `main`** phải tuân thủ đúng thứ tự:
-1. **Merge #1 — `sun`:** Đưa `ErrorCodes`, `DomainException`, `AppResult`, `IAppLogger`, `AdaptiveFileLogger`, `SqlExceptionTranslator`, `DatabaseHelper` lên `main`.
-2. **Merge #2 — `anhthy`:** Đưa `DatHangUseCase`, `GlobalExceptionMiddleware`, `ApiResponseHelper`, `Web/Program.cs`, `BanHangController`, `GioHangController` và `AdaptiveLogAndErrorTests` lên `main`.
-3. **Merge #3 — `tlinh`:** Đưa 5 Web Controllers còn lại, `storefront.js` và `DatHangUseCaseTests` lên `main`.
-4. **Merge #4 — `qhy`:** Đưa `XacThucController`, 5 tệp WinForms `BlinkBlink.Admin` và `AdaptiveLoggingTests` lên `main`.
+Các thành viên có thể tạo nhánh và chuẩn bị commit song song từ mốc `fb1ebe8`, nhưng khi **Merge PR vào `main` của kho Team** phải ghép đúng thứ tự:
+1. **Merge #1 — `sun` (14 tệp):** Lõi `Domain`, `Application`, `Infrastructure` Logging/SQL/DatabaseHelper, ảnh tĩnh Web và 4 Unit Tests lõi + Catalog/Reporting.
+2. **Merge #2 — `anhthy` (14 tệp):** `XacNhanNhapKhoUseCase`, `DatHangUseCase`, `BlinkBlink.Web.csproj`, `launchSettings.json`, `GlobalExceptionMiddleware`, `ApiResponseHelper`, `Web/Program.cs`, `BanHangController`, `GioHangController` và 5 Unit Tests Orders/Inventory.
+3. **Merge #3 — `tlinh` (14 tệp):** 6 Web Controllers còn lại (`BaoHanh`, `PhieuNhapKho`, `SanPham`, `ThongKe`, `Home`, `KhachHang`), Views/CSS/JS Storefront và 3 Unit Tests Warranty.
+4. **Merge #4 — `qhy` (15 tệp):** `XacThucController`, toàn bộ 7 tệp `BlinkBlink.Admin` (gồm `OrdersView.resx`, `ProductsView.resx`), 2 Unit Tests Identity và toàn bộ 5 tệp `BlinkBlink.IntegrationTests` (gồm `.csproj`).
 
 ### Quy ước nhánh & Quy trình hoàn tất Đợt 5
 Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 5 duy nhất** (`feature/phase5-<tên_phân_hệ>-module`):
@@ -104,7 +107,7 @@ Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 5 duy 
    ```bash
    git checkout -b feature/phase5-<tên_phân_hệ>-module
    ```
-3. Sao chép đúng **7 tệp** được phân công từ mốc `fb1ebe8` và dùng `git add <đường_dẫn_file>` theo đúng lệnh bên dưới.
+3. Sao chép đúng số tệp được phân công từ mốc `fb1ebe8` (kho Personal) sang kho Team và dùng `git add <đường_dẫn_file>` theo đúng lệnh bên dưới.
 4. Commit với thông điệp chuẩn Conventional Commit và đẩy nhánh lên GitHub:
    ```bash
    git push origin feature/phase5-<tên_phân_hệ>-module
@@ -113,15 +116,15 @@ Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 5 duy 
 
 ---
 
-## 3. BẢNG MA TRẬN PHÂN CHIA TRÁCH NHIỆM ĐỢT 5 (28 TỆP)
+## 3. BẢNG MA TRẬN PHÂN CHIA TRÁCH NHIỆM ĐỢT 5 (57 TỆP)
 
 | Thứ tự Merge | Thành viên | Phân hệ phụ trách Đợt 5 | Domain | Application | Infrastructure | Web | Admin | Tests | Tổng tệp | Nhánh Làm Việc Đợt 5 |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **#1** | **`sun`** | **Core Error Contract & Infrastructure Logging** (`ErrorCodes`, `DomainException`, `AppResult`, `IAppLogger`, `AdaptiveFileLogger`, `SqlExceptionTranslator`, `DatabaseHelper`) | 2 | 2 | 3 | 0 | 0 | 0 | **7 tệp** | `feature/phase5-core-logging-errors-module` |
-| **#2** | **`anhthy`** | **Orders `AppResult` & Web API Core** (`DatHangUseCase`, `GlobalExceptionMiddleware`, `ApiResponseHelper`, `Web/Program`, `BanHang`, `GioHang`, Unit Test lõi) | 0 | 1 | 0 | 5 | 0 | 1 | **7 tệp** | `feature/phase5-orders-web-core-module` |
-| **#3** | **`tlinh`** | **Web Controllers, Storefront JS & Orders Tests** (`BaoHanh`, `PhieuNhapKho`, `SanPham`, `Home`, `KhachHang`, `storefront.js`, `DatHangUseCaseTests`) | 0 | 0 | 0 | 6 | 0 | 1 | **7 tệp** | `feature/phase5-web-controllers-tests-module` |
-| **#4** | **`qhy`** | **WinForms Admin, Web Auth & Integration Tests** (`XacThucController`, `AdminErrorHandler`, `AdminServiceScope`, `Admin/Program`, `LoginForm`, `OrdersView`, `AdaptiveLoggingTests`) | 0 | 0 | 0 | 1 | 5 | 1 | **7 tệp** | `feature/phase5-admin-auth-integration-module` |
-| | **TỔNG** | | **2** | **3** | **3** | **12** | **5** | **3** | **28 tệp** | |
+| **#1** | **`sun`** | **Core Log/Error, Tài Nguyên Ảnh Web & Unit Tests Lõi/Catalog** | 2 | 2 | 3 | 3 | 0 | 4 | **14 tệp** | `feature/phase5-core-logging-errors-module` |
+| **#2** | **`anhthy`** | **Web API Core Pipeline, Orders/Inventory & Unit Tests Orders/Kho** | 0 | 2 | 0 | 7 | 0 | 5 | **14 tệp** | `feature/phase5-orders-web-core-module` |
+| **#3** | **`tlinh`** | **Web Controllers, Storefront Views/CSS/JS & Unit Tests Warranty** | 0 | 0 | 0 | 11 | 0 | 3 | **14 tệp** | `feature/phase5-web-controllers-tests-module` |
+| **#4** | **`qhy`** | **WinForms Admin (+`.resx`), Web Auth, Identity & Integration Tests** | 0 | 0 | 0 | 1 | 7 | 7 | **15 tệp** | `feature/phase5-admin-auth-integration-module` |
+| | **TỔNG** | | **2** | **4** | **3** | **22** | **7** | **19** | **57 tệp** | |
 
 ---
 
@@ -129,12 +132,12 @@ Mỗi thành viên làm việc trên đúng **1 nhánh tính năng Đợt 5 duy 
 
 ```mermaid
 flowchart TD
-    subgraph Phase5Run["Đồng Bộ Log & Error Thích Ứng Đợt 5 (Baseline 77fc8b1 -> fb1ebe8)"]
-        A["#1 sun: Core Domain, App & Infra Logging (7 tệp)"] --> A_branch["feature/phase5-core-logging-errors-module"]
-        B["#2 anhthy: Orders AppResult & Web Core (7 tệp)"] --> B_branch["feature/phase5-orders-web-core-module"]
-        C["#3 tlinh: Web Controllers, JS & Orders Tests (7 tệp)"] --> C_branch["feature/phase5-web-controllers-tests-module"]
-        D["#4 qhy: WinForms Admin, Auth & Integration (7 tệp)"] --> D_branch["feature/phase5-admin-auth-integration-module"]
-        A_branch -->|Merge #1| MAIN["Nhánh main (Build Xanh 74/74 Tests)"]
+    subgraph Phase5Run["Đồng Bộ Đầy Đủ Personal -> Team Đợt 5 (Baseline 2058cc0 <- fb1ebe8)"]
+        A["#1 sun: Core Log/Error, Web Images & UnitTests (14 tệp)"] --> A_branch["feature/phase5-core-logging-errors-module"]
+        B["#2 anhthy: Orders/Kho, Web Core & UnitTests (14 tệp)"] --> B_branch["feature/phase5-orders-web-core-module"]
+        C["#3 tlinh: Web Controllers, Views/CSS/JS & UnitTests (14 tệp)"] --> C_branch["feature/phase5-web-controllers-tests-module"]
+        D["#4 qhy: WinForms Admin (+resx), Web Auth & Integration (15 tệp)"] --> D_branch["feature/phase5-admin-auth-integration-module"]
+        A_branch -->|Merge #1| MAIN["Nhánh main Team (Build Xanh 74/74 Tests)"]
         B_branch -->|Merge #2| MAIN
         C_branch -->|Merge #3| MAIN
         D_branch -->|Merge #4| MAIN
@@ -144,13 +147,12 @@ flowchart TD
 ---
 
 ### 1. Thành viên `sun` (Đợt 5 — Merge #1)
-- **Phân hệ phụ trách:** **Lõi Mã Lỗi Domain, Hợp Đồng `AppResult` & Hạ Tầng Nhật Ký / Phiên Dịch SQL**
-- **Nghiệp vụ bổ sung:**
-  - Chuẩn hóa toàn bộ hằng số mã lỗi nghiệp vụ và hạ tầng trong `ErrorCodes.cs`, kế thừa qua `DomainException` (`ValidationException`, `BusinessRuleException`, `NotFoundException`, `UnauthorizedException`, `ConflictException`, `InfrastructureException`).
-  - Thiết kế mẫu trả kết quả không ném ngoại lệ `AppResult` / `AppResult<T>` cùng giao diện ghi nhật ký `IAppLogger` (`AppLogContext`, `AppLogLevel`).
-  - Triển khai `AdaptiveFileLogger` tự lọc cấp độ theo môi trường, che mật khẩu trong chuỗi kết nối, đồng bộ ghi tệp UTF-8; triển khai `SqlExceptionTranslator` ánh xạ mã lỗi SQL Server (`2627`, `2601`, `547`, `-2`, `4060`, `18456`, ...) và cập nhật `DatabaseHelper` truyền `IAppLogger` an toàn.
+- **Phân hệ phụ trách:** **Lõi Mã Lỗi Domain, `AppResult`, Hạ Tầng Nhật Ký / Phiên Dịch SQL, Ảnh Storefront & Unit Tests Lõi/Catalog**
+- **Nghiệp vụ & tệp bổ sung:**
+  - Chuẩn hóa hằng số `ErrorCodes` & phân cấp `DomainException`; thiết kế `AppResult` & `IAppLogger`; triển khai `AdaptiveFileLogger`, `SqlExceptionTranslator` và đồng bộ `DatabaseHelper`.
+  - Đồng bộ 3 ảnh tĩnh của `BlinkBlink.Web` (`hero-jewelry.jpg`, `SP007_Untitled.png`, `no-image.png`) và 4 tệp kiểm thử đơn vị lõi/Catalog/Reporting.
 - **Nhánh làm việc duy nhất:** `feature/phase5-core-logging-errors-module`
-- **Số lượng:** 7 tệp (`Domain`: 2, `Application`: 2, `Infrastructure`: 3)
+- **Số lượng:** 14 tệp (`Domain`: 2, `Application`: 2, `Infrastructure`: 3, `Web`: 3, `Tests`: 4)
 - **Danh sách tệp Đợt 5:**
   - `src/BlinkBlink.Domain/Exceptions/ErrorCodes.cs`
   - `src/BlinkBlink.Domain/Exceptions/DomainException.cs`
@@ -159,76 +161,94 @@ flowchart TD
   - `src/BlinkBlink.Infrastructure/Logging/AdaptiveFileLogger.cs`
   - `src/BlinkBlink.Infrastructure/Data/SqlExceptionTranslator.cs`
   - `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs`
+  - `src/BlinkBlink.Web/wwwroot/images/hero-jewelry.jpg`
+  - `src/BlinkBlink.Web/wwwroot/images/products/SP007_Untitled.png`
+  - `src/BlinkBlink.Web/wwwroot/images/products/no-image.png`
+  - `tests/BlinkBlink.UnitTests/Common/AdaptiveLogAndErrorTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Catalog/ProductGroupWorkflowTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeDoanhThuUseCaseTests.cs`
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase5-core-logging-errors-module
-  git add src/BlinkBlink.Domain/Exceptions/ErrorCodes.cs src/BlinkBlink.Domain/Exceptions/DomainException.cs src/BlinkBlink.Application/Common/AppResult.cs src/BlinkBlink.Application/Common/Logging/IAppLogger.cs src/BlinkBlink.Infrastructure/Logging/AdaptiveFileLogger.cs src/BlinkBlink.Infrastructure/Data/SqlExceptionTranslator.cs src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs
-  git commit -m "feat(core-logging): chuan hoa ErrorCodes, AppResult, AdaptiveFileLogger va SqlExceptionTranslator"
+  git add src/BlinkBlink.Domain/Exceptions/ErrorCodes.cs src/BlinkBlink.Domain/Exceptions/DomainException.cs src/BlinkBlink.Application/Common/AppResult.cs src/BlinkBlink.Application/Common/Logging/IAppLogger.cs src/BlinkBlink.Infrastructure/Logging/AdaptiveFileLogger.cs src/BlinkBlink.Infrastructure/Data/SqlExceptionTranslator.cs src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs src/BlinkBlink.Web/wwwroot/images/hero-jewelry.jpg src/BlinkBlink.Web/wwwroot/images/products/SP007_Untitled.png src/BlinkBlink.Web/wwwroot/images/products/no-image.png tests/BlinkBlink.UnitTests/Common/AdaptiveLogAndErrorTests.cs tests/BlinkBlink.UnitTests/Services/Catalog/ProductGroupWorkflowTests.cs tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeDoanhThuUseCaseTests.cs
+  git commit -m "feat(core-logging): chuan hoa ErrorCodes, AppResult, AdaptiveFileLogger, anh storefront va UnitTests"
   git push origin feature/phase5-core-logging-errors-module
   ```
 
 ---
 
 ### 2. Thành viên `anhthy` (Đợt 5 — Merge #2)
-- **Phân hệ phụ trách:** **Đặt Hàng `AppResult`, Khung Xử Lý Ngoại Lệ Web & Kiểm Thử Đơn Vị Lõi**
-- **Nghiệp vụ bổ sung:**
-  - Bổ sung `ExecuteWithResultAsync` trong `DatHangUseCase` trả về `AppResult<HoaDon>` kèm mã lỗi chuẩn (`CART_EMPTY`, `OUT_OF_STOCK`, `CUSTOMER_NOT_FOUND`, ...).
-  - Xây dựng `GlobalExceptionMiddleware` bắt mọi ngoại lệ tập trung trên ASP.NET Core, sinh `CorrelationId` qua header `X-Correlation-Id`, ẩn chi tiết kỹ thuật khi chạy ở môi trường `Production`.
-  - Đồng bộ `ApiResponseHelper`, cấu hình DI cho `IAppLogger` và fallback khởi tạo CSDL trong `src/BlinkBlink.Web/Program.cs`, cập nhật `BanHangController` & `GioHangController` cùng bộ kiểm thử `AdaptiveLogAndErrorTests.cs`.
+- **Phân hệ phụ trách:** **Orders `AppResult`, Dọn Shim Nhập Kho, Khung Lõi Web API & Unit Tests Orders/Kho**
+- **Nghiệp vụ & tệp bổ sung:**
+  - Cập nhật `DatHangUseCase` (`ExecuteWithResultAsync` trả `AppResult<HoaDon>`) và làm sạch `XacNhanNhapKhoUseCase` (gỡ lớp tương thích phản chiếu Đợt 4).
+  - Đồng bộ `BlinkBlink.Web.csproj` (gói `Swashbuckle.AspNetCore`), `launchSettings.json`, `GlobalExceptionMiddleware`, `ApiResponseHelper`, `src/BlinkBlink.Web/Program.cs`, `BanHangController`, `GioHangController` và 5 bộ Unit Tests Orders/Inventory/Reporting.
 - **Nhánh làm việc duy nhất:** `feature/phase5-orders-web-core-module`
-- **Số lượng:** 7 tệp (`Application`: 1, `Web`: 5, `Tests`: 1)
+- **Số lượng:** 14 tệp (`Application`: 2, `Web`: 7, `Tests`: 5)
 - **Danh sách tệp Đợt 5:**
+  - `src/BlinkBlink.Application/Services/Inventory/XacNhanNhapKhoUseCase.cs`
   - `src/BlinkBlink.Application/Services/Orders/DatHangUseCase.cs`
+  - `src/BlinkBlink.Web/BlinkBlink.Web.csproj`
+  - `src/BlinkBlink.Web/Properties/launchSettings.json`
   - `src/BlinkBlink.Web/Middleware/GlobalExceptionMiddleware.cs`
   - `src/BlinkBlink.Web/Controllers/ApiResponseHelper.cs`
   - `src/BlinkBlink.Web/Program.cs`
   - `src/BlinkBlink.Web/Controllers/BanHangController.cs`
   - `src/BlinkBlink.Web/Controllers/GioHangController.cs`
-  - `tests/BlinkBlink.UnitTests/Common/AdaptiveLogAndErrorTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Inventory/StockAuditWorkflowTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Orders/BanHangOfflineUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Orders/DatHangUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Orders/XuLyDonHangUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeKhoHangUseCaseTests.cs`
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase5-orders-web-core-module
-  git add src/BlinkBlink.Application/Services/Orders/DatHangUseCase.cs src/BlinkBlink.Web/Middleware/GlobalExceptionMiddleware.cs src/BlinkBlink.Web/Controllers/ApiResponseHelper.cs src/BlinkBlink.Web/Program.cs src/BlinkBlink.Web/Controllers/BanHangController.cs src/BlinkBlink.Web/Controllers/GioHangController.cs tests/BlinkBlink.UnitTests/Common/AdaptiveLogAndErrorTests.cs
-  git commit -m "feat(web-core): tich hop GlobalExceptionMiddleware, ApiResponseHelper, AppResult DatHang va UnitTests loi"
+  git add src/BlinkBlink.Application/Services/Inventory/XacNhanNhapKhoUseCase.cs src/BlinkBlink.Application/Services/Orders/DatHangUseCase.cs src/BlinkBlink.Web/BlinkBlink.Web.csproj src/BlinkBlink.Web/Properties/launchSettings.json src/BlinkBlink.Web/Middleware/GlobalExceptionMiddleware.cs src/BlinkBlink.Web/Controllers/ApiResponseHelper.cs src/BlinkBlink.Web/Program.cs src/BlinkBlink.Web/Controllers/BanHangController.cs src/BlinkBlink.Web/Controllers/GioHangController.cs tests/BlinkBlink.UnitTests/Services/Inventory/StockAuditWorkflowTests.cs tests/BlinkBlink.UnitTests/Services/Orders/BanHangOfflineUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Orders/DatHangUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Orders/XuLyDonHangUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeKhoHangUseCaseTests.cs
+  git commit -m "feat(web-core): tich hop Web API core, Swagger, BanHang, GioHang, AppResult DatHang va UnitTests"
   git push origin feature/phase5-orders-web-core-module
   ```
 
 ---
 
 ### 3. Thành viên `tlinh` (Đợt 5 — Merge #3)
-- **Phân hệ phụ trách:** **Hệ Thống Web Controllers, Giao Diện `storefront.js` & Kiểm Thử Đặt Hàng**
-- **Nghiệp vụ bổ sung:**
-  - Chuẩn hóa phản hồi lỗi và vỏ bọc JSON thống nhất (`errorCode`, `correlationId`, `message`) trên các controller: `BaoHanhController`, `PhieuNhapKhoController`, `SanPhamController`, `HomeController`, `KhachHangController`.
-  - Cập nhật `storefront.js` phân tích vỏ bọc phản hồi API, hiển thị thông báo tiếng Việt thân thiện kèm mã đối soát khi gặp lỗi thay vì bật thông báo kỹ thuật thô.
-  - Cập nhật bộ kiểm thử `DatHangUseCaseTests.cs` xác minh cả luồng đặt hàng thành công và luồng trả `AppResult` thất bại.
+- **Phân hệ phụ trách:** **Hệ Thống Web Controllers, Giao Diện Razor/CSS/JS Storefront & Unit Tests Bảo Hành**
+- **Nghiệp vụ & tệp bổ sung:**
+  - Đồng bộ 6 Web Controllers (`BaoHanhController`, `PhieuNhapKhoController`, `SanPhamController`, `ThongKeController`, `HomeController`, `KhachHangController`) theo chuẩn vỏ bọc phản hồi lỗi `errorCode` + `correlationId`.
+  - Đồng bộ toàn bộ giao diện Web Khách hàng (`_Layout.cshtml`, `Index.cshtml`, `TimKiem.cshtml`, `storefront.css`, `storefront.js`) và 3 bộ Unit Tests phân hệ Bảo hành.
 - **Nhánh làm việc duy nhất:** `feature/phase5-web-controllers-tests-module`
-- **Số lượng:** 7 tệp (`Web`: 6, `Tests`: 1)
+- **Số lượng:** 14 tệp (`Web`: 11, `Tests`: 3)
 - **Danh sách tệp Đợt 5:**
   - `src/BlinkBlink.Web/Controllers/BaoHanhController.cs`
   - `src/BlinkBlink.Web/Controllers/PhieuNhapKhoController.cs`
   - `src/BlinkBlink.Web/Controllers/SanPhamController.cs`
+  - `src/BlinkBlink.Web/Controllers/ThongKeController.cs`
   - `src/BlinkBlink.Web/Controllers/HomeController.cs`
   - `src/BlinkBlink.Web/Controllers/KhachHangController.cs`
+  - `src/BlinkBlink.Web/Views/Shared/_Layout.cshtml`
+  - `src/BlinkBlink.Web/Views/Home/Index.cshtml`
+  - `src/BlinkBlink.Web/Views/Home/TimKiem.cshtml`
+  - `src/BlinkBlink.Web/wwwroot/css/storefront.css`
   - `src/BlinkBlink.Web/wwwroot/js/storefront.js`
-  - `tests/BlinkBlink.UnitTests/Services/Orders/DatHangUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Warranty/TiepNhanBaoHanhUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Warranty/WarrantyWorkflowAndPosTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Warranty/XuLyBaoHanhUseCaseTests.cs`
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase5-web-controllers-tests-module
-  git add src/BlinkBlink.Web/Controllers/BaoHanhController.cs src/BlinkBlink.Web/Controllers/PhieuNhapKhoController.cs src/BlinkBlink.Web/Controllers/SanPhamController.cs src/BlinkBlink.Web/Controllers/HomeController.cs src/BlinkBlink.Web/Controllers/KhachHangController.cs src/BlinkBlink.Web/wwwroot/js/storefront.js tests/BlinkBlink.UnitTests/Services/Orders/DatHangUseCaseTests.cs
-  git commit -m "feat(web-controllers): dong bo ma loi JSON tren controllers, storefront.js va DatHangUseCaseTests"
+  git add src/BlinkBlink.Web/Controllers/BaoHanhController.cs src/BlinkBlink.Web/Controllers/PhieuNhapKhoController.cs src/BlinkBlink.Web/Controllers/SanPhamController.cs src/BlinkBlink.Web/Controllers/ThongKeController.cs src/BlinkBlink.Web/Controllers/HomeController.cs src/BlinkBlink.Web/Controllers/KhachHangController.cs src/BlinkBlink.Web/Views/Shared/_Layout.cshtml src/BlinkBlink.Web/Views/Home/Index.cshtml src/BlinkBlink.Web/Views/Home/TimKiem.cshtml src/BlinkBlink.Web/wwwroot/css/storefront.css src/BlinkBlink.Web/wwwroot/js/storefront.js tests/BlinkBlink.UnitTests/Services/Warranty/TiepNhanBaoHanhUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Warranty/WarrantyWorkflowAndPosTests.cs tests/BlinkBlink.UnitTests/Services/Warranty/XuLyBaoHanhUseCaseTests.cs
+  git commit -m "feat(web-controllers): dong bo Web controllers, Views storefront, JS/CSS va UnitTests bao hanh"
   git push origin feature/phase5-web-controllers-tests-module
   ```
 
 ---
 
 ### 4. Thành viên `qhy` (Đợt 5 — Merge #4)
-- **Phân hệ phụ trách:** **WinForms Admin Error Handling, Xác Thực Web & Kiểm Thử Tích Hợp**
-- **Nghiệp vụ bổ sung:**
-  - Xây dựng `AdminErrorHandler` tập trung xử lý ngoại lệ cho WinForms: tự ghi tệp nhật ký theo phiên, sinh mã truy vết `traceId` 8 ký tự, ẩn chi tiết kỹ thuật khi chạy ở chế độ `Production` và hiển thị thông báo thân thiện cho nhân viên POS/Admin.
-  - Cập nhật `AdminServiceScope`, `src/BlinkBlink.Admin/Program.cs` (gắn `Application.ThreadException`, `AppDomain.CurrentDomain.UnhandledException`), `LoginForm.cs` và `OrdersView.cs`.
-  - Đồng bộ `XacThucController.cs` cho API xác thực Web và bổ sung bộ kiểm thử tích hợp `AdaptiveLoggingTests.cs`.
+- **Phân hệ phụ trách:** **WinForms Admin (`+ .resx`), Xác Thực Web, Unit Tests Identity & Toàn Bộ Integration Tests**
+- **Nghiệp vụ & tệp bổ sung:**
+  - Xây dựng `AdminErrorHandler`, cập nhật `AdminServiceScope`, `src/BlinkBlink.Admin/Program.cs`, `LoginForm.cs`, `OrdersView.cs` và bổ sung 2 tệp tài nguyên WinForms còn thiếu (`OrdersView.resx`, `ProductsView.resx`).
+  - Đồng bộ `XacThucController.cs`, 2 bộ Unit Tests Identity (`QuanLyKhachHangUseCaseTests`, `QuanLyNhanVienUseCaseTests`), cập nhật `BlinkBlink.IntegrationTests.csproj` (`net8.0-windows`, `UseWindowsForms`, tham chiếu `BlinkBlink.Admin`) cùng 4 bộ Integration Tests.
 - **Nhánh làm việc duy nhất:** `feature/phase5-admin-auth-integration-module`
-- **Số lượng:** 7 tệp (`Web`: 1, `Admin`: 5, `Tests`: 1)
+- **Số lượng:** 15 tệp (`Web`: 1, `Admin`: 7, `Tests`: 7)
 - **Danh sách tệp Đợt 5:**
   - `src/BlinkBlink.Web/Controllers/XacThucController.cs`
   - `src/BlinkBlink.Admin/Services/AdminErrorHandler.cs`
@@ -236,18 +256,26 @@ flowchart TD
   - `src/BlinkBlink.Admin/Program.cs`
   - `src/BlinkBlink.Admin/Forms/LoginForm.cs`
   - `src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs`
+  - `src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.resx`
+  - `src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.resx`
+  - `tests/BlinkBlink.UnitTests/Services/Identity/QuanLyKhachHangUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Identity/QuanLyNhanVienUseCaseTests.cs`
+  - `tests/BlinkBlink.IntegrationTests/BlinkBlink.IntegrationTests.csproj`
   - `tests/BlinkBlink.IntegrationTests/AdaptiveLoggingTests.cs`
+  - `tests/BlinkBlink.IntegrationTests/DatabaseHelperTests.cs`
+  - `tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs`
+  - `tests/BlinkBlink.IntegrationTests/WinFormsUIIntegrationTests.cs`
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase5-admin-auth-integration-module
-  git add src/BlinkBlink.Web/Controllers/XacThucController.cs src/BlinkBlink.Admin/Services/AdminErrorHandler.cs src/BlinkBlink.Admin/Services/AdminServiceScope.cs src/BlinkBlink.Admin/Program.cs src/BlinkBlink.Admin/Forms/LoginForm.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs tests/BlinkBlink.IntegrationTests/AdaptiveLoggingTests.cs
-  git commit -m "feat(admin-auth): tich hop AdminErrorHandler, XacThucController va AdaptiveLoggingTests"
+  git add src/BlinkBlink.Web/Controllers/XacThucController.cs src/BlinkBlink.Admin/Services/AdminErrorHandler.cs src/BlinkBlink.Admin/Services/AdminServiceScope.cs src/BlinkBlink.Admin/Program.cs src/BlinkBlink.Admin/Forms/LoginForm.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OrdersView.resx src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.resx tests/BlinkBlink.UnitTests/Services/Identity/QuanLyKhachHangUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Identity/QuanLyNhanVienUseCaseTests.cs tests/BlinkBlink.IntegrationTests/BlinkBlink.IntegrationTests.csproj tests/BlinkBlink.IntegrationTests/AdaptiveLoggingTests.cs tests/BlinkBlink.IntegrationTests/DatabaseHelperTests.cs tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs tests/BlinkBlink.IntegrationTests/WinFormsUIIntegrationTests.cs
+  git commit -m "feat(admin-auth): tich hop AdminErrorHandler, WinForms resx, XacThucController va IntegrationTests"
   git push origin feature/phase5-admin-auth-integration-module
   ```
 
 ---
 
-## 5. BẢNG TRA CỨU TOÀN BỘ 28 TỆP ĐỢT 5 (AUDIT TRAIL PHASE 5)
+## 5. BẢNG TRA CỨU TOÀN BỘ 57 TỆP ĐỢT 5 (AUDIT TRAIL PHASE 5)
 
 | STT | Tệp Mã Nguồn | Thư Mục | Thứ Tự Merge | Thành Viên Phụ Trách |
 | :---: | :--- | :--- | :---: | :---: |
@@ -258,27 +286,56 @@ flowchart TD
 | 5 | `Logging/AdaptiveFileLogger.cs` | Infrastructure | #1 | `sun` |
 | 6 | `Data/SqlExceptionTranslator.cs` | Infrastructure | #1 | `sun` |
 | 7 | `Data/DatabaseHelper.cs` | Infrastructure | #1 | `sun` |
-| 8 | `Services/Orders/DatHangUseCase.cs` | Application | #2 | `anhthy` |
-| 9 | `Middleware/GlobalExceptionMiddleware.cs` | Web | #2 | `anhthy` |
-| 10 | `Controllers/ApiResponseHelper.cs` | Web | #2 | `anhthy` |
-| 11 | `Program.cs` | Web | #2 | `anhthy` |
-| 12 | `Controllers/BanHangController.cs` | Web | #2 | `anhthy` |
-| 13 | `Controllers/GioHangController.cs` | Web | #2 | `anhthy` |
-| 14 | `Common/AdaptiveLogAndErrorTests.cs` | UnitTests | #2 | `anhthy` |
-| 15 | `Controllers/BaoHanhController.cs` | Web | #3 | `tlinh` |
-| 16 | `Controllers/PhieuNhapKhoController.cs` | Web | #3 | `tlinh` |
-| 17 | `Controllers/SanPhamController.cs` | Web | #3 | `tlinh` |
-| 18 | `Controllers/HomeController.cs` | Web | #3 | `tlinh` |
-| 19 | `Controllers/KhachHangController.cs` | Web | #3 | `tlinh` |
-| 20 | `wwwroot/js/storefront.js` | Web | #3 | `tlinh` |
-| 21 | `Services/Orders/DatHangUseCaseTests.cs` | UnitTests | #3 | `tlinh` |
-| 22 | `Controllers/XacThucController.cs` | Web | #4 | `qhy` |
-| 23 | `Services/AdminErrorHandler.cs` | Admin | #4 | `qhy` |
-| 24 | `Services/AdminServiceScope.cs` | Admin | #4 | `qhy` |
-| 25 | `Program.cs` | Admin | #4 | `qhy` |
-| 26 | `Forms/LoginForm.cs` | Admin | #4 | `qhy` |
-| 27 | `Views/UserControls/Orders/OrdersView.cs` | Admin | #4 | `qhy` |
-| 28 | `AdaptiveLoggingTests.cs` | IntegrationTests | #4 | `qhy` |
+| 8 | `wwwroot/images/hero-jewelry.jpg` | Web | #1 | `sun` |
+| 9 | `wwwroot/images/products/SP007_Untitled.png` | Web | #1 | `sun` |
+| 10 | `wwwroot/images/products/no-image.png` | Web | #1 | `sun` |
+| 11 | `Common/AdaptiveLogAndErrorTests.cs` | UnitTests | #1 | `sun` |
+| 12 | `Services/Catalog/ProductGroupWorkflowTests.cs` | UnitTests | #1 | `sun` |
+| 13 | `Services/Catalog/QuanLySanPhamUseCaseTests.cs` | UnitTests | #1 | `sun` |
+| 14 | `Services/Reporting/ThongKeDoanhThuUseCaseTests.cs` | UnitTests | #1 | `sun` |
+| 15 | `Services/Inventory/XacNhanNhapKhoUseCase.cs` | Application | #2 | `anhthy` |
+| 16 | `Services/Orders/DatHangUseCase.cs` | Application | #2 | `anhthy` |
+| 17 | `BlinkBlink.Web.csproj` | Web | #2 | `anhthy` |
+| 18 | `Properties/launchSettings.json` | Web | #2 | `anhthy` |
+| 19 | `Middleware/GlobalExceptionMiddleware.cs` | Web | #2 | `anhthy` |
+| 20 | `Controllers/ApiResponseHelper.cs` | Web | #2 | `anhthy` |
+| 21 | `Program.cs` | Web | #2 | `anhthy` |
+| 22 | `Controllers/BanHangController.cs` | Web | #2 | `anhthy` |
+| 23 | `Controllers/GioHangController.cs` | Web | #2 | `anhthy` |
+| 24 | `Services/Inventory/StockAuditWorkflowTests.cs` | UnitTests | #2 | `anhthy` |
+| 25 | `Services/Orders/BanHangOfflineUseCaseTests.cs` | UnitTests | #2 | `anhthy` |
+| 26 | `Services/Orders/DatHangUseCaseTests.cs` | UnitTests | #2 | `anhthy` |
+| 27 | `Services/Orders/XuLyDonHangUseCaseTests.cs` | UnitTests | #2 | `anhthy` |
+| 28 | `Services/Reporting/ThongKeKhoHangUseCaseTests.cs` | UnitTests | #2 | `anhthy` |
+| 29 | `Controllers/BaoHanhController.cs` | Web | #3 | `tlinh` |
+| 30 | `Controllers/PhieuNhapKhoController.cs` | Web | #3 | `tlinh` |
+| 31 | `Controllers/SanPhamController.cs` | Web | #3 | `tlinh` |
+| 32 | `Controllers/ThongKeController.cs` | Web | #3 | `tlinh` |
+| 33 | `Controllers/HomeController.cs` | Web | #3 | `tlinh` |
+| 34 | `Controllers/KhachHangController.cs` | Web | #3 | `tlinh` |
+| 35 | `Views/Shared/_Layout.cshtml` | Web | #3 | `tlinh` |
+| 36 | `Views/Home/Index.cshtml` | Web | #3 | `tlinh` |
+| 37 | `Views/Home/TimKiem.cshtml` | Web | #3 | `tlinh` |
+| 38 | `wwwroot/css/storefront.css` | Web | #3 | `tlinh` |
+| 39 | `wwwroot/js/storefront.js` | Web | #3 | `tlinh` |
+| 40 | `Services/Warranty/TiepNhanBaoHanhUseCaseTests.cs` | UnitTests | #3 | `tlinh` |
+| 41 | `Services/Warranty/WarrantyWorkflowAndPosTests.cs` | UnitTests | #3 | `tlinh` |
+| 42 | `Services/Warranty/XuLyBaoHanhUseCaseTests.cs` | UnitTests | #3 | `tlinh` |
+| 43 | `Controllers/XacThucController.cs` | Web | #4 | `qhy` |
+| 44 | `Services/AdminErrorHandler.cs` | Admin | #4 | `qhy` |
+| 45 | `Services/AdminServiceScope.cs` | Admin | #4 | `qhy` |
+| 46 | `Program.cs` | Admin | #4 | `qhy` |
+| 47 | `Forms/LoginForm.cs` | Admin | #4 | `qhy` |
+| 48 | `Views/UserControls/Orders/OrdersView.cs` | Admin | #4 | `qhy` |
+| 49 | `Views/UserControls/Orders/OrdersView.resx` | Admin | #4 | `qhy` |
+| 50 | `Views/UserControls/Catalog/ProductsView.resx` | Admin | #4 | `qhy` |
+| 51 | `Services/Identity/QuanLyKhachHangUseCaseTests.cs` | UnitTests | #4 | `qhy` |
+| 52 | `Services/Identity/QuanLyNhanVienUseCaseTests.cs` | UnitTests | #4 | `qhy` |
+| 53 | `BlinkBlink.IntegrationTests.csproj` | IntegrationTests | #4 | `qhy` |
+| 54 | `AdaptiveLoggingTests.cs` | IntegrationTests | #4 | `qhy` |
+| 55 | `DatabaseHelperTests.cs` | IntegrationTests | #4 | `qhy` |
+| 56 | `DatabaseWorkflowIntegrationTests.cs` | IntegrationTests | #4 | `qhy` |
+| 57 | `WinFormsUIIntegrationTests.cs` | IntegrationTests | #4 | `qhy` |
 
 ---
 
@@ -287,8 +344,8 @@ flowchart TD
 Sau khi cả 4 thành viên hoàn thành commit Đợt 5 và merge nhánh của mình vào `main` theo đúng thứ tự `#1 -> #2 -> #3 -> #4`:
 - [ ] **100% Cả 4 thành viên đều xuất hiện trong Git Log Đợt 5**.
 - [ ] **Không có bất kỳ tệp `bin/`, `obj/`, `.vs/`, `logs/`, `*.log` nào** lọt vào lịch sử commit trên GitHub.
-- [ ] Chạy lệnh `dotnet build BlinkBlinkJewelry.slnx` thành công `0 Error(s), 0 Warning(s)` với Target Framework duy nhất `.NET 8 LTS`.
-- [ ] Chạy `dotnet test` đạt **74/74 tests Pass** (`64/64` ở `BlinkBlink.UnitTests` và `10/10` ở `BlinkBlink.IntegrationTests`).
+- [ ] Chạy lệnh `dotnet build BlinkBlinkJewelry.slnx` trên kho Team thành công `0 Error(s), 0 Warning(s)` với Target Framework duy nhất `.NET 8 LTS`.
+- [ ] Chạy `dotnet test` trên kho Team đạt **74/74 tests Pass** (`64/64` ở `BlinkBlink.UnitTests` và `10/10` ở `BlinkBlink.IntegrationTests`).
 
 ---
 
