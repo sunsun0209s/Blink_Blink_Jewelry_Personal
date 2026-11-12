@@ -1,4 +1,4 @@
-# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
+﻿# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
 **Dành cho nhóm 4 thành viên:** `qhy`, `sun`, `anhthy`, `tlinh`  
 **Phạm vi 4 thư mục cốt lõi hệ thống:**  
 - `src/BlinkBlink.Domain` (Clean Architecture - Domain Layer)
@@ -36,10 +36,10 @@
 ## thành viên đã thực hiện:
 - qhy
 - anhthy
+- tlinh
 
 ## thành viên chưa thực hiện:
 - sun
-- tlinh
 
 ---
 
