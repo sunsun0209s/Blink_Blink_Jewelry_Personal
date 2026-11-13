@@ -9,9 +9,8 @@ namespace BlinkBlink.Application.Services.Inventory;
 
 /// <summary>
 /// Use Case Quản Lý Kiểm Kê Kho Hàng (QuanLyKiemKeUseCase).
-/// Quản lý toàn bộ quy trình: Lập phiếu, chỉnh sửa, xóa phiếu chờ duyệt,
-/// phê duyệt cân bằng tồn kho (kiểm tra xung đột tồn kho sổ sách)
-/// và vô hiệu hóa hoàn tác delta (kiểm tra ràng buộc chuỗi kiểm kê mới nhất chống chồng chéo).
+/// Quản lý toàn bộ quy trình: Lập phiếu, xóa phiếu chờ duyệt,
+/// và phê duyệt cân bằng tồn kho (kiểm tra tính hợp lệ của tồn kho sổ sách).
 /// </summary>
 public class QuanLyKiemKeUseCase
 {
@@ -236,64 +235,6 @@ public class QuanLyKiemKeUseCase
 
         // Bước 3: Cập nhật trạng thái phiếu sang DaDuyet
         _kiemKeRepo.CapNhatTrangThai(maPhieu, "DaDuyet", DateTime.UtcNow);
-        return true;
-    }
-
-    /// <summary>
-    /// Vô hiệu hóa phiếu kiểm kê đã duyệt (dành riêng cho Quản trị viên Admin).
-    /// Ràng buộc chống chồng chéo: Chỉ cho phép vô hiệu hóa nếu đây là phiếu kiểm kê mới nhất đối với tất cả sản phẩm trong phiếu.
-    /// Hoàn tác số lượng tồn kho theo đúng delta chênh lệch, bảo toàn các giao dịch phát sinh sau thời điểm duyệt.
-    /// </summary>
-    public bool VoHieuHoaPhieuKiemKe(string maPhieu, string maAdmin, out string error)
-    {
-        error = string.Empty;
-        if (string.IsNullOrWhiteSpace(maPhieu))
-        {
-            error = "Mã phiếu kiểm kê không hợp lệ.";
-            return false;
-        }
-
-        var phieu = _kiemKeRepo.TimTheoId(maPhieu);
-        if (phieu == null)
-        {
-            error = $"Không tìm thấy phiếu kiểm kê #{maPhieu}.";
-            return false;
-        }
-
-        if (!string.Equals(phieu.TrangThai, "DaDuyet", StringComparison.OrdinalIgnoreCase))
-        {
-            error = $"Phiếu kiểm kê #{maPhieu} không ở trạng thái Đã duyệt để có thể vô hiệu hóa.";
-            return false;
-        }
-
-        // Bước 1: Kiểm tra ràng buộc thứ tự kiểm kê (Anti-conflict audit chain)
-        if (phieu.ChiTietKiemKes != null)
-        {
-            foreach (var ct in phieu.ChiTietKiemKes)
-            {
-                var coPhieuMoiHon = _kiemKeRepo.KiemTraCoPhieuKiemKeMoiHon(maPhieu, ct.MaSanPham);
-                if (coPhieuMoiHon)
-                {
-                    error = $"Chỉ cho phép vô hiệu hóa phiếu có chỉnh sửa mới nhất đối với sản phẩm [{ct.MaSanPham}]. Quản trị viên có thể lập phiếu kiểm kê khác để bù lại số lượng hoặc vô hiệu hóa phiếu kiểm kê mới hơn trước.";
-                    return false;
-                }
-            }
-
-            // Bước 2: Hoàn tác tồn kho theo delta: TonKhoMoi = TonKhoHienTai - (TonThucTe - TonSoSach)
-            foreach (var ct in phieu.ChiTietKiemKes)
-            {
-                var sp = _sanPhamRepo.TimTheoId(ct.MaSanPham);
-                if (sp != null)
-                {
-                    var delta = ct.TonThucTe - ct.TonSoSach;
-                    sp.SoLuongTon = Math.Max(0, sp.SoLuongTon - delta);
-                    _sanPhamRepo.LuuSanPham(sp);
-                }
-            }
-        }
-
-        // Bước 3: Đánh dấu trạng thái phiếu sang VoHieuHoa
-        _kiemKeRepo.CapNhatTrangThai(maPhieu, "VoHieuHoa");
         return true;
     }
 }

@@ -31,7 +31,6 @@ public class InventoryAuditView : UserControl
     private Label _lblKpiTotalAudits = null!;
     private Label _lblKpiPendingAudits = null!;
     private Label _lblKpiApprovedAudits = null!;
-    private Label _lblKpiInvalidatedAudits = null!;
 
     private DataGridView _dgvAudits = null!;
 
@@ -60,7 +59,7 @@ public class InventoryAuditView : UserControl
         var pnlKpis = new FlowLayoutPanel
         {
             Dock = DockStyle.Right,
-            Width = 640,
+            Width = 480,
             Height = 85,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false
@@ -69,7 +68,6 @@ public class InventoryAuditView : UserControl
         pnlKpis.Controls.Add(CreateKpiCard("Tổng Biên Bản", out _lblKpiTotalAudits, UITheme.TextPrimary));
         pnlKpis.Controls.Add(CreateKpiCard("Chờ Phê Duyệt", out _lblKpiPendingAudits, Color.FromArgb(217, 119, 6))); // amber-600
         pnlKpis.Controls.Add(CreateKpiCard("Đã Phê Duyệt", out _lblKpiApprovedAudits, Color.FromArgb(22, 101, 52))); // green-800
-        pnlKpis.Controls.Add(CreateKpiCard("Đã Vô Hiệu Hóa", out _lblKpiInvalidatedAudits, Color.FromArgb(153, 27, 27))); // red-800
 
         var pnlTitleContainer = new Panel
         {
@@ -277,7 +275,6 @@ public class InventoryAuditView : UserControl
         _lblKpiTotalAudits.Text = _allAudits.Count.ToString("N0", viVn);
         _lblKpiPendingAudits.Text = _allAudits.Count(a => string.Equals(a.TrangThai, "ChoDuyet", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
         _lblKpiApprovedAudits.Text = _allAudits.Count(a => string.Equals(a.TrangThai, "DaDuyet", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
-        _lblKpiInvalidatedAudits.Text = _allAudits.Count(a => string.Equals(a.TrangThai, "VoHieuHoa", StringComparison.OrdinalIgnoreCase)).ToString("N0", viVn);
     }
 
     private void FilterAudits()
@@ -307,12 +304,6 @@ public class InventoryAuditView : UserControl
                 statusDisplay = "✓ Đã duyệt";
                 statusFg = Color.FromArgb(22, 101, 52);
                 statusBg = Color.FromArgb(220, 252, 231);
-            }
-            else if (string.Equals(a.TrangThai, "VoHieuHoa", StringComparison.OrdinalIgnoreCase))
-            {
-                statusDisplay = "🚫 Đã vô hiệu hóa";
-                statusFg = Color.FromArgb(153, 27, 27);
-                statusBg = Color.FromArgb(254, 226, 226);
             }
             else
             {
@@ -720,7 +711,6 @@ public class InventoryAuditView : UserControl
 
         var isPending = string.Equals(phieu.TrangThai, "ChoDuyet", StringComparison.OrdinalIgnoreCase);
         var isApproved = string.Equals(phieu.TrangThai, "DaDuyet", StringComparison.OrdinalIgnoreCase);
-        var isInvalidated = string.Equals(phieu.TrangThai, "VoHieuHoa", StringComparison.OrdinalIgnoreCase);
         var isAdmin = IsCurrentAdmin();
 
         using var dialog = new Form
@@ -740,7 +730,7 @@ public class InventoryAuditView : UserControl
         var pnlHead = new Panel { Dock = DockStyle.Top, Height = 95, BackColor = UITheme.DarkHeader, Padding = new Padding(24, 14, 24, 10) };
         var lblTitle = new Label { Text = $"BIÊN BẢN KIỂM KÊ #{phieu.MaPhieuKiemKe}", Font = UITheme.HeaderFont, ForeColor = UITheme.PrimaryGold, Dock = DockStyle.Top, Height = 24 };
 
-        string statusText = isApproved ? "ĐÃ PHÊ DUYỆT (TỒN KHO ĐÃ CÂN BẰNG)" : (isInvalidated ? "ĐÃ VÔ HIỆU HÓA" : "CHỜ PHÊ DUYỆT (TỒN KHO CHƯA THAY ĐỔI)");
+        string statusText = isApproved ? "ĐÃ PHÊ DUYỆT (TỒN KHO ĐÃ CÂN BẰNG)" : "CHỜ PHÊ DUYỆT (TỒN KHO CHƯA THAY ĐỔI)";
         var lblSub = new Label
         {
             Text = $"Trạng thái: {statusText} | Ngày lập: {phieu.NgayKiemKe:dd/MM/yyyy HH:mm} | Thủ kho: {phieu.MaNhanVienKho} | Vị trí: {phieu.ViTriKiemKe}" +
@@ -764,29 +754,15 @@ public class InventoryAuditView : UserControl
         flpFoot.Controls.Add(btnClose);
 
         Button? btnApprove = null;
-        Button? btnInvalidate = null;
 
-        // Phân quyền hiển thị các nút hành động (Theo yêu cầu mới: Bỏ tính năng chỉnh sửa phiếu kiểm kê chưa duyệt, nếu sai thì xóa tạo lại)
-        if (isPending)
+        // Phân quyền hiển thị các nút hành động (Khi đã duyệt thì khóa hoàn toàn, chỉ có nút Đóng)
+        if (isPending && isAdmin)
         {
-            // Với Admin: có nút duyệt phiếu
-            if (isAdmin)
-            {
-                btnApprove = UITheme.CreateFlatButton("✓ Duyệt Phiếu", Color.FromArgb(22, 101, 52), Color.White);
-                btnApprove.Width = 150;
-                btnApprove.Height = 36;
-                btnApprove.Margin = new Padding(0);
-                flpFoot.Controls.Add(btnApprove);
-            }
-        }
-        else if (isApproved && isAdmin)
-        {
-            // Khi đã duyệt: chỉ có admin có thêm nút Vô hiệu hóa
-            btnInvalidate = UITheme.CreateFlatButton("🚫 Vô Hiệu Hóa", Color.FromArgb(239, 68, 68), Color.White);
-            btnInvalidate.Width = 160;
-            btnInvalidate.Height = 36;
-            btnInvalidate.Margin = new Padding(0);
-            flpFoot.Controls.Add(btnInvalidate);
+            btnApprove = UITheme.CreateFlatButton("✓ Duyệt Phiếu", Color.FromArgb(22, 101, 52), Color.White);
+            btnApprove.Width = 150;
+            btnApprove.Height = 36;
+            btnApprove.Margin = new Padding(0);
+            flpFoot.Controls.Add(btnApprove);
         }
 
         pnlFoot.Controls.Add(flpFoot);
@@ -901,52 +877,6 @@ public class InventoryAuditView : UserControl
                     MessageBox.Show(
                         $"TỪ CHỐI PHÊ DUYỆT:\n\n{error}",
                         "Ràng buộc chống xung đột tồn kho",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-                }
-            };
-        }
-
-        // 3. Xử lý nút VÔ HIỆU HÓA (dành cho Admin khi đã duyệt nhầm)
-        if (btnInvalidate != null)
-        {
-            btnInvalidate.Click += (s, e) =>
-            {
-                var confirm = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn vô hiệu hóa biên bản kiểm kê [{phieu.MaPhieuKiemKe}] không?\n\n" +
-                    "Hệ thống sẽ:\n" +
-                    "1. Kiểm tra chuỗi kiểm kê: Chỉ cho phép vô hiệu hóa nếu đây là đợt kiểm kê mới nhất đối với từng sản phẩm.\n" +
-                    "2. Hoàn tác số lượng tồn kho theo đúng chênh lệch đã kiểm đếm (bảo toàn các đơn hàng bán phát sinh sau khi duyệt).\n" +
-                    "3. Đổi trạng thái biên bản sang 'Đã vô hiệu hóa'.",
-                    "Xác nhận vô hiệu hóa biên bản kiểm kê",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button2
-                );
-
-                if (confirm != DialogResult.Yes) return;
-
-                var adminId = _services.CurrentStaff?.MaNhanVien ?? _services.CurrentUser?.MaNguoiDung ?? "ADMIN";
-                var success = _services.QuanLyKiemKe.VoHieuHoaPhieuKiemKe(phieu.MaPhieuKiemKe, adminId, out var error);
-
-                if (success)
-                {
-                    MessageBox.Show(
-                        $"Vô hiệu hóa biên bản kiểm kê [{phieu.MaPhieuKiemKe}] thành công!\nSố lượng tồn kho đã được hoàn tác chính xác theo chênh lệch ban đầu.",
-                        "Thành công",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                    dialog.Close();
-                    LoadAuditData();
-                }
-                else
-                {
-                    // Từ chối vô hiệu hóa do đã có phiếu kiểm kê mới hơn
-                    MessageBox.Show(
-                        $"TỪ CHỐI VÔ HIỆU HÓA:\n\n{error}",
-                        "Ràng buộc chuỗi kiểm kê",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );

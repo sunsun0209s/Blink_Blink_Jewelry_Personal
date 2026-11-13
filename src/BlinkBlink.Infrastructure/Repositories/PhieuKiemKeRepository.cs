@@ -246,34 +246,6 @@ public class PhieuKiemKeRepository : IPhieuKiemKeRepository
         cmd.ExecuteNonQuery();
     }
 
-    public bool KiemTraCoPhieuKiemKeMoiHon(string maPhieu, string maSanPham)
-    {
-        if (string.IsNullOrWhiteSpace(maPhieu) || string.IsNullOrWhiteSpace(maSanPham)) return false;
-
-        const string sql = @"
-            SELECT COUNT(1)
-            FROM dbo.PhieuKiemKe pk
-            INNER JOIN dbo.ChiTietKiemKe ct ON pk.MaPhieuKiemKe = ct.MaPhieuKiemKe
-            WHERE pk.MaPhieuKiemKe != @MaPhieu
-              AND pk.TrangThai = 'DaDuyet'
-              AND ct.MaSanPham = @MaSanPham
-              AND (
-                  ISNULL(pk.NgayDuyet, pk.NgayKiemKe) > (
-                      SELECT ISNULL(target.NgayDuyet, target.NgayKiemKe)
-                      FROM dbo.PhieuKiemKe target
-                      WHERE target.MaPhieuKiemKe = @MaPhieu
-                  )
-              );";
-
-        using var conn = _dbHelper.GetConnection();
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.Parameters.Add(new SqlParameter("@MaPhieu", SqlDbType.VarChar, 50) { Value = maPhieu.Trim() });
-        cmd.Parameters.Add(new SqlParameter("@MaSanPham", SqlDbType.VarChar, 50) { Value = maSanPham.Trim() });
-
-        var count = Convert.ToInt32(cmd.ExecuteScalar() ?? 0);
-        return count > 0;
-    }
-
     public Task LuuPhieuKiemKeAsync(PhieuKiemKe phieu, CancellationToken cancellationToken = default)
     {
         LuuPhieuKiemKe(phieu);
