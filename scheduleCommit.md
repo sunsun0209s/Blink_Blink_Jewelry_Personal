@@ -57,10 +57,10 @@
 ## Lần 6 [chưa thực hiện]: dùng git checkout cab23d8 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
+- anhthy
 
 ## thành viên chưa thực hiện:
 - sun
-- anhthy
 - tlinh
 
 ---
