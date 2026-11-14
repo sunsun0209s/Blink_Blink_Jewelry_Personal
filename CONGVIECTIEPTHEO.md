@@ -1,5 +1,4 @@
 
-
 //Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
 
 
@@ -78,3 +77,6 @@ Quản lý nhập kho hàng, tạo phiếu nhập kho đang bị gán sẵn mộ
 Tạo đơn bán hàng offline, SP001 có tồn kho là 2 nhưng không hiển thị để chọn lúc tạo hóa đơn.
 
 Tạo phiếu bỏa hành tôi muốn bỏ KH_GUEST_POS đi, khách vãng lai nếu không để lại số điện thoại thì thôi cũng không sao. Khi nhập số điện thoại, khi nhập xong hệ thống sẽ tự kiểm tra xem người dùng này có trong hệ thống hay không và liên kết đến.
+
+
+Tại trang quản lý sản phẩm thêm nút Ẩn/Hiển sản phẩm, vậy thêm một cột để biết xem sản phẩm đó có bị ẩn không. Nếu sản phẩm bị ẩn thì nó sẽ không xuất hiện ở web mua hàng của user và tại tạo hóa đơn bán hàng offline sẽ không hiển thị sản phẩm đó để chọn

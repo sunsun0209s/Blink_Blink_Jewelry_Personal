@@ -1,18 +1,20 @@
-﻿# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
+# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
 **Dành cho nhóm 4 thành viên:** `qhy`, `sun`, `anhthy`, `tlinh`  
-**Phạm vi các thư mục hệ thống Đợt 6:**  
-- `BlinkBlinkJewelry.sql` (Cơ sở dữ liệu hệ thống)
-- `src/BlinkBlink.Domain` (Clean Architecture - Domain Layer)
-- `src/BlinkBlink.Application` (Clean Architecture - Application Layer)
-- `src/BlinkBlink.Infrastructure` (Clean Architecture - Infrastructure Layer)
-- `src/BlinkBlink.Web` (ASP.NET Core RESTful API Kestrel đa cổng & Ảnh sản phẩm Storefront)
-- `src/BlinkBlink.Admin` (WinForms Desktop Admin / POS UI - phân công chuyên biệt cho `qhy`)
+**Phạm vi các thư mục hệ thống Đợt 7:**  
+- `database/` (Cơ sở dữ liệu hệ thống: `BlinkBlinkJewelry.sql` bổ sung cột `IsHidden` - phân công cho `qhy`)
+- `XML/` (Toàn bộ 5 sơ đồ Phân hệ XML & các Lược đồ ERD/vật lý/ý niệm - phân công cho `qhy`)
+- `src/BlinkBlink.Domain` (Clean Architecture - Domain Layer: Entity `SanPhamTrangSuc`, Interface `IThongKeRepository`)
+- `src/BlinkBlink.Application` (Clean Architecture - Application Layer: `ThongKeKhoHangUseCase`, `DangKyKhachHangUseCase`)
+- `src/BlinkBlink.Infrastructure` (Clean Architecture - Infrastructure Layer: `DatabaseHelper`, Repositories `SanPhamRepository`, `ThongKeRepository`)
+- `src/BlinkBlink.Web` (ASP.NET Core RESTful API Controllers: `SanPhamController`, `KhachHangController`, `NhanVienController` & UI Storefront JS/HTML)
+- `src/BlinkBlink.Admin` (WinForms Desktop Admin / POS UI: `ProductsView`, `OfflineSalesView`, `ReportingView`, `InMemoryDataContext` - phân công cho `qhy`)
 - `tests/` (`BlinkBlink.UnitTests` & `BlinkBlink.IntegrationTests`)
-- `chay_he_thong.bat` & `chay_web.bat` (Kịch bản khởi chạy hệ thống - phân công cho `qhy`)
+- `.gitattributes` & kịch bản `.bat` (`chay_he_thong.bat`, `chay_web.bat` - phân công cho `qhy`)
+- Tài liệu quy trình & DevOps: `CONG_NGHE_VA_QUY_TRINH.md`, `GEMINI.md`, `CONGVIECTIEPTHEO.md`, Dockerfiles
 
 ---
 ## LƯU Ý TIẾN ĐỘ THỰC HIỆN:
-## Khi thực hiện xong lần 6 hãy đánh dấu thay đổi chữ [chưa thực hiện] thành [đã hoàn thành] khi mà mọi thành viên đều đã thực hiện xong. Nhớ là khi thành viên nhóm thực hiện xong và AI agent đã chỉnh sửa nội dung file theo hướng dẫn hãy up file này lên github.
+## Khi thực hiện xong lần 7 hãy đánh dấu thay đổi chữ [chưa thực hiện] thành [đã hoàn thành] khi mà mọi thành viên đều đã thực hiện xong. Nhớ là khi thành viên nhóm thực hiện xong và AI agent đã chỉnh sửa nội dung file theo hướng dẫn hãy up file này lên github.
 ## Chỉ thực hiện việc commit và sửa thông tin thành viên hoàn thành theo hướng dẫn, không cần tự tạo ra schedule cho lần tiếp theo, việc này sẽ do nhóm trưởng làm khi mọi thành viên thực hiện xong.
 
 ## Lần 1 [đã hoàn thành]: dùng git checkout 7993495 commit này cho lần thực thi này.
@@ -63,10 +65,274 @@
 
 ## thành viên chưa thực hiện:
 
+## Lần 7 [chưa thực hiện]: dùng git checkout main commit này cho lần thực thi này.
+## thành viên đã thực hiện:
+
+## thành viên chưa thực hiện:
+- sun
+- anhthy
+- tlinh
+- qhy
+
 ---
 
 # ========================================================
-# PHẦN A: KẾ HOẠCH COMMIT ĐỢT 6 (PHASE 6 - HIỆN TẠI ĐANG THỰC HIỆN)
+# PHẦN A: KẾ HOẠCH COMMIT ĐỢT 7 (PHASE 7 - HIỆN TẠI ĐANG THỰC HIỆN)
+# ========================================================
+
+## 1. MỐC ĐỒNG BỘ CƠ SỞ ĐỢT 7 (PHASE 7 BASELINE SNAPSHOT)
+
+> [!IMPORTANT]
+> **MỐC CHỐT ĐỒNG BỘ ĐỢT 7 (PHASE 7 TARGET)**
+> - **Mã Commit Baseline Team Bắt đầu:** Nhánh `main` kho Team sau khi hoàn thành merge 4 nhánh của Đợt 6.
+> - **Mã Commit Baseline Đích (Personal HEAD):** Nhánh `main` kho Personal (`0f048ed` hoặc mốc mới nhất).
+> - **Thời điểm lập lịch:** Ngày **14/11/2026**
+> - **Mục đích:** Đồng bộ hoàn thiện các tính năng nâng cao: 
+>   1. Tính năng **Ẩn/Hiện sản phẩm** toàn diện trên WinForms POS, Web Storefront, POS Offline, Repositories và CSDL.
+>   2. **Ràng buộc mật khẩu tối thiểu 6 ký tự** 4 tầng (HTML5, JS Client, Web API, Application Use Case).
+>   3. Đồng bộ **tồn kho thực tế và kích hoạt lọc ngày** cho Báo cáo tồn kho & chênh lệch kiểm kê.
+>   4. Chuẩn hóa **RESTful API Nhân viên & Khách hàng** (`NhanVienController.cs`, `KhachHangController.cs`).
+>   5. **Đồng bộ 4 sơ đồ Phân hệ XML** khớp 100% mã nguồn C# và lược đồ vật lý CSDL.
+>   6. Chuẩn hóa kịch bản chạy hệ thống `.bat` và cấu hình chuẩn dòng `.gitattributes`.
+> - **Phân công đặc thù theo yêu cầu:** Riêng thành viên `qhy` sẽ commit toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes` và 2 file `.bat` cùng với các View WinForms Admin / POS.
+
+---
+
+## 2. NGUYÊN TẮC VÀNG KHI COMMIT ĐỢT 7 & THỨ TỰ MERGE PR
+
+> [!WARNING]
+> **TUYỆT ĐỐI KHÔNG COMMIT BUILD ARTIFACTS / TỆP NHẬT KÝ TẠM**
+> - **CẤM** commit các thư mục: `bin/`, `obj/`, `.vs/`, `.vscode/`, `TestResults/`, `logs/`.
+> - **CẤM** commit các tệp cấu hình cá nhân hoặc tệp nhật ký sinh lúc chạy: `*.user`, `*.suo`, `*.log`, `*.cache`.
+> - **CHỈ COMMIT** chính xác các tệp mã nguồn, cấu hình dự án, sơ đồ XML và kịch bản khởi chạy được phân công, bảo đảm chuẩn mã hóa `UTF-8` để giữ nguyên tiếng Việt có dấu.
+> - **Tránh tuyệt đối** việc gõ lệnh `git add .` hoặc `git add -A` một cách cẩu thả.
+
+### Thứ Tự Merge Pull Request Khuyến Nghị (Bắt Buộc Để Giữ Build Xanh)
+Các thành viên có thể tạo nhánh và chuẩn bị commit song song từ nhánh `main` mới nhất của kho Team, nhưng khi **Merge PR vào `main` của kho Team** phải ghép đúng thứ tự:
+1. **Merge #1 — `sun` (10 tệp):** Domain Catalog, Repositories Nền Tảng, Use Case Báo Cáo Tồn Kho Thực Tế & Unit Tests Thống Kê / Catalog.
+2. **Merge #2 — `anhthy` (7 tệp):** Web API Controllers (`SanPhamController`, `KhachHangController`, `NhanVienController`), UI Storefront JS/HTML & Unit Tests Xác Thực Khách Hàng.
+3. **Merge #3 — `tlinh` (6 tệp):** Tài Liệu Quy Trình Công Nghệ, Hướng Dẫn Kỹ Thuật & Cấu Hình Môi Trường Docker Container.
+4. **Merge #4 — `qhy` (19 tệp/nhóm tệp):** Toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes`, 2 file `.bat` (`chay_he_thong.bat`, `chay_web.bat`), các View WinForms Admin/POS & Integration Tests CSDL.
+
+---
+
+## 3. BẢNG MA TRẬN PHÂN CHIA TRÁCH NHIỆM ĐỢT 7 (42 TỆP)
+
+| Thứ tự Merge | Thành viên | Phân hệ phụ trách Đợt 7 | CSDL | XML | Domain | Application | Infrastructure | Web | Admin | Tests | Scripts/Docs | Tổng tệp | Nhánh Làm Việc Đợt 7 |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **#1** | **`sun`** | **Domain Catalog, Repositories Nền Tảng, Use Case Tồn Kho Thực Tế & Unit Tests** | 0 | 0 | 2 | 1 | 4 | 0 | 0 | 3 | 0 | **10 tệp** | `feature/phase7-catalog-reporting-module` |
+| **#2** | **`anhthy`** | **Web API Controllers, UI Storefront JS/HTML & Xác Thực Tài Khoản** | 0 | 0 | 0 | 1 | 0 | 5 | 0 | 1 | 0 | **7 tệp** | `feature/phase7-webapi-identity-module` |
+| **#3** | **`tlinh`** | **Tài Liệu Quy Trình, Hướng Dẫn Kỹ Thuật & Cấu Hình Docker Container** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | **6 tệp** | `feature/phase7-docs-devops-module` |
+| **#4** | **`qhy`** | **WinForms Admin/POS, Toàn Bộ XML, Database, Batch Scripts & Git Config** | 1 | 9 | 0 | 0 | 0 | 0 | 4 | 1 | 4 | **19 tệp** | `feature/phase7-admin-xml-database-module` |
+| | **TỔNG** | | **1** | **9** | **2** | **2** | **4** | **5** | **4** | **5** | **10** | **42 tệp** | |
+
+---
+
+## 4. KẾ HOẠCH COMMIT CHI TIẾT THEO 4 THÀNH VIÊN ĐỢT 7
+
+```mermaid
+flowchart TD
+    subgraph Phase7Run["Đồng Bộ Đầy Đủ Personal -> Team Đợt 7"]
+        A["#1 sun: Domain, Repos, Tồn Kho Thực Tế & Tests (10 tệp)"] --> A_branch["feature/phase7-catalog-reporting-module"]
+        B["#2 anhthy: Web Controllers, JS/HTML Storefront & Tests (7 tệp)"] --> B_branch["feature/phase7-webapi-identity-module"]
+        C["#3 tlinh: Quy Trình Công Nghệ & Docker Container (6 tệp)"] --> C_branch["feature/phase7-docs-devops-module"]
+        D["#4 qhy: WinForms, Thư Mục XML, Database, Scripts & Config (19 tệp)"] --> D_branch["feature/phase7-admin-xml-database-module"]
+        A_branch -->|Merge #1| MAIN["Nhánh main Team (Build Xanh 89 Tests)"]
+        B_branch -->|Merge #2| MAIN
+        C_branch -->|Merge #3| MAIN
+        D_branch -->|Merge #4| MAIN
+    end
+```
+
+---
+
+### 1. Thành viên `sun` (Đợt 7 — Merge #1)
+- **Phân hệ phụ trách:** **Domain Catalog, Repositories Nền Tảng, Use Case Tồn Kho Thực Tế & Unit Tests**
+- **Nghiệp vụ & tệp bổ sung:**
+  - `SanPhamTrangSuc.cs`: Bổ sung thuộc tính `IsHidden { get; set; } = false` và tham số constructor.
+  - `IThongKeRepository.cs` & `ThongKeRepository.cs`: Đồng bộ công thức tồn kho thực tế `Nhập - Xuất + Chênh lệch kiểm kê`, mở rộng lọc theo ngày an toàn.
+  - `BlinkBlink.Infrastructure.csproj`: Cập nhật cấu hình nhúng file CSDL.
+  - `DatabaseHelper.cs`: Bổ sung kịch bản tự động kiểm tra và thêm cột `IsHidden` vào bảng `dbo.SanPhamTrangSuc`.
+  - `SanPhamRepository.cs`: Cập nhật các hàm CRUD (INSERT, UPDATE có `@IsHidden`, SELECT đọc `s.IsHidden`, `MapReaderToSanPham`).
+  - `ThongKeKhoHangUseCase.cs`: Áp dụng chuẩn công thức tính tồn kho thực tế đồng bộ với toàn hệ thống.
+  - Bộ Unit Tests: `QuanLySanPhamUseCaseTests.cs` (kiểm thử `IsHidden`), `ThongKeKhoHangUseCaseTests.cs`, `ThongKeDoanhThuUseCaseTests.cs`.
+- **Nhánh làm việc duy nhất:** `feature/phase7-catalog-reporting-module`
+- **Số lượng:** 10 tệp (`Domain`: 2, `Infrastructure`: 4, `Application`: 1, `Tests`: 3)
+- **Danh sách tệp Đợt 7:**
+  - `src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs`
+  - `src/BlinkBlink.Domain/Interfaces/IThongKeRepository.cs`
+  - `src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj`
+  - `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs`
+  - `src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs`
+  - `src/BlinkBlink.Infrastructure/Repositories/ThongKeRepository.cs`
+  - `src/BlinkBlink.Application/Services/Reporting/ThongKeKhoHangUseCase.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeKhoHangUseCaseTests.cs`
+  - `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeDoanhThuUseCaseTests.cs`
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase7-catalog-reporting-module
+  git add src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs src/BlinkBlink.Domain/Interfaces/IThongKeRepository.cs src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs src/BlinkBlink.Infrastructure/Repositories/ThongKeRepository.cs src/BlinkBlink.Application/Services/Reporting/ThongKeKhoHangUseCase.cs tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeKhoHangUseCaseTests.cs tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeDoanhThuUseCaseTests.cs
+  git commit -m "feat(catalog-reporting): dong bo thuoc tinh ishidden, cong thuc ton kho thuc te va unit tests thong ke"
+  git push origin feature/phase7-catalog-reporting-module
+  ```
+
+---
+
+### 2. Thành viên `anhthy` (Đợt 7 — Merge #2)
+- **Phân hệ phụ trách:** **Web API Controllers, UI Storefront JS/HTML & Xác Thực Tài Khoản**
+- **Nghiệp vụ & tệp bổ sung:**
+  - `DangKyKhachHangUseCase.cs`: Bổ sung chốt chặn mật khẩu tối thiểu 6 ký tự tại tầng Application lõi.
+  - `SanPhamController.cs`: Lọc bỏ sản phẩm bị ẩn (`!sp.IsHidden`) trong `LayDanhSach`, `LayTheoNhom`, và chặn trả về HTTP 404 trong `LayChiTiet`.
+  - `KhachHangController.cs`: Bổ sung kiểm tra mật khẩu $\ge 6$ ký tự và API khóa tài khoản khách hàng `PUT /api/KhachHang/khoa/{maKh}` khớp sơ đồ XML.
+  - `NhanVienController.cs`: Triển khai đầy đủ RESTful API cho quản lý nhân viên (tạo mới, khóa, reset mật khẩu) khớp 100% sơ đồ XML.
+  - `_Layout.cshtml`: Thêm thuộc tính HTML5 `minlength="6"` cho ô nhập mật khẩu đăng ký.
+  - `storefront.js`: Kiểm tra độ dài mật khẩu $\ge 6$ ký tự phía client, hiển thị cảnh báo lỗi inline và thông báo Toast.
+  - Bộ Unit Tests: `DangKyKhachHangUseCaseTests.cs` (kiểm thử đăng ký mật khẩu ngắn, dữ liệu rỗng, đăng ký thành công).
+- **Nhánh làm việc duy nhất:** `feature/phase7-webapi-identity-module`
+- **Số lượng:** 7 tệp (`Application`: 1, `Web`: 5, `Tests`: 1)
+- **Danh sách tệp Đợt 7:**
+  - `src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs`
+  - `src/BlinkBlink.Web/Controllers/SanPhamController.cs`
+  - `src/BlinkBlink.Web/Controllers/KhachHangController.cs`
+  - `src/BlinkBlink.Web/Controllers/NhanVienController.cs`
+  - `src/BlinkBlink.Web/Views/Shared/_Layout.cshtml`
+  - `src/BlinkBlink.Web/wwwroot/js/storefront.js`
+  - `tests/BlinkBlink.UnitTests/Services/Identity/DangKyKhachHangUseCaseTests.cs`
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase7-webapi-identity-module
+  git add src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs src/BlinkBlink.Web/Controllers/SanPhamController.cs src/BlinkBlink.Web/Controllers/KhachHangController.cs src/BlinkBlink.Web/Controllers/NhanVienController.cs src/BlinkBlink.Web/Views/Shared/_Layout.cshtml src/BlinkBlink.Web/wwwroot/js/storefront.js tests/BlinkBlink.UnitTests/Services/Identity/DangKyKhachHangUseCaseTests.cs
+  git commit -m "feat(webapi-identity): rang buoc mat khau toi thieu 6 ky tu, loc san pham an tren web va api nhan vien"
+  git push origin feature/phase7-webapi-identity-module
+  ```
+
+---
+
+### 3. Thành viên `tlinh` (Đợt 7 — Merge #3)
+- **Phân hệ phụ trách:** **Tài Liệu Quy Trình, Hướng Dẫn Kỹ Thuật & Cấu Hình Docker Container**
+- **Nghiệp vụ & tệp bổ sung:**
+  - `CONG_NGHE_VA_QUY_TRINH.md`: Cập nhật tài liệu quy trình phát triển, kiểm thử đa tầng và đồng bộ kiến trúc.
+  - `GEMINI.md`: Cập nhật các quy chuẩn kỹ thuật, UTF-8 và đường dẫn CSDL.
+  - `CONGVIECTIEPTHEO.md`: Đồng bộ định hướng phát triển và ghi nhận các tính năng đã thực hiện.
+  - Cấu hình Container: `Dockerfile`, `Dockerfile.dev`, `docker-compose.dev.yml` đồng bộ đường dẫn CSDL vật lý mới `database/BlinkBlinkJewelry.sql`.
+- **Nhánh làm việc duy nhất:** `feature/phase7-docs-devops-module`
+- **Số lượng:** 6 tệp (`Docs`: 3, `DevOps`: 3)
+- **Danh sách tệp Đợt 7:**
+  - `CONG_NGHE_VA_QUY_TRINH.md`
+  - `GEMINI.md`
+  - `CONGVIECTIEPTHEO.md`
+  - `Dockerfile`
+  - `Dockerfile.dev`
+  - `docker-compose.dev.yml`
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase7-docs-devops-module
+  git add CONG_NGHE_VA_QUY_TRINH.md GEMINI.md CONGVIECTIEPTHEO.md Dockerfile Dockerfile.dev docker-compose.dev.yml
+  git commit -m "docs(workflow-docker): cap nhat quy trinh kiem thu, dong bo duong dan database cho docker container"
+  git push origin feature/phase7-docs-devops-module
+  ```
+
+---
+
+### 4. Thành viên `qhy` (Đợt 7 — Merge #4)
+- **Phân hệ phụ trách:** **Giao Diện WinForms Admin / POS, Toàn Bộ XML, Cơ Sở Dữ Liệu SQL, Kịch Bản Khởi Chạy & Cấu Hình Git**
+- **Nghiệp vụ & tệp bổ sung (theo yêu cầu riêng):**
+  - **Toàn bộ thư mục `XML/`:** Đồng bộ thuộc tính `- _isHidden: bool` vào `SanPhamTrangSuc` trong 4 sơ đồ phân hệ; bổ sung `QuanLyKiemKeUseCase` vào phân hệ kho; chuẩn hóa các đường nối quan hệ phân hệ bán hàng và phân hệ người dùng; cập nhật lược đồ vật lý `LuocDoVatLy.xml`.
+  - **Toàn bộ thư mục `database/`:** `database/BlinkBlinkJewelry.sql` bổ sung cột `IsHidden BIT NOT NULL DEFAULT 0` và đồng bộ việc chuyển tệp vào thư mục `database/`.
+  - **Tệp cấu hình `.gitattributes`:** Ghim chuẩn kết thúc dòng CRLF (`*.bat text eol=crlf`) cho toàn bộ kịch bản batch trên Windows.
+  - **2 Kịch bản chạy hệ thống `.bat`:**
+    + `chay_he_thong.bat` (Khởi chạy Kestrel đa cổng 5095/5000 bằng `--launch-profile http` và mở song song WinForms Admin POS).
+    + `chay_web.bat` (Khởi chạy Web storefront độc lập an toàn).
+  - **Giao diện WinForms Admin / POS:**
+    + `ProductsView.cs`: Thêm nút bấm `👁 Ẩn / Hiện SP` trên toolbar và thêm cột hiển thị `🟢 Đang hiện` / `👁️ Đang ẩn` vào bảng sản phẩm.
+    + `OfflineSalesView.cs`: Ràng buộc loại trừ hoàn toàn các sản phẩm ẩn khỏi danh sách bán hàng tại quầy và danh sách kích cỡ variant.
+    + `ReportingView.cs`: Kích hoạt bộ lọc ngày cho Báo Cáo Tồn Kho và Top Bán Chạy, hiển thị trạng thái nút Active và cảnh báo hết hàng màu đỏ.
+    + `InMemoryDataContext.cs`: Hỗ trợ lưu trữ thuộc tính `IsHidden` trong môi trường in-memory.
+  - **Kiểm thử tích hợp luồng CSDL:** `DatabaseWorkflowIntegrationTests.cs` (tự động kích hoạt `EnsureSchemaCompatibility()` đồng bộ CSDL test).
+- **Nhánh làm việc duy nhất:** `feature/phase7-admin-xml-database-module`
+- **Số lượng:** 19 tệp/nhóm thư mục (`XML`: 9, `Database`: 1, `Admin`: 4, `Tests`: 1, `Scripts & Config`: 4)
+- **Danh sách tệp Đợt 7:**
+  - `XML/Phân hệ quản lý sản phẩm và kho hàng.xml`
+  - `XML/Phân hệ quản lý người dùng và phân quyền.xml`
+  - `XML/Phân hệ quản lý bán hàng.xml`
+  - `XML/Phân hệ báo cáo và thống kê.xml`
+  - `XML/Phân hệ quản lý bảo hành.xml`
+  - `XML/LuocDoVatLy.xml`
+  - `XML/LuocDoLuanLy.xml`
+  - `XML/LuocDoYNiem.xml`
+  - `XML/LuocDoLuongManHinh.xml`
+  - `database/BlinkBlinkJewelry.sql`
+  - `BlinkBlinkJewelry.sql` (ghi nhận việc chuyển file sang thư mục `database/`)
+  - `.gitattributes`
+  - `chay_he_thong.bat`
+  - `chay_web.bat`
+  - `src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs`
+  - `src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs`
+  - `src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs`
+  - `src/BlinkBlink.Admin/Services/InMemoryDataContext.cs`
+  - `tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs`
+- **Lệnh thực hiện 1 lần duy nhất:**
+  ```bash
+  git checkout -b feature/phase7-admin-xml-database-module
+  git add XML/ database/ BlinkBlinkJewelry.sql .gitattributes chay_he_thong.bat chay_web.bat src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs src/BlinkBlink.Admin/Services/InMemoryDataContext.cs tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs
+  git commit -m "feat(admin-xml-db): nut an hien sp winforms, dong bo so do xml, csdl database va kich ban khoi chay bat"
+  git push origin feature/phase7-admin-xml-database-module
+  ```
+
+---
+
+## 5. BẢNG TRA CỨU ĐỐI SOÁT 42 TỆP ĐỢT 7 THEO THÀNH VIÊN
+
+| STT | Tên Tệp / Đường Dẫn | Phân Hệ / Thư Mục | Vai Trò Kỹ Thuật | Người Phụ Trách |
+| :---: | :--- | :--- | :--- | :---: |
+| 1 | `src/BlinkBlink.Domain/Entities/Catalog/SanPhamTrangSuc.cs` | Domain Catalog | Bổ sung thuộc tính `IsHidden` | `sun` |
+| 2 | `src/BlinkBlink.Domain/Interfaces/IThongKeRepository.cs` | Domain Interfaces | Mở rộng tham số lọc ngày | `sun` |
+| 3 | `src/BlinkBlink.Infrastructure/BlinkBlink.Infrastructure.csproj` | Infrastructure | Cập nhật nhúng CSDL | `sun` |
+| 4 | `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs` | Infrastructure Data | Nâng cấp schema tự động | `sun` |
+| 5 | `src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs` | Infrastructure Repos | CRUD `IsHidden` an toàn | `sun` |
+| 6 | `src/BlinkBlink.Infrastructure/Repositories/ThongKeRepository.cs` | Infrastructure Repos | Tồn kho thực tế kế toán | `sun` |
+| 7 | `src/BlinkBlink.Application/Services/Reporting/ThongKeKhoHangUseCase.cs` | Application Reporting | Tính tồn kho chuẩn | `sun` |
+| 8 | `tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs` | Unit Tests Catalog | Test cờ `IsHidden` | `sun` |
+| 9 | `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeKhoHangUseCaseTests.cs` | Unit Tests Reporting | Test tồn kho thực tế | `sun` |
+| 10 | `tests/BlinkBlink.UnitTests/Services/Reporting/ThongKeDoanhThuUseCaseTests.cs` | Unit Tests Reporting | Test doanh thu & top bán | `sun` |
+| 11 | `src/BlinkBlink.Application/Services/Identity/DangKyKhachHangUseCase.cs` | Application Identity | Chặn mật khẩu < 6 ký tự | `anhthy` |
+| 12 | `src/BlinkBlink.Web/Controllers/SanPhamController.cs` | Web Controllers | Lọc bỏ SP ẩn khỏi API | `anhthy` |
+| 13 | `src/BlinkBlink.Web/Controllers/KhachHangController.cs` | Web Controllers | Validate mật khẩu, API khóa KH | `anhthy` |
+| 14 | `src/BlinkBlink.Web/Controllers/NhanVienController.cs` | Web Controllers | RESTful API quản lý NV | `anhthy` |
+| 15 | `src/BlinkBlink.Web/Views/Shared/_Layout.cshtml` | Web Presentation | HTML5 `minlength="6"` | `anhthy` |
+| 16 | `src/BlinkBlink.Web/wwwroot/js/storefront.js` | Web Client JS | Kiểm tra mật khẩu $\ge 6$ ký tự | `anhthy` |
+| 17 | `tests/BlinkBlink.UnitTests/Services/Identity/DangKyKhachHangUseCaseTests.cs` | Unit Tests Identity | Unit tests đăng ký tài khoản | `anhthy` |
+| 18 | `CONG_NGHE_VA_QUY_TRINH.md` | Tài liệu dự án | Quy trình kiểm thử & CI/CD | `tlinh` |
+| 19 | `GEMINI.md` | Hướng dẫn kỹ thuật | Quy chuẩn UTF-8 & CSDL | `tlinh` |
+| 20 | `CONGVIECTIEPTHEO.md` | Kế hoạch dự án | Ghi nhận tính năng hoàn tất | `tlinh` |
+| 21 | `Dockerfile` | DevOps Container | Đồng bộ CSDL vật lý | `tlinh` |
+| 22 | `Dockerfile.dev` | DevOps Container | Môi trường phát triển container | `tlinh` |
+| 23 | `docker-compose.dev.yml` | DevOps Container | Ánh xạ volume CSDL | `tlinh` |
+| 24 | `XML/Phân hệ quản lý sản phẩm và kho hàng.xml` | XML Diagrams | Thêm `QuanLyKiemKe`, `_isHidden` | `qhy` |
+| 25 | `XML/Phân hệ quản lý người dùng và phân quyền.xml` | XML Diagrams | Khớp `NhanVienController` | `qhy` |
+| 26 | `XML/Phân hệ quản lý bán hàng.xml` | XML Diagrams | 7 đường nối & `_isHidden` | `qhy` |
+| 27 | `XML/Phân hệ báo cáo và thống kê.xml` | XML Diagrams | Thêm thuộc tính `_isHidden` | `qhy` |
+| 28 | `XML/Phân hệ quản lý bảo hành.xml` | XML Diagrams | Thêm thuộc tính `_isHidden` | `qhy` |
+| 29 | `XML/LuocDoVatLy.xml` | XML Diagrams | Cột `IsHidden` trong bảng | `qhy` |
+| 30 | `XML/LuocDoLuanLy.xml` | XML Diagrams | Sơ đồ luận lý dữ liệu | `qhy` |
+| 31 | `XML/LuocDoYNiem.xml` | XML Diagrams | Sơ đồ ý niệm dữ liệu | `qhy` |
+| 32 | `XML/LuocDoLuongManHinh.xml` | XML Diagrams | Sơ đồ luồng màn hình UI | `qhy` |
+| 33 | `database/BlinkBlinkJewelry.sql` | CSDL SQL | Script CSDL thêm `IsHidden` | `qhy` |
+| 34 | `BlinkBlinkJewelry.sql` | CSDL Gốc | Ghi nhận di chuyển sang `database/` | `qhy` |
+| 35 | `.gitattributes` | Cấu hình Git | Ghim CRLF cho kịch bản `.bat` | `qhy` |
+| 36 | `chay_he_thong.bat` | Batch Script | Khởi chạy Kestrel đa cổng + POS | `qhy` |
+| 37 | `chay_web.bat` | Batch Script | Khởi chạy Web Kestrel độc lập | `qhy` |
+| 38 | `src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs` | WinForms Catalog | Nút Ẩn/Hiện & Cột Hiển Thị | `qhy` |
+| 39 | `src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs` | WinForms POS | Lọc bỏ sản phẩm bị ẩn | `qhy` |
+| 40 | `src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs` | WinForms Reporting | Bộ lọc ngày & tồn kho thực tế | `qhy` |
+| 41 | `src/BlinkBlink.Admin/Services/InMemoryDataContext.cs` | WinForms Services | Lưu trữ `IsHidden` in-memory | `qhy` |
+| 42 | `tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs` | Integration Tests | Tự động nâng cấp CSDL test | `qhy` |
+
+---
+
+# ========================================================
+# PHẦN B: LỊCH SỬ ĐỒNG BỘ ĐỢT 6 (PHASE 6 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 
 ## 1. MỐC ĐỒNG BỘ CƠ SỞ ĐỢT 6 (PHASE 6 BASELINE SNAPSHOT)
@@ -139,7 +405,7 @@ flowchart TD
 - **Nhánh làm việc duy nhất:** `feature/phase6-catalog-database-module`
 - **Số lượng:** 16 tệp (`CSDL`: 1, `Domain`: 1, `Infrastructure`: 4, `Web/images`: 9, `Tests`: 1)
 - **Danh sách tệp Đợt 6:**
-  - `BlinkBlinkJewelry.sql`
+  - `database/BlinkBlinkJewelry.sql`
   - `src/BlinkBlink.Domain/Interfaces/IDanhMucRepository.cs`
   - `src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs`
   - `src/BlinkBlink.Infrastructure/Repositories/DanhMucRepository.cs`
@@ -158,7 +424,7 @@ flowchart TD
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase6-catalog-database-module
-  git add BlinkBlinkJewelry.sql src/BlinkBlink.Domain/Interfaces/IDanhMucRepository.cs src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs src/BlinkBlink.Infrastructure/Repositories/DanhMucRepository.cs src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs src/BlinkBlink.Infrastructure/Repositories/ThongKeRepository.cs tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs src/BlinkBlink.Web/wwwroot/images/products/
+  git add database/BlinkBlinkJewelry.sql src/BlinkBlink.Domain/Interfaces/IDanhMucRepository.cs src/BlinkBlink.Infrastructure/Data/DatabaseHelper.cs src/BlinkBlink.Infrastructure/Repositories/DanhMucRepository.cs src/BlinkBlink.Infrastructure/Repositories/SanPhamRepository.cs src/BlinkBlink.Infrastructure/Repositories/ThongKeRepository.cs tests/BlinkBlink.UnitTests/Services/Catalog/QuanLySanPhamUseCaseTests.cs src/BlinkBlink.Web/wwwroot/images/products/
   git commit -m "feat(catalog-database): toi uu danh muc an toan, dong bo ton kho thuc te va unit tests san pham"
   git push origin feature/phase6-catalog-database-module
   ```
@@ -266,7 +532,7 @@ flowchart TD
 
 | STT | Tệp Mã Nguồn / Cấu Hình / Tài Nguyên | Thư Mục | Phân Hệ | Thành Viên Phụ Trách |
 | :---: | :--- | :--- | :---: | :---: |
-| 1 | `BlinkBlinkJewelry.sql` | Thư mục gốc | Database Schema | `sun` |
+| 1 | `BlinkBlinkJewelry.sql` | `database/` | Database Schema | `sun` |
 | 2 | `IDanhMucRepository.cs` | `src/BlinkBlink.Domain/Interfaces` | Catalog Domain | `sun` |
 | 3 | `DatabaseHelper.cs` | `src/BlinkBlink.Infrastructure/Data` | Infrastructure Data | `sun` |
 | 4 | `DanhMucRepository.cs` | `src/BlinkBlink.Infrastructure/Repositories` | Catalog Repository | `sun` |
@@ -310,7 +576,7 @@ flowchart TD
 ---
 
 # ========================================================
-# PHẦN B: LỊCH SỬ ĐỒNG BỘ ĐỢT 5 (PHASE 5 ARCHIVE & AUDIT TRAIL)
+# PHẦN C: LỊCH SỬ ĐỒNG BỘ ĐỢT 5 (PHASE 5 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 
 ## 1. MỐC ĐỒNG BỘ CƠ SỞ ĐỢT 5 (PHASE 5 BASELINE SNAPSHOT)
@@ -605,7 +871,7 @@ Sau khi cả 4 thành viên hoàn thành commit Đợt 5 và merge nhánh của 
 ---
 
 # ========================================================
-# PHẦN C: LỊCH SỬ ĐỒNG BỘ ĐỢT 4 (PHASE 4 ARCHIVE & AUDIT TRAIL)
+# PHẦN D: LỊCH SỬ ĐỒNG BỘ ĐỢT 4 (PHASE 4 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 > [!NOTE]
 > Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 4 (Mốc snapshot `a142559`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.
@@ -772,7 +1038,7 @@ flowchart TD
 ---
 
 # ========================================================
-# PHẦN D: LỊCH SỬ ĐỒNG BỘ ĐỢT 3 (PHASE 3 ARCHIVE & AUDIT TRAIL)
+# PHẦN E: LỊCH SỬ ĐỒNG BỘ ĐỢT 3 (PHASE 3 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 > [!NOTE]
 > Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 3 (Mốc snapshot `7c9daac`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.
@@ -853,7 +1119,7 @@ flowchart TD
 ---
 
 # ========================================================
-# PHẦN E: LỊCH SỬ ĐỒNG BỘ ĐỢT 2 (PHASE 2 ARCHIVE & AUDIT TRAIL)
+# PHẦN F: LỊCH SỬ ĐỒNG BỘ ĐỢT 2 (PHASE 2 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 > [!NOTE]
 > Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 2 (Mốc snapshot `4ea7311`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.
@@ -930,7 +1196,7 @@ flowchart TD
 ---
 
 # ========================================================
-# PHẦN F: LỊCH SỬ ĐỒNG BỘ ĐỢT 1 (PHASE 1 ARCHIVE & AUDIT TRAIL)
+# PHẦN G: LỊCH SỬ ĐỒNG BỘ ĐỢT 1 (PHASE 1 ARCHIVE & AUDIT TRAIL)
 # ========================================================
 > [!NOTE]
 > Khu vực này lưu trữ nguyên vẹn dữ liệu kế hoạch và bảng tra cứu của **Đợt 1 (Mốc snapshot `7993495`)** đã hoàn tất thành công để phục vụ đối chiếu và truy xuất nguồn gốc khi xảy ra lỗi.

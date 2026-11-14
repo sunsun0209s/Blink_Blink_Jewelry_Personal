@@ -435,7 +435,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="3Ot9W13Y0yvyxiA-77Te-1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SanPhamTrangSuc" vertex="1">
-          <mxGeometry height="320" width="190" x="860" y="3850" as="geometry" />
+          <mxGeometry height="346" width="190" x="860" y="3850" as="geometry" />
         </mxCell>
         <mxCell id="3Ot9W13Y0yvyxiA-77Te-2" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- _maSanPham: string" vertex="1">
           <mxGeometry height="26" width="190" y="26" as="geometry" />
@@ -461,17 +461,49 @@
         <mxCell id="3Ot9W13Y0yvyxiA-77Te-9" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_giaBan: decimal" vertex="1">
           <mxGeometry height="26" width="190" y="208" as="geometry" />
         </mxCell>
+        <mxCell id="3Ot9W13Y0yvyxiA-77Te-ishidden" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="-&amp;nbsp;_isHidden: bool" vertex="1">
+          <mxGeometry height="26" width="190" y="234" as="geometry" />
+        </mxCell>
         <mxCell id="3Ot9W13Y0yvyxiA-77Te-10" parent="3Ot9W13Y0yvyxiA-77Te-1" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
-          <mxGeometry height="8" width="190" y="234" as="geometry" />
+          <mxGeometry height="8" width="190" y="260" as="geometry" />
         </mxCell>
         <mxCell id="3Ot9W13Y0yvyxiA-77Te-11" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- KiemTraTonKho(): bool" vertex="1">
-          <mxGeometry height="26" width="190" y="242" as="geometry" />
-        </mxCell>
-        <mxCell id="3Ot9W13Y0yvyxiA-77Te-12" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- CapNhatTrangThai(tt): bool" vertex="1">
           <mxGeometry height="26" width="190" y="268" as="geometry" />
         </mxCell>
-        <mxCell id="3Ot9W13Y0yvyxiA-77Te-13" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- ToString(): string" vertex="1">
+        <mxCell id="3Ot9W13Y0yvyxiA-77Te-12" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- CapNhatTrangThai(tt): bool" vertex="1">
           <mxGeometry height="26" width="190" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="3Ot9W13Y0yvyxiA-77Te-13" parent="3Ot9W13Y0yvyxiA-77Te-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- ToString(): string" vertex="1">
+          <mxGeometry height="26" width="190" y="320" as="geometry" />
+        </mxCell>
+        <!-- Bổ sung các đường nối quan hệ theo chuẩn Clean Architecture -->
+        <!-- 1. BanHangController sử dụng CapNhatDonHangDTO -->
+        <mxCell id="edge-BanHangCtrl-CapNhatDonHangDTO" edge="1" parent="1" source="iiAr-5oXwVO5vsvQZs6u-8" target="cndh-dto-1" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=0.85;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 2. BanHangController sử dụng XuLyDonHangUseCase -->
+        <mxCell id="edge-BanHangCtrl-XuLyDonHangUseCase" edge="1" parent="1" source="iiAr-5oXwVO5vsvQZs6u-8" target="xldh-uc-1" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 3. XuLyDonHangUseCase sử dụng IHoaDonRepository -->
+        <mxCell id="edge-XuLyDonHangUC-IHoaDonRepo" edge="1" parent="1" source="xldh-uc-1" target="5kvH_WBG17UKDlenbwON-8" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.85;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 4. XuLyDonHangUseCase thao tác thực thể HoaDon -->
+        <mxCell id="edge-XuLyDonHangUC-HoaDon" edge="1" parent="1" source="xldh-uc-1" target="cV8LC29PfWtaFdWmyxPj-1" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 5. BanHangOfflineUseCase sử dụng TaoHoaDonOfflineDTO -->
+        <mxCell id="edge-BanHangOfflineUC-TaoHoaDonOfflineDTO" edge="1" parent="1" source="bho-uc-1" target="thd-offline-dto-1" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 6. BanHangOfflineUseCase sử dụng IHoaDonRepository -->
+        <mxCell id="edge-BanHangOfflineUC-IHoaDonRepo" edge="1" parent="1" source="bho-uc-1" target="5kvH_WBG17UKDlenbwON-8" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.9;exitY=0;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <!-- 7. BanHangOfflineUseCase khởi tạo thực thể HoaDon -->
+        <mxCell id="edge-BanHangOfflineUC-HoaDon" edge="1" parent="1" source="bho-uc-1" target="cV8LC29PfWtaFdWmyxPj-1" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="Use">
+          <mxGeometry relative="1" width="160" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

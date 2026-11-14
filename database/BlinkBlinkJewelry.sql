@@ -111,6 +111,8 @@ CREATE TABLE dbo.SanPhamTrangSuc (
     TrangThai NVARCHAR(50) NOT NULL DEFAULT 'HetHang', -- SanSang, HetHang, NgungKinhDoanh
     HinhAnh NVARCHAR(500) NULL,
     PhanTramGiamGia INT NOT NULL DEFAULT 0,
+    TyLeLoiNhuan DECIMAL(5, 2) NOT NULL DEFAULT 0,
+    IsHidden BIT NOT NULL DEFAULT 0, -- 0: Hiển thị trên Web và POS, 1: Ẩn khỏi Web và POS
     CONSTRAINT FK_SanPham_DanhMuc FOREIGN KEY (MaDanhMuc) REFERENCES dbo.DanhMuc(MaDanhMuc)
 );
 GO
@@ -175,7 +177,7 @@ CREATE TABLE dbo.PhieuNhapKho (
     MaNhanVien VARCHAR(50) NOT NULL,
     TongSoSanPham INT NOT NULL DEFAULT 0,
     TongGiaTri DECIMAL(18, 2) NOT NULL DEFAULT 0,
-    TrangThai BIT NOT NULL DEFAULT 1, -- 1: Hợp lệ / Hoạt động, 0: Đã vô hiệu hóa bởi Admin
+    TrangThai NVARCHAR(50) NOT NULL DEFAULT 'DaDuyet', -- ChoDuyet: Chờ Admin duyệt, DaDuyet: Đã duyệt (cộng kho), DaHuy: Đã hủy
     CONSTRAINT FK_PhieuNhapKho_NhanVien FOREIGN KEY (MaNhanVien) REFERENCES dbo.NguoiDung(MaNguoiDung)
 );
 GO
@@ -282,20 +284,27 @@ GO
 
 -- 5. Nạp danh mục trang sức cao cấp Blink Blink Jewelry
 INSERT INTO dbo.DanhMuc (MaDanhMuc, TenDanhMuc, MoTa) VALUES
+('DM00', N'Chưa phân loại', N'Danh mục mặc định cho sản phẩm chưa phân loại hoặc danh mục cũ bị xóa'),
 ('DM01', N'Nhẫn Kim Cương', N'Các dòng nhẫn đính hôn, nhẫn cưới và nhẫn kim cương tự nhiên tinh xảo'),
 ('DM02', N'Dây Chuyền & Mặt Dây', N'Dây chuyền vàng Ý 18K và mặt dây đính đá quý phong thủy'),
 ('DM03', N'Bông Tai Quý Phái', N'Bông tai đính đá Sapphire, Ruby và ngọc trai thiên nhiên thượng hạng'),
 ('DM04', N'Vòng Tay & Lắc Kim Cương', N'Lắc tay Tennis và vòng kiềng chế tác thủ công cao cấp');
 GO
 
+-- 5.1. Nạp nhóm sản phẩm mẫu (dòng sản phẩm đa dạng kích cỡ)
+INSERT INTO dbo.NhomSanPham (MaNhom, TenNhom, MoTa) VALUES
+('NHOM01', N'Bộ Sưu Tập Nhẫn Solitaire Diamond 18K', N'Dòng nhẫn kim cương đính chấu 4 chấu kinh điển với các kích cỡ size 14 và size 15');
+GO
+
 -- 6. Nạp sản phẩm trang sức độc bản
-INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia) VALUES
-('SP001', N'Nhẫn Solitaire Diamond 18K', 'DM01', N'Vàng trắng 18K đính kim cương chủ 5.4 ly', N'Size 14', 18000000, 28500000, 'SanSang', 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80', 10),
-('SP002', N'Dây Chuyền Eternal Heart Ruby', 'DM02', N'Vàng hồng 18K đính đá Ruby huyết bồ câu', N'Size 45cm', 12000000, 19200000, 'SanSang', 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80', 0),
-('SP003', N'Bông Tai Royal Blue Sapphire', 'DM03', N'Bạch kim Platin 950 đính Sapphire Hoàng gia', N'Tiêu chuẩn', 22000000, 34000000, 'SanSang', 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80', 15),
-('SP004', N'Lắc Tay Tennis Diamond Bracelet', 'DM04', N'Vàng trắng 18K đính 45 viên kim cương tự nhiên', N'Size 17cm', 48000000, 72000000, 'SanSang', 'https://images.unsplash.com/photo-1611591475152-47354900a359?auto=format&fit=crop&w=800&q=80', 20),
-('SP005', N'Nhẫn Cưới Harmony Eternity', 'DM01', N'Vàng Ý 750 tinh tế đính kim cương tấm viền', N'Size 16', 11000000, 16800000, 'SanSang', 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80', 5),
-('SP006', N'Mặt Dây Chuyền Ngọc Trai South Sea', 'DM02', N'Vàng vàng 18K đính ngọc trai biển và kim cương', N'Size 42cm', 28000000, 42500000, 'SanSang', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80', 0);
+INSERT INTO dbo.SanPhamTrangSuc (MaSanPham, TenSanPham, MaDanhMuc, ChatLieu, Size, GiaNhap, GiaBan, TrangThai, HinhAnh, PhanTramGiamGia, MaNhom) VALUES
+('SP001', N'Nhẫn Solitaire Diamond 18K', 'DM01', N'Vàng trắng 18K đính kim cương chủ 5.4 ly', N'Size 14', 18000000, 28500000, 'SanSang', 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80', 10, 'NHOM01'),
+('SP001_S15', N'Nhẫn Solitaire Diamond 18K (Size 15)', 'DM01', N'Vàng trắng 18K đính kim cương chủ 5.4 ly', N'Size 15', 18000000, 28500000, 'SanSang', 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80', 10, 'NHOM01'),
+('SP002', N'Dây Chuyền Eternal Heart Ruby', 'DM02', N'Vàng hồng 18K đính đá Ruby huyết bồ câu', N'Size 45cm', 12000000, 19200000, 'SanSang', 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80', 0, '0'),
+('SP003', N'Bông Tai Royal Blue Sapphire', 'DM03', N'Bạch kim Platin 950 đính Sapphire Hoàng gia', N'Tiêu chuẩn', 22000000, 34000000, 'SanSang', 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80', 15, '0'),
+('SP004', N'Lắc Tay Tennis Diamond Bracelet', 'DM04', N'Vàng trắng 18K đính 45 viên kim cương tự nhiên', N'Size 17cm', 48000000, 72000000, 'SanSang', 'https://images.unsplash.com/photo-1611591475152-47354900a359?auto=format&fit=crop&w=800&q=80', 20, '0'),
+('SP005', N'Nhẫn Cưới Harmony Eternity', 'DM01', N'Vàng Ý 750 tinh tế đính kim cương tấm viền', N'Size 16', 11000000, 16800000, 'SanSang', 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80', 5, '0'),
+('SP006', N'Mặt Dây Chuyền Ngọc Trai South Sea', 'DM02', N'Vàng vàng 18K đính ngọc trai biển và kim cương', N'Size 42cm', 28000000, 42500000, 'SanSang', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80', 0, '0');
 GO
 
 -- 7. Nạp phiếu nhập kho mẫu
@@ -304,20 +313,24 @@ INSERT INTO dbo.PhieuNhapKho (MaPhieuNhap, NgayNhap, NhaCungCap, MaNhanVien, Ton
 
 INSERT INTO dbo.ChiTietNhapKho (MaPhieuNhap, MaSanPham, SoLuong, GiaVonNhap, SoChungTu) VALUES
 ('PNK20260301', 'SP001', 3, 18000000, 'CT-DOJI-991'),
+('PNK20260301', 'SP001_S15', 2, 18000000, 'CT-DOJI-991B'),
 ('PNK20260301', 'SP002', 3, 12000000, 'CT-DOJI-992'),
-('PNK20260301', 'SP005', 4, 11000000, 'CT-DOJI-993');
+('PNK20260301', 'SP003', 3, 22000000, 'CT-DOJI-994'),
+('PNK20260301', 'SP004', 3, 48000000, 'CT-DOJI-995'),
+('PNK20260301', 'SP005', 4, 11000000, 'CT-DOJI-993'),
+('PNK20260301', 'SP006', 2, 28000000, 'CT-DOJI-996');
 GO
 
 -- 8. Nạp hóa đơn bán hàng thực tế
 INSERT INTO dbo.HoaDon (MaHoaDon, NgayLap, MaKhachHang, MaNhanVien, DiaChiGiaoHang, SoDienThoaiNhan, PhuongThucThanhToan, TrangThaiDonHang, TongTienHang, TienGiamGia, TongThanhToan, GhiChu) VALUES
-('HD1001', '2026-03-10 14:15:00', 'USER_KH001', 'USER_NV001', N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'DaGiao', 28500000, 1000000, 27500000, N'Khách mua kỷ niệm ngày cưới, đóng gói hộp nhung cao cấp'),
+('HD1001', '2026-03-10 14:15:00', 'USER_KH001', 'USER_NV001', N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'DaGiao', 28500000, 2850000, 25650000, N'Khách mua kỷ niệm ngày cưới, đóng gói hộp nhung cao cấp'),
 ('HD1002', '2026-03-15 16:45:00', 'USER_KH002', 'USER_NV001', N'128 Hai Bà Trưng, Phường Đa Kao, Quận 1, TP.HCM', '0977223344', N'TheNganHang', N'DaGiao', 19200000, 0, 19200000, N'Giao hàng hỏa tốc trong ngày'),
-('HD1003', '2026-03-20 10:20:00', 'USER_KH001', NULL, N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'ChoDuyet', 34000000, 0, 34000000, N'Khách đặt trực tuyến qua cổng Web khách hàng');
+('HD1003', '2026-03-20 10:20:00', 'USER_KH001', NULL, N'45 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM', '0988112233', N'ChuyenKhoan', N'ChoDuyet', 34000000, 5100000, 28900000, N'Khách đặt trực tuyến qua cổng Web khách hàng');
 
-INSERT INTO dbo.ChiTietHoaDon (SoHoaDon, MaSanPham, DonGia, SoLuong) VALUES
-('HD1001', 'SP001', 28500000, 1),
-('HD1002', 'SP002', 19200000, 1),
-('HD1003', 'SP003', 34000000, 1);
+INSERT INTO dbo.ChiTietHoaDon (SoHoaDon, MaSanPham, DonGia, SoLuong, PhanTramGiamGia) VALUES
+('HD1001', 'SP001', 28500000, 1, 10),
+('HD1002', 'SP002', 19200000, 1, 0),
+('HD1003', 'SP003', 34000000, 1, 15);
 GO
 
 -- 9. Nạp giỏ hàng trực tuyến mẫu cho khách hàng

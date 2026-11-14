@@ -98,6 +98,6 @@ Sau khi code đã được kiểm tra, review và người dùng xác nhận ho�
 - CẤM chú giải song ngữ thừa thãi: Không tự ý mở ngoặc chèn cụm từ tiếng Anh sau từ tiếng Việt (ví dụ: cấm viết "phân quyền (Role-based Access Control)" hay "tồn kho (Inventory)") trừ khi đó là những thuật ngữ dễ bị sai lệch nghĩa.
 
 ## 4. Quy Chuẩn Cơ Sở Dữ Liệu & Mã Hóa Tiếng Việt (Database Encoding & UTF-8 Rules)
-- **Quy tắc nạp SQL Script bằng lệnh CLI:** Khi thực thi file `.sql` chứa văn bản tiếng Việt qua `sqlcmd`, BẮT BUỘC phải kèm cờ `-f 65001` (Code Page UTF-8), ví dụ: `sqlcmd -S . -f 65001 -i "BlinkBlinkJewelry.sql"`. Tuyệt đối CẤM chạy `sqlcmd -i` trần vì Windows sẽ đọc theo Codepage ANSI/OEM gây lỗi font rác (Mojibake: `Ã¢`, `á»`, `áº`).
+- **Quy tắc nạp SQL Script bằng lệnh CLI:** Khi thực thi file `.sql` chứa văn bản tiếng Việt qua `sqlcmd`, BẮT BUỘC phải kèm cờ `-f 65001` (Code Page UTF-8), ví dụ: `sqlcmd -S . -f 65001 -i "database/BlinkBlinkJewelry.sql"`. Tuyệt đối CẤM chạy `sqlcmd -i` trần vì Windows sẽ đọc theo Codepage ANSI/OEM gây lỗi font rác (Mojibake: `Ã¢`, `á»`, `áº`).
 - **Chuỗi ký tự trong SQL:** Mọi giá trị chuỗi tiếng Việt có dấu trong câu lệnh `INSERT`/`UPDATE` phải luôn có tiền tố `N'...'` (Unicode) và lưu vào cột kiểu `NVARCHAR`.
 - **Định dạng file mã nguồn & SQL:** Toàn bộ file `.sql`, `.cs`, `.json`, `.js`, `.md` phải luôn được lưu ở định dạng chuẩn `UTF-8` (hoặc `UTF-8 with BOM`).
