@@ -58,9 +58,9 @@
 ## thành viên đã thực hiện:
 - qhy
 - anhthy
+- sun
 
 ## thành viên chưa thực hiện:
-- sun
 - tlinh
 
 ---
