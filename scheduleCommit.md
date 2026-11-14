@@ -1,4 +1,4 @@
-# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
+﻿# KẾ HOẠCH COMMIT MÃ NGUỒN DỰ ÁN BLINK BLINK JEWELRY
 **Dành cho nhóm 4 thành viên:** `qhy`, `sun`, `anhthy`, `tlinh`  
 **Phạm vi các thư mục hệ thống Đợt 6:**  
 - `BlinkBlinkJewelry.sql` (Cơ sở dữ liệu hệ thống)
@@ -54,14 +54,14 @@
 
 ## thành viên chưa thực hiện:
 
-## Lần 6 [chưa thực hiện]: dùng git checkout cab23d8 commit này cho lần thực thi này.
+## Lần 6 [đã hoàn thành]: dùng git checkout cab23d8 commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - qhy
 - anhthy
 - sun
+- tlinh
 
 ## thành viên chưa thực hiện:
-- tlinh
 
 ---
 
