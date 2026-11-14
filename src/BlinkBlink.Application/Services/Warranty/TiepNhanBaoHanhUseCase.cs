@@ -59,8 +59,8 @@ public class TiepNhanBaoHanhUseCase
             return false;
         }
 
-        // Xác định mã khách hàng: Nếu để trống hoặc là '0', coi là khách vãng lai
-        var maKhachHang = string.IsNullOrWhiteSpace(request.MaKhachHang) ? "0" : request.MaKhachHang.Trim();
+        // Xác định mã khách hàng: Nếu để trống hoặc là '0' hoặc 'KH_GUEST_POS', quy về mã chuẩn '0' (Khách vãng lai)
+        var maKhachHang = string.IsNullOrWhiteSpace(request.MaKhachHang) || string.Equals(request.MaKhachHang, "KH_GUEST_POS", StringComparison.OrdinalIgnoreCase) ? "0" : request.MaKhachHang.Trim();
         var soDienThoai = request.SoDienThoai?.Trim() ?? string.Empty;
 
         // Nếu là khách vãng lai và có cung cấp số điện thoại, thử tìm xem khách đã có hồ sơ chưa
@@ -108,11 +108,10 @@ public class TiepNhanBaoHanhUseCase
             soDienThoai: soDienThoai
         );
 
-        // Chuyển trạng thái vòng đời sản phẩm trang sức kim hoàn sang đang bảo hành
-        sanPham.CapNhatTrangThai("DangBaoHanh");
-        await _sanPhamRepo.LuuSanPhamAsync(sanPham, cancellationToken);
-
-        // Lưu phiếu bảo hành vào cơ sở dữ liệu
+        // Lưu phiếu bảo hành vào cơ sở dữ liệu.
+        // Ghi chú nghiệp vụ: Trạng thái tiếp nhận bảo hành được quản lý độc lập tại PhieuBaoHanh.TrangThaiXuLy.
+        // Tuyệt đối không thay đổi thuộc tính TrangThai của SanPhamTrangSuc thành 'DangBaoHanh' để tránh làm
+        // gián đoạn trạng thái kinh doanh và tồn kho thực tế của các sản phẩm cùng mã SKU đang bán tại quầy và web.
         await _baoHanhRepo.LuuPhieuAsync(phieuBaoHanh, cancellationToken);
 
             return true;

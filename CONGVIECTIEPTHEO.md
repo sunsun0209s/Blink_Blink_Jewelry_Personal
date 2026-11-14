@@ -1,8 +1,5 @@
 
 
-
-
-
 //Đây là phần công việc đã thực hiện, được để lại để sau này sửa lại trong file báo cáo, không cần đọc từ dòng này trở đi.
 
 
@@ -68,3 +65,16 @@ Phiếu nhập bây giờ tài khoản nhân viên kho chỉ có thể tạo phi
 Thêm nút xóa phiếu tồn kho, điều kiện là phiếu đó chưa được admin phê duyệt, cả nhân viên và admin đều xài được.[yêu cầu mới]
 Bỏ đi tính năng chỉnh sửa phiếu kiểm kê chưa được phê duyệt đi, phiếu kiểm kê nếu lỗi thì xóa tạo lại chứ không cho sửa trên đó.[yêu cầu mới]
 Thay đổi cơ chế giá bán, tại trang sản phẩm, chi tiết sẩn phẩm, tùy chỉnh giá bằng %lợi nhuận thay vì nhập tay giá bán, mặc định khi tạo sản phẩm % lợi nhuận là 0%, ô giá bán sẽ bị khóa không cho nhập. giá bán sẽ được tính lại khi thay đổi tỉ lệ lợi nhuận, hoặc có phiếu nhập kho cho sản phẩm đó làm thay đổi giá nhập bình quân của sản phẩm, hoặc khi phiếu nhập kho bị vô hiệu hóa. Giá bán được tính theo công thức: Giá bán = giá nhập bình quân * (1 + tỷ lệ lợi nhuận). Vậy SanPhamTrangSuc cần bổ sung thêm TyLeLoiNhuan trong csdl.
+
+
+----------------
+
+triển khai đồ án này đọc csdl từ docker.
+
+Tính năng thêm sản phẩm mặc định sản phẩm mới tạo trong form sẽ để là chưa phân loại giống với phân loại của sản phẩm nếu danh mục đó bị xóa. Tôi nghĩ là Danh mục chưa phân loại nên hiển thị trong trang danh mục sản phẩm của app winform. Trong trang quản lý sản phẩm trang sức cũng lọc được sản phẩm chưa có danh mục. Nghĩa là tôi muốn có 1 danh mục tên là Chưa phân loại thay vì nó là một dạng ngầm định không được hiển thị nếu một danh mục bị xóa và các sản phẩm thuộc danh mục đó được ngầm định là chưa phân loại.
+
+Quản lý nhập kho hàng, tạo phiếu nhập kho đang bị gán sẵn một mã nhân viên tạo phiếu thay vì lấy mã của người tạo phiếu đó. Khi dùng tính năng tìm kiếm tên sản phẩm, nó hiện ra sản phẩm ứng với tên đó, nhưng mà nếu sản phẩm đó thuộc về nhóm, thì size vẫn hiển tất cả các size của nhóm đó, nhưng nhấn đổi không có tác dụng do ô tìm kiếm đang chứa ký tự, tôi muốn khi bấm đổi size thì nó làm trống ô đó để tránh lỗi này. Tính năng vô hiệu hóa phiếu nhập kho có trừ đi tồn kho nhưng không khôi phục lại hiện trạng giá bán với giá nhập bình quân.
+
+Tạo đơn bán hàng offline, SP001 có tồn kho là 2 nhưng không hiển thị để chọn lúc tạo hóa đơn.
+
+Tạo phiếu bỏa hành tôi muốn bỏ KH_GUEST_POS đi, khách vãng lai nếu không để lại số điện thoại thì thôi cũng không sao. Khi nhập số điện thoại, khi nhập xong hệ thống sẽ tự kiểm tra xem người dùng này có trong hệ thống hay không và liên kết đến.
