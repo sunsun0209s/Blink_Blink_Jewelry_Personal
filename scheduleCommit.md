@@ -68,11 +68,11 @@
 ## Lần 7 [chưa thực hiện]: dùng git checkout main commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - sun
+- qhy
 
 ## thành viên chưa thực hiện:
 - anhthy
 - tlinh
-- qhy
 
 ---
 
