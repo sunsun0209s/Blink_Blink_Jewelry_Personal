@@ -69,10 +69,10 @@
 ## thành viên đã thực hiện:
 - sun
 - qhy
+- tlinh
 
 ## thành viên chưa thực hiện:
 - anhthy
-- tlinh
 
 ---
 
