@@ -7,7 +7,7 @@
 - `src/BlinkBlink.Application` (Clean Architecture - Application Layer: `ThongKeKhoHangUseCase`, `DangKyKhachHangUseCase`)
 - `src/BlinkBlink.Infrastructure` (Clean Architecture - Infrastructure Layer: `DatabaseHelper`, Repositories `SanPhamRepository`, `ThongKeRepository`)
 - `src/BlinkBlink.Web` (ASP.NET Core RESTful API Controllers: `SanPhamController`, `KhachHangController`, `NhanVienController` & UI Storefront JS/HTML)
-- `src/BlinkBlink.Admin` (WinForms Desktop Admin / POS UI: `ProductsView`, `OfflineSalesView`, `ReportingView`, `InMemoryDataContext` - phân công cho `qhy`)
+- `src/BlinkBlink.Admin` (WinForms Desktop Admin / POS UI: `ProductsView`, `OfflineSalesView`, `ReportingView`, `InMemoryDataContext`, `AdminServiceScope` tự động nhận diện SQLEXPRESS - phân công cho `qhy`)
 - `tests/` (`BlinkBlink.UnitTests` & `BlinkBlink.IntegrationTests`)
 - `.gitattributes` & kịch bản `.bat` (`chay_he_thong.bat`, `chay_web.bat` - phân công cho `qhy`)
 - Tài liệu quy trình & DevOps: `CONG_NGHE_VA_QUY_TRINH.md`, `GEMINI.md`, `CONGVIECTIEPTHEO.md`, Dockerfiles
@@ -94,7 +94,7 @@
 >   4. Chuẩn hóa **RESTful API Nhân viên & Khách hàng** (`NhanVienController.cs`, `KhachHangController.cs`).
 >   5. **Đồng bộ 4 sơ đồ Phân hệ XML** khớp 100% mã nguồn C# và lược đồ vật lý CSDL.
 >   6. Chuẩn hóa kịch bản chạy hệ thống `.bat` và cấu hình chuẩn dòng `.gitattributes`.
-> - **Phân công đặc thù theo yêu cầu:** Riêng thành viên `qhy` sẽ commit toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes` và 2 file `.bat` cùng với các View WinForms Admin / POS.
+> - **Phân công đặc thù theo yêu cầu:** Riêng thành viên `qhy` sẽ commit toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes`, 2 file `.bat` cùng với các View WinForms Admin / POS và cơ chế tự động kết nối SQLEXPRESS `AdminServiceScope.cs`.
 
 ---
 
@@ -112,7 +112,7 @@ Các thành viên có thể tạo nhánh và chuẩn bị commit song song từ 
 1. **Merge #1 — `sun` (10 tệp):** Domain Catalog, Repositories Nền Tảng, Use Case Báo Cáo Tồn Kho Thực Tế & Unit Tests Thống Kê / Catalog.
 2. **Merge #2 — `anhthy` (7 tệp):** Web API Controllers (`SanPhamController`, `KhachHangController`, `NhanVienController`), UI Storefront JS/HTML & Unit Tests Xác Thực Khách Hàng.
 3. **Merge #3 — `tlinh` (6 tệp):** Tài Liệu Quy Trình Công Nghệ, Hướng Dẫn Kỹ Thuật & Cấu Hình Môi Trường Docker Container.
-4. **Merge #4 — `qhy` (19 tệp/nhóm tệp):** Toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes`, 2 file `.bat` (`chay_he_thong.bat`, `chay_web.bat`), các View WinForms Admin/POS & Integration Tests CSDL.
+4. **Merge #4 — `qhy` (20 tệp/nhóm tệp):** Toàn bộ thư mục `XML/`, thư mục `database/`, `.gitattributes`, 2 file `.bat` (`chay_he_thong.bat`, `chay_web.bat`), các View WinForms Admin/POS, khởi tạo dịch vụ tự động kết nối SQLEXPRESS `AdminServiceScope.cs` & Integration Tests CSDL.
 
 ---
 
@@ -123,8 +123,8 @@ Các thành viên có thể tạo nhánh và chuẩn bị commit song song từ 
 | **#1** | **`sun`** | **Domain Catalog, Repositories Nền Tảng, Use Case Tồn Kho Thực Tế & Unit Tests** | 0 | 0 | 2 | 1 | 4 | 0 | 0 | 3 | 0 | **10 tệp** | `feature/phase7-catalog-reporting-module` |
 | **#2** | **`anhthy`** | **Web API Controllers, UI Storefront JS/HTML & Xác Thực Tài Khoản** | 0 | 0 | 0 | 1 | 0 | 5 | 0 | 1 | 0 | **7 tệp** | `feature/phase7-webapi-identity-module` |
 | **#3** | **`tlinh`** | **Tài Liệu Quy Trình, Hướng Dẫn Kỹ Thuật & Cấu Hình Docker Container** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | **6 tệp** | `feature/phase7-docs-devops-module` |
-| **#4** | **`qhy`** | **WinForms Admin/POS, Toàn Bộ XML, Database, Batch Scripts & Git Config** | 1 | 9 | 0 | 0 | 0 | 0 | 4 | 1 | 4 | **19 tệp** | `feature/phase7-admin-xml-database-module` |
-| | **TỔNG** | | **1** | **9** | **2** | **2** | **4** | **5** | **4** | **5** | **10** | **42 tệp** | |
+| **#4** | **`qhy`** | **WinForms Admin/POS, Toàn Bộ XML, Database, Batch Scripts & Git Config** | 1 | 9 | 0 | 0 | 0 | 0 | 5 | 1 | 4 | **20 tệp** | `feature/phase7-admin-xml-database-module` |
+| | **TỔNG** | | **1** | **9** | **2** | **2** | **4** | **5** | **5** | **5** | **10** | **43 tệp** | |
 
 ---
 
@@ -136,7 +136,7 @@ flowchart TD
         A["#1 sun: Domain, Repos, Tồn Kho Thực Tế & Tests (10 tệp)"] --> A_branch["feature/phase7-catalog-reporting-module"]
         B["#2 anhthy: Web Controllers, JS/HTML Storefront & Tests (7 tệp)"] --> B_branch["feature/phase7-webapi-identity-module"]
         C["#3 tlinh: Quy Trình Công Nghệ & Docker Container (6 tệp)"] --> C_branch["feature/phase7-docs-devops-module"]
-        D["#4 qhy: WinForms, Thư Mục XML, Database, Scripts & Config (19 tệp)"] --> D_branch["feature/phase7-admin-xml-database-module"]
+        D["#4 qhy: WinForms, Thư Mục XML, Database, Scripts & Config (20 tệp)"] --> D_branch["feature/phase7-admin-xml-database-module"]
         A_branch -->|Merge #1| MAIN["Nhánh main Team (Build Xanh 89 Tests)"]
         B_branch -->|Merge #2| MAIN
         C_branch -->|Merge #3| MAIN
@@ -249,9 +249,10 @@ flowchart TD
     + `OfflineSalesView.cs`: Ràng buộc loại trừ hoàn toàn các sản phẩm ẩn khỏi danh sách bán hàng tại quầy và danh sách kích cỡ variant.
     + `ReportingView.cs`: Kích hoạt bộ lọc ngày cho Báo Cáo Tồn Kho và Top Bán Chạy, hiển thị trạng thái nút Active và cảnh báo hết hàng màu đỏ.
     + `InMemoryDataContext.cs`: Hỗ trợ lưu trữ thuộc tính `IsHidden` trong môi trường in-memory.
+    + `AdminServiceScope.cs`: Nâng cấp cơ chế tự động dò tìm CSDL hỗ trợ Named Instance SQL Server Express (`.\SQLEXPRESS`, `localhost\SQLEXPRESS`) và đọc cấu hình từ biến môi trường `ConnectionStrings__DefaultConnection`.
   - **Kiểm thử tích hợp luồng CSDL:** `DatabaseWorkflowIntegrationTests.cs` (tự động kích hoạt `EnsureSchemaCompatibility()` đồng bộ CSDL test).
 - **Nhánh làm việc duy nhất:** `feature/phase7-admin-xml-database-module`
-- **Số lượng:** 19 tệp/nhóm thư mục (`XML`: 9, `Database`: 1, `Admin`: 4, `Tests`: 1, `Scripts & Config`: 4)
+- **Số lượng:** 20 tệp/nhóm thư mục (`XML`: 9, `Database`: 1, `Admin`: 5, `Tests`: 1, `Scripts & Config`: 4)
 - **Danh sách tệp Đợt 7:**
   - `XML/Phân hệ quản lý sản phẩm và kho hàng.xml`
   - `XML/Phân hệ quản lý người dùng và phân quyền.xml`
@@ -271,18 +272,19 @@ flowchart TD
   - `src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs`
   - `src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs`
   - `src/BlinkBlink.Admin/Services/InMemoryDataContext.cs`
+  - `src/BlinkBlink.Admin/Services/AdminServiceScope.cs`
   - `tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs`
 - **Lệnh thực hiện 1 lần duy nhất:**
   ```bash
   git checkout -b feature/phase7-admin-xml-database-module
-  git add XML/ database/ BlinkBlinkJewelry.sql .gitattributes chay_he_thong.bat chay_web.bat src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs src/BlinkBlink.Admin/Services/InMemoryDataContext.cs tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs
-  git commit -m "feat(admin-xml-db): nut an hien sp winforms, dong bo so do xml, csdl database va kich ban khoi chay bat"
+  git add XML/ database/ BlinkBlinkJewelry.sql .gitattributes chay_he_thong.bat chay_web.bat src/BlinkBlink.Admin/Views/UserControls/Catalog/ProductsView.cs src/BlinkBlink.Admin/Views/UserControls/Orders/OfflineSalesView.cs src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs src/BlinkBlink.Admin/Services/InMemoryDataContext.cs src/BlinkBlink.Admin/Services/AdminServiceScope.cs tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs
+  git commit -m "feat(admin-xml-db): tu dong nhan dien sqlexpress, nut an hien sp winforms, dong bo so do xml, csdl database va kich ban khoi chay bat"
   git push origin feature/phase7-admin-xml-database-module
   ```
 
 ---
 
-## 5. BẢNG TRA CỨU ĐỐI SOÁT 42 TỆP ĐỢT 7 THEO THÀNH VIÊN
+## 5. BẢNG TRA CỨU ĐỐI SOÁT 43 TỆP ĐỢT 7 THEO THÀNH VIÊN
 
 | STT | Tên Tệp / Đường Dẫn | Phân Hệ / Thư Mục | Vai Trò Kỹ Thuật | Người Phụ Trách |
 | :---: | :--- | :--- | :--- | :---: |
@@ -328,6 +330,7 @@ flowchart TD
 | 40 | `src/BlinkBlink.Admin/Views/UserControls/Reporting/ReportingView.cs` | WinForms Reporting | Bộ lọc ngày & tồn kho thực tế | `qhy` |
 | 41 | `src/BlinkBlink.Admin/Services/InMemoryDataContext.cs` | WinForms Services | Lưu trữ `IsHidden` in-memory | `qhy` |
 | 42 | `tests/BlinkBlink.IntegrationTests/DatabaseWorkflowIntegrationTests.cs` | Integration Tests | Tự động nâng cấp CSDL test | `qhy` |
+| 43 | `src/BlinkBlink.Admin/Services/AdminServiceScope.cs` | WinForms Services | Tự động dò SQLEXPRESS & ENV | `qhy` |
 
 ---
 
