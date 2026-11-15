@@ -65,14 +65,14 @@
 
 ## thành viên chưa thực hiện:
 
-## Lần 7 [chưa thực hiện]: dùng git checkout main commit này cho lần thực thi này.
+## Lần 7 [đã hoàn thành]: dùng git checkout main commit này cho lần thực thi này.
 ## thành viên đã thực hiện:
 - sun
 - qhy
 - tlinh
+- anhthy
 
 ## thành viên chưa thực hiện:
-- anhthy
 
 ---
 
