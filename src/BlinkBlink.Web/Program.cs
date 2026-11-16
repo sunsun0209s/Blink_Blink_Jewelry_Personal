@@ -225,3 +225,4 @@ static bool IsPortOpen(string host, int port, int timeoutMs = 150)
         return false;
     }
 }
+// lệnh chạy test web: $env:HEADED="1"; dotnet test --filter "FullyQualifiedName~E2E"
