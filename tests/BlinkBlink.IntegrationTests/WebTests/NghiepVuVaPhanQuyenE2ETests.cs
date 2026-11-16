@@ -61,19 +61,39 @@ public class NghiepVuVaPhanQuyenE2ETests : WebTestBase
 
         foreach (var endpoint in adminEndpoints)
         {
-            var response = await Page.GotoAsync(endpoint);
-            Assert.NotNull(response);
+            IResponse? response = null;
+            bool blockedByHttpResponseCode = false;
+
+            try
+            {
+                response = await Page.GotoAsync(endpoint);
+            }
+            catch (PlaywrightException ex) when (ex.Message.Contains("ERR_HTTP_RESPONSE_CODE_FAILURE", StringComparison.OrdinalIgnoreCase))
+            {
+                // Chromium ngắt điều hướng do máy chủ trả về mã lỗi HTTP (404/401/403) không có trang HTML
+                blockedByHttpResponseCode = true;
+            }
+
+            // Đồng thời kiểm tra qua HttpClient để xác định chính xác mã trạng thái HTTP nếu chưa có response
+            int statusCode = response?.Status ?? 0;
+            if (statusCode == 0)
+            {
+                using var client = new System.Net.Http.HttpClient();
+                var apiResponse = await client.GetAsync(endpoint);
+                statusCode = (int)apiResponse.StatusCode;
+            }
 
             // Xác nhận hệ thống áp dụng cơ chế bảo mật:
             // Trả về mã chặn truy cập (401 Unauthorized, 403 Forbidden, 404 Not Found do không mở route công khai)
             // hoặc điều hướng về trang xác thực đăng nhập (XacThuc / Login)
-            bool isBlockedOrRedirected = response.Status == 401 ||
-                                         response.Status == 403 ||
-                                         response.Status == 404 ||
+            bool isBlockedOrRedirected = blockedByHttpResponseCode ||
+                                         statusCode == 401 ||
+                                         statusCode == 403 ||
+                                         statusCode == 404 ||
                                          Page.Url.Contains("XacThuc", StringComparison.OrdinalIgnoreCase) ||
                                          Page.Url.Contains("login", StringComparison.OrdinalIgnoreCase);
 
-            Assert.True(isBlockedOrRedirected, $"Đường dẫn quản trị '{endpoint}' phải bị chặn hoặc chuyển hướng khi người dùng chưa xác thực.");
+            Assert.True(isBlockedOrRedirected, $"Đường dẫn quản trị '{endpoint}' phải bị chặn hoặc chuyển hướng khi người dùng chưa xác thực (Mã trạng thái: {statusCode}).");
         }
     }
 

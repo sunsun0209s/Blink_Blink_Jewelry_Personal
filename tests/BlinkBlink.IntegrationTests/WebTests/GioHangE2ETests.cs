@@ -76,16 +76,55 @@ public class GioHangE2ETests : WebTestBase
 
         await Page.GotoAsync(BaseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
 
-        // 1. Chờ nạp sản phẩm đầu tiên có nút Chọn Mua
-        var firstAddBtn = Page.Locator("#products-grid .btn-card-addcart").First;
-        await firstAddBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+        // 1. Chờ nạp sản phẩm còn hàng đầu tiên trên lưới sản phẩm
+        var firstCard = Page.Locator("#products-grid .product-card:not(:has(.btn-card-addcart.is-disabled))").First;
+        await firstCard.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
 
-        // 2. Click Chọn Mua sản phẩm
-        await firstAddBtn.ClickAsync();
+        // 2. Thao tác thêm vào giỏ hàng:
+        // Nếu sản phẩm thuộc nhóm phân loại kích cỡ ("Chọn Size"), giao diện sẽ mở QuickView modal
+        var btnAdd = firstCard.Locator(".btn-card-addcart");
+        await btnAdd.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+        await btnAdd.ClickAsync();
 
-        // 3. Kiểm tra huy hiệu số lượng trên giỏ hàng (cart-badge) cập nhật >= 1
+        // Kiểm tra xem QuickView modal có mở ra không
+        var quickViewModal = Page.Locator("#quickview-modal");
+        bool isQuickViewOpened = false;
+        try
+        {
+            isQuickViewOpened = await Page.WaitForFunctionAsync(
+                "() => document.getElementById('quickview-modal')?.classList.contains('active')",
+                new PageWaitForFunctionOptions { Timeout = 1500 }
+            ).ContinueWith(t => !t.IsFaulted && t.Result != null);
+        }
+        catch
+        {
+            isQuickViewOpened = false;
+        }
+
+        if (isQuickViewOpened)
+        {
+            // Chọn phân loại kích cỡ còn hàng (nếu có)
+            var sizePill = Page.Locator("#modal-sizes-group .modal-size-pill:not(.is-out-of-stock)").First;
+            if (await sizePill.CountAsync() > 0 && await sizePill.IsVisibleAsync())
+            {
+                await sizePill.ClickAsync();
+            }
+
+            // Bấm nút thêm vào giỏ hàng trong QuickView modal
+            var modalAddBtn = Page.Locator("#modal-btn-add:not([disabled])");
+            await modalAddBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+            await modalAddBtn.ClickAsync();
+        }
+
+        // 3. Đợi và kiểm tra huy hiệu số lượng trên giỏ hàng (cart-badge) cập nhật >= 1
+        await Page.WaitForFunctionAsync(@"() => {
+            const badge = document.getElementById('cart-badge');
+            if (!badge) return false;
+            const count = parseInt(badge.innerText.trim(), 10);
+            return !isNaN(count) && count >= 1;
+        }", new PageWaitForFunctionOptions { Timeout = 10000 });
+
         var cartBadge = Page.Locator("#cart-badge");
-        await cartBadge.WaitForAsync();
         var badgeText = await cartBadge.InnerTextAsync();
         var count = int.TryParse(badgeText.Trim(), out var parsedCount) ? parsedCount : 0;
         Assert.True(count >= 1, "Huy hiệu số lượng giỏ hàng phải tăng lên ít nhất 1 sau khi thêm.");
