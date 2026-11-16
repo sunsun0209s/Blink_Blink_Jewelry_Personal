@@ -25,7 +25,7 @@ public abstract class WebTestBase : IAsyncLifetime
 		Browser = await PlaywrightInstance.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
 		{
 			Headless = !isHeaded,
-			SlowMo = isHeaded ? 3000 : 0
+			SlowMo = isHeaded ? 4000 : 0
 		});
 
 		Context = await Browser.NewContextAsync(new BrowserNewContextOptions
@@ -54,4 +54,5 @@ public abstract class WebTestBase : IAsyncLifetime
 		PlaywrightInstance?.Dispose();
 	}
 }
+// lệnh chạy test web: $env:HEADED="1"; dotnet test --filter "FullyQualifiedName~E2E"
 
